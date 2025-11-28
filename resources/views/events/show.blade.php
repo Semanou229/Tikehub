@@ -3,169 +3,335 @@
 @section('title', $event->title . ' - Tikehub')
 
 @section('content')
-<!-- Hero Section avec image -->
-<section class="relative">
-    @if($event->cover_image)
-        <div class="h-96 bg-cover bg-center" style="background-image: url('{{ asset('storage/' . $event->cover_image) }}')">
-            <div class="absolute inset-0 bg-black bg-opacity-50"></div>
-        </div>
-    @else
-        <div class="h-96 bg-gradient-to-r from-indigo-600 to-purple-600">
-            <div class="absolute inset-0 bg-black bg-opacity-30"></div>
-        </div>
-    @endif
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-white">
-        <div class="flex items-center gap-2 mb-4">
-            <span class="bg-indigo-600 px-4 py-1 rounded-full text-sm font-semibold">{{ $event->category }}</span>
-            @if($event->is_free)
-                <span class="bg-green-600 px-4 py-1 rounded-full text-sm font-semibold">Gratuit</span>
-            @endif
-        </div>
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ $event->title }}</h1>
-        <div class="flex flex-wrap gap-6 text-lg">
-            <div class="flex items-center">
-                <i class="fas fa-calendar-alt mr-2"></i>
-                <span>{{ $event->start_date->format('d/m/Y à H:i') }}</span>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header avec date en rouge -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <div class="flex flex-col md:flex-row">
+            <!-- Date Box (Rouge) -->
+            <div class="bg-red-600 text-white p-6 text-center min-w-[120px] flex flex-col justify-center items-center">
+                <div class="text-2xl font-bold uppercase">{{ $event->start_date->format('M') }}</div>
+                <div class="text-5xl font-bold">{{ $event->start_date->format('d') }}</div>
+                <div class="text-lg mt-2">{{ $event->start_date->format('l') }}</div>
             </div>
-            @if($event->venue_city)
-                <div class="flex items-center">
-                    <i class="fas fa-map-marker-alt mr-2"></i>
-                    <span>{{ $event->venue_city }}, {{ $event->venue_country }}</span>
+
+            <!-- Contenu principal du header -->
+            <div class="flex-1 p-6">
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                    <div class="flex-1">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $event->title }}</h1>
+                        
+                        <!-- Informations date et lieu -->
+                        <div class="space-y-2 text-gray-700">
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar-alt text-red-600 mr-3 w-5"></i>
+                                <span>
+                                    {{ $event->start_date->format('D, d M Y') }} 
+                                    @if($event->end_date && $event->end_date->format('Y-m-d') !== $event->start_date->format('Y-m-d'))
+                                        - {{ $event->end_date->format('D, d M Y') }}
+                                    @endif
+                                    ({{ $event->start_date->format('H:i') }} - {{ $event->end_date ? $event->end_date->format('H:i') : '23:59' }})
+                                    {{ config('app.timezone', 'UTC') }}
+                                </span>
+                            </div>
+                            @if($event->venue_name || $event->venue_city)
+                                <div class="flex items-center">
+                                    <i class="fas fa-map-marker-alt text-red-600 mr-3 w-5"></i>
+                                    <span>
+                                        @if($event->venue_name){{ $event->venue_name }}, @endif
+                                        @if($event->venue_city){{ $event->venue_city }}@endif
+                                        @if($event->venue_country), {{ $event->venue_country }}@endif
+                                    </span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Boutons d'action -->
+                    <div class="flex flex-col gap-2 md:min-w-[150px]">
+                        <button onclick="shareEvent()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
+                            <i class="fas fa-share-alt"></i>
+                            <span>PARTAGER</span>
+                        </button>
+                        <button onclick="reportEvent()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
+                            <i class="fas fa-flag"></i>
+                            <span>SIGNALER</span>
+                        </button>
+                        <button onclick="addToCalendar()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>CALENDRIER</span>
+                        </button>
+                    </div>
                 </div>
-            @endif
+            </div>
         </div>
     </div>
-</section>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Contenu principal -->
-        <div class="lg:col-span-2 space-y-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Colonne principale -->
+        <div class="lg:col-span-2 space-y-6">
             <!-- Description -->
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-bold mb-4">À propos de l'événement</h2>
-                <div class="prose max-w-none">
+                <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-red-600">Description</h2>
+                <div class="prose max-w-none mb-6">
                     {!! nl2br(e($event->description)) !!}
+                </div>
+
+                <!-- Points à puces avec checkmarks verts -->
+                @if($event->ticketTypes->count() > 0 || $event->contests->count() > 0)
+                    <div class="space-y-3 mt-6">
+                        @if($event->ticketTypes->count() > 0)
+                            <div class="flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
+                                <span>Billets disponibles en ligne</span>
+                            </div>
+                        @endif
+                        @if($event->contests->count() > 0)
+                            <div class="flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
+                                <span>Concours et votes disponibles</span>
+                            </div>
+                        @endif
+                        @if($event->fundraisings->count() > 0)
+                            <div class="flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
+                                <span>Collecte de fonds associée</span>
+                            </div>
+                        @endif
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
+                            <span>Événement organisé par {{ $event->organizer->name }}</span>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Call to action avec icône -->
+                @if($event->venue_city)
+                    <div class="mt-6 p-4 bg-pink-50 border-l-4 border-pink-500 rounded">
+                        <div class="flex items-start">
+                            <i class="fas fa-map-pin text-pink-600 mr-3 mt-1"></i>
+                            <p class="text-gray-700">
+                                Rendez-vous à {{ $event->venue_name ?? $event->venue_city }} pour une expérience inoubliable !
+                            </p>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="mt-4 p-4 bg-red-50 border-l-4 border-red-500 rounded">
+                    <div class="flex items-start">
+                        <i class="fas fa-exclamation-circle text-red-600 mr-3 mt-1"></i>
+                        <p class="text-gray-700">
+                            Ne ratez pas cet événement unique : réservez vite votre place et venez vivre une expérience mémorable !
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Informations détaillées -->
+            <!-- Informations sur le billet -->
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-bold mb-4">Informations</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">Date et heure</h3>
-                        <p class="text-gray-600">
-                            <i class="fas fa-calendar mr-2 text-indigo-600"></i>
-                            {{ $event->start_date->format('d/m/Y à H:i') }}
-                        </p>
-                        @if($event->end_date)
-                            <p class="text-gray-600 mt-1">
-                                <i class="fas fa-clock mr-2 text-indigo-600"></i>
-                                Jusqu'au {{ $event->end_date->format('d/m/Y à H:i') }}
-                            </p>
+                <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-red-600">Informations sur le billet</h2>
+                <div class="flex items-center justify-between">
+                    <span class="font-semibold text-gray-700">Billets</span>
+                    @if($event->ticketTypes->count() > 0)
+                        @php
+                            $hasAvailableTickets = $event->ticketTypes->filter(function($type) {
+                                return $type->isOnSale();
+                            })->count() > 0;
+                        @endphp
+                        @if($hasAvailableTickets)
+                            <a href="{{ route('tickets.index', $event) }}" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition font-semibold">
+                                <i class="fas fa-ticket-alt mr-2"></i>Réserver maintenant
+                            </a>
+                        @else
+                            <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm">
+                                Réservation en ligne fermée
+                            </span>
                         @endif
+                    @else
+                        <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm">
+                            Aucun billet disponible
+                        </span>
+                    @endif
+                </div>
+
+                <!-- Liste des types de billets -->
+                @if($event->ticketTypes->count() > 0)
+                    <div class="mt-6 space-y-4">
+                        @foreach($event->ticketTypes as $ticketType)
+                            <div class="border border-gray-200 rounded-lg p-4 hover:border-red-500 transition">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold text-lg mb-1">{{ $ticketType->name }}</h3>
+                                        @if($ticketType->description)
+                                            <p class="text-gray-600 text-sm mb-2">{{ $ticketType->description }}</p>
+                                        @endif
+                                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                                            <span>
+                                                <i class="fas fa-ticket-alt mr-1"></i>
+                                                {{ $ticketType->available_quantity }} disponible(s)
+                                            </span>
+                                            @if($ticketType->sale_start_date && $ticketType->sale_end_date)
+                                                <span>
+                                                    Du {{ $ticketType->sale_start_date->format('d/m/Y') }} au {{ $ticketType->sale_end_date->format('d/m/Y') }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="text-right ml-4">
+                                        <div class="text-2xl font-bold text-red-600">
+                                            {{ number_format($ticketType->price, 0, ',', ' ') }} XOF
+                                        </div>
+                                        @if($ticketType->isOnSale() && auth()->check())
+                                            <a href="{{ route('tickets.index', $event) }}" class="mt-2 inline-block bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm">
+                                                Acheter
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    @if($event->venue_name)
+                @endif
+            </div>
+
+            <!-- Calendrier des événements -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-red-600">Calendrier des événements</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div>
-                            <h3 class="font-semibold text-gray-700 mb-2">Lieu</h3>
-                            <p class="text-gray-600">
-                                <i class="fas fa-map-marker-alt mr-2 text-indigo-600"></i>
-                                {{ $event->venue_name }}
+                            <p class="font-semibold">
+                                {{ $event->start_date->format('l, d F Y') }}
+                                @if($event->end_date && $event->end_date->format('Y-m-d') !== $event->start_date->format('Y-m-d'))
+                                    - {{ $event->end_date->format('l, d F Y') }}
+                                @endif
                             </p>
-                            @if($event->venue_address)
-                                <p class="text-gray-600 mt-1 text-sm">{{ $event->venue_address }}</p>
-                            @endif
-                            <p class="text-gray-600 mt-1">
-                                {{ $event->venue_city }}, {{ $event->venue_country }}
+                            <p class="text-sm text-gray-600 mt-1">
+                                {{ $event->start_date->format('H:i') }} - {{ $event->end_date ? $event->end_date->format('H:i') : '23:59' }} 
+                                {{ config('app.timezone', 'UTC') }}
                             </p>
                         </div>
+                        @if($event->end_date && $event->end_date->isPast())
+                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">
+                                Fermé
+                            </span>
+                        @elseif($event->start_date->isFuture())
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                                À venir
+                            </span>
+                        @else
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
+                                En cours
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ajouter un avis -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold mb-4">Ajouter Un Avis</h2>
+                @auth
+                    <form action="#" method="POST" class="space-y-4">
+                        @csrf
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Évaluation</label>
+                            <div class="flex gap-1" id="rating-stars">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <button type="button" class="text-2xl text-gray-300 hover:text-yellow-400 focus:outline-none" data-rating="{{ $i }}">
+                                        <i class="far fa-star"></i>
+                                    </button>
+                                @endfor
+                            </div>
+                            <input type="hidden" name="rating" id="rating-value" value="0">
+                        </div>
+                        <div>
+                            <label for="reviewer_name" class="block text-sm font-medium text-gray-700 mb-2">Nom*</label>
+                            <input type="text" id="reviewer_name" name="name" value="{{ auth()->user()->name }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="Tapez votre nom ici" required>
+                        </div>
+                        <div>
+                            <label for="reviewer_email" class="block text-sm font-medium text-gray-700 mb-2">Votre Email*</label>
+                            <input type="email" id="reviewer_email" name="email" value="{{ auth()->user()->email }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="Votre email" required>
+                        </div>
+                        <div>
+                            <label for="review_comment" class="block text-sm font-medium text-gray-700 mb-2">Commentaire</label>
+                            <textarea id="review_comment" name="comment" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="Votre commentaire"></textarea>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="save_info" name="save_info" class="mr-2">
+                            <label for="save_info" class="text-sm text-gray-600">
+                                Enregistrez mon nom, mon e-mail et mon site web dans ce navigateur pour la prochaine fois que je commenterai.
+                            </label>
+                        </div>
+                        <button type="submit" class="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition font-semibold">
+                            Publier un commentaire
+                        </button>
+                    </form>
+                @else
+                    <p class="text-gray-600 mb-4">Vous devez être connecté pour laisser un avis.</p>
+                    <a href="{{ route('login') }}" class="inline-block bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition font-semibold">
+                        Se connecter
+                    </a>
+                @endauth
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Organisateur -->
+            <div class="bg-gray-100 rounded-lg p-6">
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex items-center mb-4">
+                        <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-3">
+                            {{ strtoupper(substr($event->organizer->name, 0, 2)) }}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">{{ $event->organizer->name }}</h3>
+                            <p class="text-sm text-gray-500">ORGANISATEUR</p>
+                        </div>
+                    </div>
+                    @if($event->organizer->phone || $event->organizer->email)
+                        <div class="space-y-2 mb-4">
+                            @if($event->organizer->phone)
+                                <div class="flex items-center text-sm text-gray-700">
+                                    <i class="fas fa-phone text-red-600 mr-2 w-5"></i>
+                                    <span>{{ $event->organizer->phone }}</span>
+                                </div>
+                            @endif
+                            @if($event->organizer->email)
+                                <div class="flex items-center text-sm text-gray-700">
+                                    <i class="fas fa-envelope text-red-600 mr-2 w-5"></i>
+                                    <span>{{ $event->organizer->email }}</span>
+                                </div>
+                            @endif
+                        </div>
                     @endif
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">Organisateur</h3>
-                        <p class="text-gray-600">
-                            <i class="fas fa-user mr-2 text-indigo-600"></i>
-                            {{ $event->organizer->name }}
-                        </p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">Catégorie</h3>
-                        <p class="text-gray-600">
-                            <i class="fas fa-tag mr-2 text-indigo-600"></i>
-                            {{ $event->category }}
-                        </p>
-                    </div>
+                    <button onclick="contactOrganizer()" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-2">
+                        <i class="fas fa-envelope"></i>
+                        <span>Envoyer un message</span>
+                    </button>
                 </div>
             </div>
 
             <!-- Galerie -->
             @if($event->gallery && count($event->gallery) > 0)
                 <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-bold mb-4">Galerie</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        @foreach($event->gallery as $image)
-                            <img src="{{ asset('storage/' . $image) }}" alt="Galerie {{ $event->title }}" class="w-full h-48 object-cover rounded-lg">
+                    <h3 class="text-xl font-bold mb-4">Galerie</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        @foreach(array_slice($event->gallery, 0, 4) as $image)
+                            <img src="{{ asset('storage/' . $image) }}" alt="Galerie {{ $event->title }}" class="w-full h-32 object-cover rounded-lg">
                         @endforeach
                     </div>
-                </div>
-            @endif
-        </div>
-
-        <!-- Sidebar -->
-        <div class="space-y-6">
-            <!-- Billets -->
-            @if($event->ticketTypes->count() > 0)
-                <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
-                    <h2 class="text-2xl font-bold mb-4">Billets disponibles</h2>
-                    <div class="space-y-4">
-                        @foreach($event->ticketTypes as $ticketType)
-                            <div class="border-2 border-gray-200 rounded-lg p-4 hover:border-indigo-500 transition">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h3 class="font-semibold text-lg">{{ $ticketType->name }}</h3>
-                                    <span class="text-2xl font-bold text-indigo-600">
-                                        {{ number_format($ticketType->price, 0, ',', ' ') }} XOF
-                                    </span>
-                                </div>
-                                @if($ticketType->description)
-                                    <p class="text-gray-600 text-sm mb-3">{{ $ticketType->description }}</p>
-                                @endif
-                                <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
-                                    <span>
-                                        <i class="fas fa-ticket-alt mr-1"></i>
-                                        {{ $ticketType->available_quantity }} disponible(s)
-                                    </span>
-                                    @if($ticketType->sale_start_date && $ticketType->sale_end_date)
-                                        <span class="text-xs">
-                                            Du {{ $ticketType->sale_start_date->format('d/m') }} au {{ $ticketType->sale_end_date->format('d/m') }}
-                                        </span>
-                                    @endif
-                                </div>
-                                @if($ticketType->isOnSale() && auth()->check())
-                                    <a href="{{ route('tickets.index', $event) }}" class="block w-full bg-indigo-600 text-white text-center px-4 py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">
-                                        Acheter maintenant
-                                    </a>
-                                @elseif(!auth()->check())
-                                    <a href="{{ route('login') }}" class="block w-full bg-indigo-600 text-white text-center px-4 py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">
-                                        Se connecter pour acheter
-                                    </a>
-                                @else
-                                    <button disabled class="block w-full bg-gray-400 text-white text-center px-4 py-3 rounded-lg cursor-not-allowed font-semibold">
-                                        Vente terminée
-                                    </button>
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            @else
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <p class="text-gray-500 text-center">Aucun billet disponible pour le moment</p>
+                    @if(count($event->gallery) > 4)
+                        <button class="mt-3 w-full text-red-600 hover:text-red-700 font-semibold">
+                            Voir toutes les photos ({{ count($event->gallery) }})
+                        </button>
+                    @endif
                 </div>
             @endif
 
             <!-- Statistiques -->
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="font-semibold mb-4">Statistiques</h3>
+                <h3 class="text-xl font-bold mb-4">Statistiques</h3>
                 <div class="space-y-3">
                     <div class="flex justify-between">
                         <span class="text-gray-600">Billets vendus</span>
@@ -177,20 +343,80 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Partage -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="font-semibold mb-4">Partager</h3>
-                <div class="flex gap-3">
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" target="_blank" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-700">
-                        <i class="fab fa-facebook-f mr-2"></i>Facebook
-                    </a>
-                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}" target="_blank" class="flex-1 bg-blue-400 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-500">
-                        <i class="fab fa-twitter mr-2"></i>Twitter
-                    </a>
-                </div>
-            </div>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    // Système de notation avec étoiles
+    const stars = document.querySelectorAll('#rating-stars button');
+    const ratingInput = document.getElementById('rating-value');
+    
+    stars.forEach((star, index) => {
+        star.addEventListener('click', () => {
+            const rating = index + 1;
+            ratingInput.value = rating;
+            updateStars(rating);
+        });
+        
+        star.addEventListener('mouseenter', () => {
+            updateStars(index + 1);
+        });
+    });
+    
+    document.getElementById('rating-stars').addEventListener('mouseleave', () => {
+        const currentRating = parseInt(ratingInput.value);
+        updateStars(currentRating);
+    });
+    
+    function updateStars(rating) {
+        stars.forEach((star, index) => {
+            const icon = star.querySelector('i');
+            if (index < rating) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                icon.classList.remove('text-gray-300');
+                icon.classList.add('text-yellow-400');
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                icon.classList.remove('text-yellow-400');
+                icon.classList.add('text-gray-300');
+            }
+        });
+    }
+    
+    function shareEvent() {
+        if (navigator.share) {
+            navigator.share({
+                title: '{{ $event->title }}',
+                text: '{{ Str::limit($event->description, 100) }}',
+                url: window.location.href
+            });
+        } else {
+            // Fallback: copier le lien
+            navigator.clipboard.writeText(window.location.href);
+            alert('Lien copié dans le presse-papiers !');
+        }
+    }
+    
+    function reportEvent() {
+        if (confirm('Voulez-vous signaler cet événement ?')) {
+            // TODO: Implémenter la fonctionnalité de signalement
+            alert('Fonctionnalité de signalement à venir');
+        }
+    }
+    
+    function addToCalendar() {
+        // TODO: Générer un fichier .ics pour ajouter au calendrier
+        alert('Fonctionnalité d\'ajout au calendrier à venir');
+    }
+    
+    function contactOrganizer() {
+        // TODO: Ouvrir un formulaire de contact
+        alert('Fonctionnalité de contact à venir');
+    }
+</script>
+@endpush
 @endsection
