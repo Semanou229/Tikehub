@@ -8,12 +8,12 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($events as $event)
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <a href="{{ route('events.show', $event) }}" class="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300">
                 @if($event->cover_image)
                     <img src="{{ asset('storage/' . $event->cover_image) }}" alt="{{ $event->title }}" class="w-full h-48 object-cover">
                 @endif
                 <div class="p-4">
-                    <h3 class="text-xl font-semibold mb-2">{{ $event->title }}</h3>
+                    <h3 class="text-xl font-semibold mb-2 hover:text-indigo-600 transition">{{ $event->title }}</h3>
                     <p class="text-gray-600 text-sm mb-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
                     @if($event->start_date)
                         <div class="flex items-center text-sm text-gray-500 mb-2">
@@ -27,11 +27,11 @@
                             {{ $event->venue_city }}
                         </div>
                     @endif
-                    <a href="{{ route('events.show', $event) }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 inline-block">
+                    <span class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
                         Voir l'événement
-                    </a>
+                    </span>
                 </div>
-            </div>
+            </a>
         @empty
             <div class="col-span-3 text-center py-12">
                 <p class="text-gray-500">Aucun événement disponible pour le moment.</p>

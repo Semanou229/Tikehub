@@ -17,7 +17,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($fundraisings as $fundraising)
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300">
+            <a href="{{ route('fundraisings.show', $fundraising) }}" class="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300">
                 @if($fundraising->cover_image)
                     <img src="{{ asset('storage/' . $fundraising->cover_image) }}" alt="{{ $fundraising->name }}" class="w-full h-48 object-cover">
                 @else
@@ -34,7 +34,7 @@
                             {{ number_format($fundraising->progress_percentage, 0) }}%
                         </span>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">{{ $fundraising->name }}</h3>
+                    <h3 class="text-xl font-semibold mb-2 hover:text-green-600 transition">{{ $fundraising->name }}</h3>
                     <p class="text-gray-600 text-sm mb-4">{{ \Illuminate\Support\Str::limit($fundraising->description, 100) }}</p>
                     
                     <!-- Barre de progression -->
@@ -52,11 +52,11 @@
                         <i class="fas fa-calendar mr-2"></i>
                         <span>Jusqu'au {{ $fundraising->end_date->format('d/m/Y') }}</span>
                     </div>
-                    <a href="{{ route('fundraisings.show', $fundraising) }}" class="block w-full bg-green-600 text-white text-center px-4 py-2 rounded-lg hover:bg-green-700">
+                    <span class="block w-full bg-green-600 text-white text-center px-4 py-2 rounded-lg hover:bg-green-700">
                         Contribuer
-                    </a>
+                    </span>
                 </div>
-            </div>
+            </a>
         @empty
             <div class="col-span-3 text-center py-12">
                 <i class="fas fa-heart text-6xl text-gray-300 mb-4"></i>
