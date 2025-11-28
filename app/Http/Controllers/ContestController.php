@@ -29,10 +29,61 @@ class ContestController extends Controller
             abort(404);
         }
 
-        $contest->load(['candidates.votes', 'organizer']);
-        $ranking = $contest->getRanking();
+        // Charger les candidats avec leurs votes et points
+        $candidates = $contest->candidates()
+            ->withCount(['votes as total_points' => function($query) {
+                $query->select(\DB::raw('sum(points)'));
+            }])
+            ->orderBy('total_points', 'desc')
+            ->get();
 
-        return view('contests.show', compact('contest', 'ranking'));
+        // Classement avec position
+        $ranking = $candidates->map(function($candidate, $index) {
+            $candidate->position = $index + 1;
+            $candidate->total_points = (int)($candidate->votes_sum_points ?? 0);
+            return $candidate;
+        });
+
+        $contest->load(['organizer']);
+
+        return view('contests.show', compact('contest', 'candidates', 'ranking'));
+    }
+
+    public function vote(Request $request, Contest $contest, ContestCandidate $candidate)
+    {
+        if (!$contest->isActive()) {
+            return back()->with('error', 'Ce concours n\'est plus actif');
+        }
+
+        $request->validate([
+            'quantity' => 'required|integer|min:1|max:100',
+        ]);
+
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'Vous devez être connecté pour voter');
+        }
+
+            try {
+            $voteService = app(\App\Services\VoteService::class);
+            $payment = $voteService->castVote(
+                auth()->user(),
+                $candidate,
+                $request->quantity,
+                $request->ip()
+            );
+
+            // Récupérer l'URL de paiement depuis la réponse Moneroo
+            $monerooService = app(\App\Services\MonerooService::class);
+            $monerooPayment = $monerooService->getPaymentStatus($payment->moneroo_transaction_id);
+            
+            if (isset($monerooPayment['payment_url'])) {
+                return redirect($monerooPayment['payment_url']);
+            }
+
+            return redirect()->route('contests.show', $contest)->with('error', 'Erreur lors de la création du paiement');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function create()

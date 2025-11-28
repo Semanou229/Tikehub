@@ -77,5 +77,45 @@ class FundraisingController extends Controller
 
         return back()->with('success', 'Collecte de fonds publiée');
     }
+
+    public function donate(Request $request, Fundraising $fundraising)
+    {
+        if (!$fundraising->isActive()) {
+            return back()->with('error', 'Cette collecte est terminée');
+        }
+
+        $request->validate([
+            'amount' => 'required|numeric|min:100',
+            'message' => 'nullable|string|max:500',
+            'is_anonymous' => 'boolean',
+        ]);
+
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'Vous devez être connecté pour contribuer');
+        }
+
+        try {
+            $donationService = app(\App\Services\DonationService::class);
+            $payment = $donationService->createDonation(
+                auth()->user(),
+                $fundraising,
+                $request->amount,
+                $request->message,
+                $request->has('is_anonymous')
+            );
+
+            // Récupérer l'URL de paiement depuis la réponse Moneroo
+            $monerooService = app(\App\Services\MonerooService::class);
+            $monerooPayment = $monerooService->getPaymentStatus($payment->moneroo_transaction_id);
+            
+            if (isset($monerooPayment['payment_url'])) {
+                return redirect($monerooPayment['payment_url']);
+            }
+
+            return redirect()->route('fundraisings.show', $fundraising)->with('error', 'Erreur lors de la création du paiement');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
 }
 

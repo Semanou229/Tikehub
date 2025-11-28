@@ -41,10 +41,12 @@ Route::middleware('auth')->group(function () {
     // Concours
     Route::resource('contests', \App\Http\Controllers\ContestController::class)->except(['index', 'show']);
     Route::post('/contests/{contest}/publish', [\App\Http\Controllers\ContestController::class, 'publish'])->name('contests.publish');
+    Route::post('/contests/{contest}/candidates/{candidate}/vote', [\App\Http\Controllers\ContestController::class, 'vote'])->name('contests.vote');
 
     // Collectes de fonds
     Route::resource('fundraisings', \App\Http\Controllers\FundraisingController::class)->except(['index', 'show']);
     Route::post('/fundraisings/{fundraising}/publish', [\App\Http\Controllers\FundraisingController::class, 'publish'])->name('fundraisings.publish');
+    Route::post('/fundraisings/{fundraising}/donate', [\App\Http\Controllers\FundraisingController::class, 'donate'])->name('fundraisings.donate');
 });
 
 // Routes publiques pour concours et collectes

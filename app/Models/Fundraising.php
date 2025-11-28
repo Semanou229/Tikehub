@@ -52,6 +52,14 @@ class Fundraising extends Model
         return $this->hasMany(Donation::class);
     }
 
+    public function isActive(): bool
+    {
+        $now = now();
+        return $this->is_active 
+            && $now->gte($this->start_date)
+            && $now->lte($this->end_date);
+    }
+
     public function getProgressPercentageAttribute()
     {
         if ($this->goal_amount == 0) {

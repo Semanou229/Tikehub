@@ -61,6 +61,11 @@ class Payment extends Model
         return $this->hasMany(Vote::class);
     }
 
+    public function donation()
+    {
+        return $this->hasOne(Donation::class);
+    }
+
     public function isRefunded(): bool
     {
         return $this->refunded_at !== null;
