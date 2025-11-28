@@ -28,10 +28,7 @@ class HomeController extends Controller
             ->get();
 
         // Concours actifs (6 premiers)
-        $activeContests = Contest::where(function($query) {
-                $query->where('is_published', true)
-                      ->orWhereNull('is_published'); // Pour les anciens concours sans cette colonne
-            })
+        $activeContests = Contest::where('is_published', true)
             ->where('is_active', true)
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
@@ -41,10 +38,7 @@ class HomeController extends Controller
             ->get();
 
         // Collectes de fonds actives (6 premières)
-        $activeFundraisings = Fundraising::where(function($query) {
-                $query->where('is_published', true)
-                      ->orWhereNull('is_published'); // Pour les anciennes collectes sans cette colonne
-            })
+        $activeFundraisings = Fundraising::where('is_published', true)
             ->where('is_active', true)
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
@@ -59,18 +53,12 @@ class HomeController extends Controller
                 ->where('status', 'published')
                 ->where('start_date', '>=', now())
                 ->count(),
-            'active_contests' => Contest::where(function($query) {
-                    $query->where('is_published', true)
-                          ->orWhereNull('is_published');
-                })
+            'active_contests' => Contest::where('is_published', true)
                 ->where('is_active', true)
                 ->where('start_date', '<=', now())
                 ->where('end_date', '>=', now())
                 ->count(),
-            'active_fundraisings' => Fundraising::where(function($query) {
-                    $query->where('is_published', true)
-                          ->orWhereNull('is_published');
-                })
+            'active_fundraisings' => Fundraising::where('is_published', true)
                 ->where('is_active', true)
                 ->where('start_date', '<=', now())
                 ->where('end_date', '>=', now())
