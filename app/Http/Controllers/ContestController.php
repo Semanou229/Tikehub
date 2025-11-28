@@ -29,12 +29,14 @@ class ContestController extends Controller
             abort(404);
         }
 
-        // Charger les candidats avec leurs votes et points
+        // Charger les candidats avec leurs votes et points (seulement les votes payés)
         $candidates = $contest->candidates()
-            ->withCount(['votes as total_points' => function($query) {
-                $query->select(\DB::raw('sum(points)'));
-            }])
-            ->orderBy('total_points', 'desc')
+            ->withSum(['votes as votes_sum_points' => function($query) {
+                $query->whereHas('payment', function($q) {
+                    $q->where('status', 'completed');
+                });
+            }], 'points')
+            ->orderBy('votes_sum_points', 'desc')
             ->get();
 
         // Classement avec position
