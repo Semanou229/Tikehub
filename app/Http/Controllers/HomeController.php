@@ -20,10 +20,12 @@ class HomeController extends Controller
             ->get();
 
         // Événements populaires (par nombre de billets vendus)
+        // Si pas assez d'événements à venir, afficher tous les événements publiés
         $popularEvents = Event::where('is_published', true)
             ->where('status', 'published')
             ->withCount('tickets')
             ->orderBy('tickets_count', 'desc')
+            ->orderBy('start_date', 'desc')
             ->take(6)
             ->get();
 
