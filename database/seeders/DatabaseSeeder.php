@@ -96,6 +96,9 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $organizer->assignRole('organizer');
+
+        // Créer des données de test (événements, concours, collectes)
+        $this->call(ContentSeeder::class);
     }
 }
 
