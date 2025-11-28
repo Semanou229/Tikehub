@@ -186,11 +186,11 @@
                                 <span>{{ $event->venue_city }}</span>
                             @endif
                         </div>
-                        <a href="{{ route('events.show', $event) }}" class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
+                        <span class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
                             Voir l'événement
-                        </a>
+                        </span>
                     </div>
-                </div>
+                </a>
             @endforeach
         </div>
     </div>
