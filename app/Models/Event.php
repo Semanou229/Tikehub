@@ -1,0 +1,119 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+
+class Event extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'organizer_id',
+        'title',
+        'slug',
+        'subdomain',
+        'description',
+        'category',
+        'type',
+        'start_date',
+        'end_date',
+        'venue_name',
+        'venue_address',
+        'venue_city',
+        'venue_country',
+        'venue_latitude',
+        'venue_longitude',
+        'cover_image',
+        'gallery',
+        'is_published',
+        'is_free',
+        'status',
+        'settings',
+    ];
+
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'is_published' => 'boolean',
+        'is_free' => 'boolean',
+        'gallery' => 'array',
+        'settings' => 'array',
+        'venue_latitude' => 'decimal:8',
+        'venue_longitude' => 'decimal:8',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($event) {
+            if (empty($event->slug)) {
+                $event->slug = Str::slug($event->title);
+            }
+            if (empty($event->subdomain)) {
+                $event->subdomain = 'ev-' . $event->slug;
+            }
+        });
+    }
+
+    public function organizer()
+    {
+        return $this->belongsTo(User::class, 'organizer_id');
+    }
+
+    public function ticketTypes()
+    {
+        return $this->hasMany(TicketType::class);
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    public function contests()
+    {
+        return $this->hasMany(Contest::class);
+    }
+
+    public function fundraisings()
+    {
+        return $this->hasMany(Fundraising::class);
+    }
+
+    public function agents()
+    {
+        return $this->belongsToMany(User::class, 'event_agents', 'event_id', 'agent_id')
+            ->withPivot('permissions')
+            ->withTimestamps();
+    }
+
+    public function scans()
+    {
+        return $this->hasMany(TicketScan::class);
+    }
+
+    public function getSubdomainUrlAttribute()
+    {
+        $pattern = config('platform.subdomain_pattern', 'ev-{slug}.tikehub.com');
+        if ($pattern && $this->slug) {
+            $domain = str_replace('{slug}', $this->slug, $pattern);
+            return 'https://' . $domain;
+        }
+        return null;
+    }
+
+    public function getTotalSalesAttribute()
+    {
+        return $this->tickets()->where('status', 'paid')->sum('price');
+    }
+
+    public function getTotalTicketsSoldAttribute()
+    {
+        return $this->tickets()->where('status', 'paid')->count();
+    }
+}
+
