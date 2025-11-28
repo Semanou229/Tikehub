@@ -220,9 +220,9 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="space-y-6">
+        <div class="space-y-6 sticky top-4 self-start">
             <!-- Contribution -->
-            <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
+            <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-2xl font-bold mb-4">Contribuer</h2>
                 
                 <div class="mb-6">
