@@ -52,9 +52,13 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
+        // Vérifier si l'événement est publié ou si l'utilisateur est l'organisateur
         $userId = auth()->id();
-        if (!$event->is_published && $event->organizer_id !== $userId) {
-            abort(404);
+        if (!$event->is_published && $event->status !== 'published') {
+            // Si l'événement n'est pas publié, seul l'organisateur peut le voir
+            if (!$userId || $event->organizer_id !== $userId) {
+                abort(404);
+            }
         }
 
         $event->load(['ticketTypes', 'contests', 'fundraisings', 'organizer']);

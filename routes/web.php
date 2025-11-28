@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -23,10 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Événements
+    // Événements (création, édition, publication - nécessitent auth)
     Route::resource('events', EventController::class)->except(['index', 'show']);
     Route::post('/events/{event}/publish', [EventController::class, 'publish'])->name('events.publish');
-    Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
     // Billets
     Route::get('/events/{event}/tickets', [TicketController::class, 'index'])->name('tickets.index');
