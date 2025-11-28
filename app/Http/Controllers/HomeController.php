@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Contest;
+use App\Models\Fundraising;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -25,6 +27,25 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
+        // Concours actifs (6 premiers)
+        $activeContests = Contest::where('is_published', true)
+            ->where('is_active', true)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->withCount('votes')
+            ->orderBy('votes_count', 'desc')
+            ->take(6)
+            ->get();
+
+        // Collectes de fonds actives (6 premières)
+        $activeFundraisings = Fundraising::where('is_published', true)
+            ->where('is_active', true)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->orderBy('current_amount', 'desc')
+            ->take(6)
+            ->get();
+
         // Statistiques
         $stats = [
             'total_events' => Event::where('is_published', true)->where('status', 'published')->count(),
@@ -32,9 +53,19 @@ class HomeController extends Controller
                 ->where('status', 'published')
                 ->where('start_date', '>=', now())
                 ->count(),
+            'active_contests' => Contest::where('is_published', true)
+                ->where('is_active', true)
+                ->where('start_date', '<=', now())
+                ->where('end_date', '>=', now())
+                ->count(),
+            'active_fundraisings' => Fundraising::where('is_published', true)
+                ->where('is_active', true)
+                ->where('start_date', '<=', now())
+                ->where('end_date', '>=', now())
+                ->count(),
         ];
 
-        return view('home', compact('upcomingEvents', 'popularEvents', 'stats'));
+        return view('home', compact('upcomingEvents', 'popularEvents', 'activeContests', 'activeFundraisings', 'stats'));
     }
 }
 

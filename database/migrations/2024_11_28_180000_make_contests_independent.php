@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('contests', function (Blueprint $table) {
+            $table->foreignId('event_id')->nullable()->change();
+            $table->foreignId('organizer_id')->nullable()->after('event_id')->constrained('users')->onDelete('cascade');
+            $table->string('cover_image')->nullable()->after('name');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('contests', function (Blueprint $table) {
+            $table->dropForeign(['organizer_id']);
+            $table->dropColumn('organizer_id');
+            $table->dropColumn('cover_image');
+            $table->foreignId('event_id')->nullable(false)->change();
+        });
+    }
+};
+

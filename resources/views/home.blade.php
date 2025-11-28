@@ -35,18 +35,22 @@
 <!-- Statistiques -->
 <section class="py-12 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="text-4xl font-bold text-indigo-600 mb-2">{{ $stats['total_events'] }}</div>
-                <div class="text-gray-600">Événements disponibles</div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center">
+            <div class="bg-white p-4 md:p-6 rounded-lg shadow-md">
+                <div class="text-3xl md:text-4xl font-bold text-indigo-600 mb-2">{{ $stats['total_events'] }}</div>
+                <div class="text-sm md:text-base text-gray-600">Événements</div>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="text-4xl font-bold text-indigo-600 mb-2">{{ $stats['upcoming_events'] }}</div>
-                <div class="text-gray-600">Événements à venir</div>
+            <div class="bg-white p-4 md:p-6 rounded-lg shadow-md">
+                <div class="text-3xl md:text-4xl font-bold text-purple-600 mb-2">{{ $stats['active_contests'] }}</div>
+                <div class="text-sm md:text-base text-gray-600">Concours actifs</div>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="text-4xl font-bold text-indigo-600 mb-2">100%</div>
-                <div class="text-gray-600">Sécurisé</div>
+            <div class="bg-white p-4 md:p-6 rounded-lg shadow-md">
+                <div class="text-3xl md:text-4xl font-bold text-green-600 mb-2">{{ $stats['active_fundraisings'] }}</div>
+                <div class="text-sm md:text-base text-gray-600">Collectes actives</div>
+            </div>
+            <div class="bg-white p-4 md:p-6 rounded-lg shadow-md">
+                <div class="text-3xl md:text-4xl font-bold text-yellow-600 mb-2">100%</div>
+                <div class="text-sm md:text-base text-gray-600">Sécurisé</div>
             </div>
         </div>
     </div>
@@ -221,8 +225,121 @@
     </div>
 </section>
 
-<!-- Catégories -->
+<!-- Concours & Votes -->
+@if($activeContests->count() > 0)
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800">Concours & Votes payants</h2>
+                <p class="text-gray-600 mt-2">Participez aux concours et votez pour vos candidats favoris</p>
+            </div>
+            <a href="{{ route('contests.index') }}" class="text-indigo-600 hover:text-indigo-800 font-semibold">
+                Voir tout <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($activeContests as $contest)
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-purple-200">
+                    @if($contest->cover_image)
+                        <img src="{{ asset('storage/' . $contest->cover_image) }}" alt="{{ $contest->name }}" class="w-full h-48 object-cover">
+                    @else
+                        <div class="w-full h-48 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+                            <i class="fas fa-trophy text-6xl text-white opacity-50"></i>
+                        </div>
+                    @endif
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                <i class="fas fa-vote-yea mr-1"></i> Concours
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                {{ number_format($contest->price_per_vote, 0, ',', ' ') }} XOF/vote
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">{{ $contest->name }}</h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ \Illuminate\Support\Str::limit($contest->description, 100) }}</p>
+                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                            <i class="fas fa-calendar mr-2"></i>
+                            <span>Jusqu'au {{ $contest->end_date->format('d/m/Y') }}</span>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-users mr-2"></i>
+                            <span>{{ $contest->votes_count }} vote(s)</span>
+                        </div>
+                        <a href="{{ route('contests.show', $contest) }}" class="block w-full bg-purple-600 text-white text-center px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-300">
+                            Voir le concours
+                        </a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+<!-- Collectes de fonds -->
+@if($activeFundraisings->count() > 0)
 <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800">Collectes de fonds</h2>
+                <p class="text-gray-600 mt-2">Soutenez des causes qui vous tiennent à cœur</p>
+            </div>
+            <a href="{{ route('fundraisings.index') }}" class="text-indigo-600 hover:text-indigo-800 font-semibold">
+                Voir tout <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($activeFundraisings as $fundraising)
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-green-200">
+                    @if($fundraising->cover_image)
+                        <img src="{{ asset('storage/' . $fundraising->cover_image) }}" alt="{{ $fundraising->name }}" class="w-full h-48 object-cover">
+                    @else
+                        <div class="w-full h-48 bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center">
+                            <i class="fas fa-heart text-6xl text-white opacity-50"></i>
+                        </div>
+                    @endif
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                <i class="fas fa-hand-holding-heart mr-1"></i> Collecte
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                {{ number_format($fundraising->progress_percentage, 0) }}%
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">{{ $fundraising->name }}</h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ \Illuminate\Support\Str::limit($fundraising->description, 100) }}</p>
+                        
+                        <!-- Barre de progression -->
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs text-gray-600 mb-1">
+                                <span>{{ number_format($fundraising->current_amount, 0, ',', ' ') }} XOF</span>
+                                <span>{{ number_format($fundraising->goal_amount, 0, ',', ' ') }} XOF</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: {{ min(100, $fundraising->progress_percentage) }}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                            <i class="fas fa-calendar mr-2"></i>
+                            <span>Jusqu'au {{ $fundraising->end_date->format('d/m/Y') }}</span>
+                        </div>
+                        <a href="{{ route('fundraisings.show', $fundraising) }}" class="block w-full bg-green-600 text-white text-center px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                            Contribuer
+                        </a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+<!-- Catégories -->
+<section class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Explorez par catégorie</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">

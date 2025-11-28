@@ -14,19 +14,32 @@
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <a href="<?php echo e(route('home')); ?>" class="flex items-center">
-                        <span class="text-2xl font-bold text-indigo-600">Tikehub</span>
+                        <span class="text-2xl font-bold text-indigo-600">
+                            <i class="fas fa-ticket-alt mr-2"></i>Tikehub
+                        </span>
                     </a>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <a href="<?php echo e(route('events.index')); ?>" class="text-gray-700 hover:text-indigo-600 hidden md:block">
+                        <i class="fas fa-calendar-alt mr-1"></i>Événements
+                    </a>
                     <?php if(auth()->guard()->check()): ?>
-                        <a href="<?php echo e(route('dashboard')); ?>" class="text-gray-700 hover:text-indigo-600">Dashboard</a>
-                        <form method="POST" action="<?php echo e(route('logout')); ?>">
+                        <a href="<?php echo e(route('dashboard')); ?>" class="text-gray-700 hover:text-indigo-600">
+                            <i class="fas fa-tachometer-alt mr-1"></i>Dashboard
+                        </a>
+                        <form method="POST" action="<?php echo e(route('logout')); ?>" class="inline">
                             <?php echo csrf_field(); ?>
-                            <button type="submit" class="text-gray-700 hover:text-indigo-600">Déconnexion</button>
+                            <button type="submit" class="text-gray-700 hover:text-indigo-600">
+                                <i class="fas fa-sign-out-alt mr-1"></i>Déconnexion
+                            </button>
                         </form>
                     <?php else: ?>
-                        <a href="<?php echo e(route('login')); ?>" class="text-gray-700 hover:text-indigo-600">Connexion</a>
-                        <a href="<?php echo e(route('register')); ?>" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Inscription</a>
+                        <a href="<?php echo e(route('login')); ?>" class="text-gray-700 hover:text-indigo-600">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Connexion
+                        </a>
+                        <a href="<?php echo e(route('register')); ?>" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                            <i class="fas fa-user-plus mr-1"></i>Inscription
+                        </a>
                     <?php endif; ?>
                 </div>
             </div>

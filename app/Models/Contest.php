@@ -11,7 +11,9 @@ class Contest extends Model
 
     protected $fillable = [
         'event_id',
+        'organizer_id',
         'name',
+        'cover_image',
         'description',
         'rules',
         'price_per_vote',
@@ -19,6 +21,7 @@ class Contest extends Model
         'start_date',
         'end_date',
         'is_active',
+        'is_published',
         'settings',
     ];
 
@@ -27,12 +30,18 @@ class Contest extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
         'is_active' => 'boolean',
+        'is_published' => 'boolean',
         'settings' => 'array',
     ];
 
     public function event()
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function organizer()
+    {
+        return $this->belongsTo(User::class, 'organizer_id');
     }
 
     public function candidates()

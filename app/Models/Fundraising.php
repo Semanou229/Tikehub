@@ -11,7 +11,10 @@ class Fundraising extends Model
 
     protected $fillable = [
         'event_id',
+        'organizer_id',
         'name',
+        'slug',
+        'cover_image',
         'description',
         'goal_amount',
         'current_amount',
@@ -19,6 +22,7 @@ class Fundraising extends Model
         'end_date',
         'show_donors',
         'is_active',
+        'is_published',
         'milestones',
     ];
 
@@ -29,12 +33,18 @@ class Fundraising extends Model
         'end_date' => 'datetime',
         'show_donors' => 'boolean',
         'is_active' => 'boolean',
+        'is_published' => 'boolean',
         'milestones' => 'array',
     ];
 
     public function event()
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function organizer()
+    {
+        return $this->belongsTo(User::class, 'organizer_id');
     }
 
     public function donations()

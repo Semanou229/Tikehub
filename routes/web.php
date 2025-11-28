@@ -37,5 +37,19 @@ Route::middleware('auth')->group(function () {
     // Paiements
     Route::get('/payments/{payment}/return', [PaymentController::class, 'return'])->name('payments.return');
     Route::post('/payments/callback', [PaymentController::class, 'callback'])->name('payments.callback');
+
+    // Concours
+    Route::resource('contests', \App\Http\Controllers\ContestController::class)->except(['index', 'show']);
+    Route::post('/contests/{contest}/publish', [\App\Http\Controllers\ContestController::class, 'publish'])->name('contests.publish');
+
+    // Collectes de fonds
+    Route::resource('fundraisings', \App\Http\Controllers\FundraisingController::class)->except(['index', 'show']);
+    Route::post('/fundraisings/{fundraising}/publish', [\App\Http\Controllers\FundraisingController::class, 'publish'])->name('fundraisings.publish');
 });
+
+// Routes publiques pour concours et collectes
+Route::get('/contests', [\App\Http\Controllers\ContestController::class, 'index'])->name('contests.index');
+Route::get('/contests/{contest}', [\App\Http\Controllers\ContestController::class, 'show'])->name('contests.show');
+Route::get('/fundraisings', [\App\Http\Controllers\FundraisingController::class, 'index'])->name('fundraisings.index');
+Route::get('/fundraisings/{fundraising}', [\App\Http\Controllers\FundraisingController::class, 'show'])->name('fundraisings.show');
 
