@@ -276,7 +276,7 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="space-y-6">
+        <div class="space-y-6 sticky top-4 self-start">
             <!-- Organisateur -->
             <div class="bg-gray-100 rounded-lg p-6">
                 <div class="bg-white rounded-lg p-4">

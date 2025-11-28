@@ -10,6 +10,9 @@ use App\Models\Fundraising;
 use App\Models\Donation;
 use App\Models\Vote;
 use App\Models\Payment;
+use App\Models\Event;
+use App\Models\TicketType;
+use App\Models\Ticket;
 use Illuminate\Support\Str;
 
 class DemoDataSeeder extends Seeder
@@ -361,10 +364,131 @@ class DemoDataSeeder extends Seeder
             $orphelins->update(['current_amount' => $totalCollected]);
         }
 
+        // ===== TICKETS POUR ÉVÉNEMENTS =====
+        $events = Event::where('is_published', true)->get();
+        
+        foreach ($events as $event) {
+            // Créer des types de billets pour chaque événement
+            $ticketTypes = [];
+            
+            if (str_contains($event->title, 'Concert')) {
+                $ticketTypes = [
+                    [
+                        'name' => 'Early Bird',
+                        'description' => 'Billet à prix réduit pour les premiers acheteurs',
+                        'price' => 5000,
+                        'quantity' => 100,
+                        'start_sale_date' => now()->subDays(10),
+                        'end_sale_date' => $event->start_date->subDay(),
+                    ],
+                    [
+                        'name' => 'Standard',
+                        'description' => 'Billet standard pour le concert',
+                        'price' => 7500,
+                        'quantity' => 200,
+                        'start_sale_date' => now()->subDays(5),
+                        'end_sale_date' => $event->start_date->subDay(),
+                    ],
+                    [
+                        'name' => 'VIP',
+                        'description' => 'Accès VIP avec rencontre avec les artistes',
+                        'price' => 15000,
+                        'quantity' => 50,
+                        'start_sale_date' => now()->subDays(15),
+                        'end_sale_date' => $event->start_date->subDay(),
+                    ],
+                ];
+            } elseif (str_contains($event->title, 'Tournoi')) {
+                $ticketTypes = [
+                    [
+                        'name' => 'Tribune',
+                        'description' => 'Place en tribune',
+                        'price' => 3000,
+                        'quantity' => 300,
+                        'start_sale_date' => now()->subDays(20),
+                        'end_sale_date' => $event->start_date->subDay(),
+                    ],
+                    [
+                        'name' => 'Pelouse',
+                        'description' => 'Place en pelouse',
+                        'price' => 2000,
+                        'quantity' => 500,
+                        'start_sale_date' => now()->subDays(20),
+                        'end_sale_date' => $event->start_date->subDay(),
+                    ],
+                ];
+            } else {
+                // Pour les autres événements (conférences, etc.)
+                $ticketTypes = [
+                    [
+                        'name' => 'Entrée Standard',
+                        'description' => 'Accès à la conférence',
+                        'price' => $event->is_free ? 0 : 5000,
+                        'quantity' => 150,
+                        'start_sale_date' => now()->subDays(10),
+                        'end_sale_date' => $event->start_date->subDay(),
+                    ],
+                ];
+            }
+
+            foreach ($ticketTypes as $ticketTypeData) {
+                $ticketType = TicketType::firstOrCreate(
+                    [
+                        'event_id' => $event->id,
+                        'name' => $ticketTypeData['name'],
+                    ],
+                    array_merge($ticketTypeData, [
+                        'sold_quantity' => 0,
+                        'is_active' => true,
+                    ])
+                );
+
+                // Créer des tickets vendus (simulation)
+                $soldCount = rand(10, min(50, (int)($ticketType->quantity * 0.4))); // 10 à 40% des billets vendus
+                
+                for ($i = 0; $i < $soldCount; $i++) {
+                    $buyer = $users->random();
+                    
+                    $payment = Payment::create([
+                        'user_id' => $buyer->id,
+                        'event_id' => $event->id,
+                        'paymentable_type' => Event::class,
+                        'paymentable_id' => $event->id,
+                        'amount' => $ticketType->price,
+                        'currency' => 'XOF',
+                        'status' => 'completed',
+                        'platform_commission' => $ticketType->price * 0.05,
+                        'organizer_amount' => $ticketType->price * 0.95,
+                    ]);
+
+                    Ticket::create([
+                        'event_id' => $event->id,
+                        'ticket_type_id' => $ticketType->id,
+                        'buyer_id' => $buyer->id,
+                        'payment_id' => $payment->id,
+                        'price' => $ticketType->price,
+                        'status' => 'paid',
+                        'buyer_name' => $buyer->name,
+                        'buyer_email' => $buyer->email,
+                        'buyer_phone' => $buyer->phone,
+                        'is_physical' => false,
+                        'created_at' => now()->subDays(rand(0, 10)),
+                    ]);
+                }
+
+                // Mettre à jour la quantité vendue
+                $ticketType->update([
+                    'sold_quantity' => $soldCount,
+                ]);
+            }
+        }
+
         $this->command->info('✅ Données de démonstration créées avec succès !');
         $this->command->info('📊 Candidats créés : ' . ContestCandidate::count());
         $this->command->info('🗳️  Votes créés : ' . Vote::count());
         $this->command->info('💝 Dons créés : ' . Donation::count());
+        $this->command->info('🎫 Types de billets créés : ' . TicketType::count());
+        $this->command->info('🎟️  Billets vendus : ' . Ticket::where('status', 'paid')->count());
     }
 }
 
