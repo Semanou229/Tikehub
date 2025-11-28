@@ -3,62 +3,121 @@
 @section('title', $contest->name . ' - Tikehub')
 
 @section('content')
-<!-- Hero Section avec image -->
-<section class="relative">
-    @if($contest->cover_image)
-        <div class="h-96 bg-cover bg-center" style="background-image: url('{{ asset('storage/' . $contest->cover_image) }}')">
-            <div class="absolute inset-0 bg-black bg-opacity-50"></div>
-        </div>
-    @else
-        <div class="h-96 bg-gradient-to-r from-purple-600 to-pink-600">
-            <div class="absolute inset-0 bg-black bg-opacity-30"></div>
-        </div>
-    @endif
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-white">
-        <div class="flex items-center gap-2 mb-4">
-            <span class="bg-purple-600 px-4 py-1 rounded-full text-sm font-semibold">
-                <i class="fas fa-trophy mr-1"></i>Concours
-            </span>
-            @if($contest->isActive())
-                <span class="bg-green-600 px-4 py-1 rounded-full text-sm font-semibold">Actif</span>
-            @else
-                <span class="bg-gray-600 px-4 py-1 rounded-full text-sm font-semibold">Terminé</span>
-            @endif
-        </div>
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ $contest->name }}</h1>
-        <div class="flex flex-wrap gap-6 text-lg">
-            <div class="flex items-center">
-                <i class="fas fa-calendar-alt mr-2"></i>
-                <span>Du {{ $contest->start_date->format('d/m/Y') }} au {{ $contest->end_date->format('d/m/Y') }}</span>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header avec date en rouge -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <div class="flex flex-col md:flex-row">
+            <!-- Date Box (Rouge) -->
+            <div class="bg-purple-600 text-white p-6 text-center min-w-[120px] flex flex-col justify-center items-center">
+                <div class="text-2xl font-bold uppercase">{{ $contest->start_date->format('M') }}</div>
+                <div class="text-5xl font-bold">{{ $contest->start_date->format('d') }}</div>
+                <div class="text-lg mt-2">{{ $contest->start_date->format('l') }}</div>
             </div>
-            <div class="flex items-center">
-                <i class="fas fa-coins mr-2"></i>
-                <span>{{ number_format($contest->price_per_vote, 0, ',', ' ') }} XOF par vote</span>
-            </div>
-            <div class="flex items-center">
-                <i class="fas fa-users mr-2"></i>
-                <span>{{ $contest->votes()->sum('points') }} vote(s) total</span>
+
+            <!-- Contenu principal du header -->
+            <div class="flex-1 p-6">
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-purple-600 px-3 py-1 rounded-full text-xs font-semibold text-white">
+                                <i class="fas fa-trophy mr-1"></i>Concours
+                            </span>
+                            @if($contest->isActive())
+                                <span class="bg-green-600 px-3 py-1 rounded-full text-xs font-semibold text-white">Actif</span>
+                            @else
+                                <span class="bg-gray-600 px-3 py-1 rounded-full text-xs font-semibold text-white">Terminé</span>
+                            @endif
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $contest->name }}</h1>
+                        
+                        <!-- Informations date et prix -->
+                        <div class="space-y-2 text-gray-700">
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar-alt text-purple-600 mr-3 w-5"></i>
+                                <span>
+                                    Du {{ $contest->start_date->format('D, d M Y') }} 
+                                    au {{ $contest->end_date->format('D, d M Y') }}
+                                </span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-coins text-purple-600 mr-3 w-5"></i>
+                                <span>{{ number_format($contest->price_per_vote, 0, ',', ' ') }} XOF par vote ({{ $contest->points_per_vote }} point(s))</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-users text-purple-600 mr-3 w-5"></i>
+                                <span>{{ number_format($contest->votes()->sum('points'), 0, ',', ' ') }} vote(s) total</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Boutons d'action -->
+                    <div class="flex flex-col gap-2 md:min-w-[150px]">
+                        <button onclick="shareContest()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
+                            <i class="fas fa-share-alt"></i>
+                            <span>PARTAGER</span>
+                        </button>
+                        <button onclick="reportContest()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
+                            <i class="fas fa-flag"></i>
+                            <span>SIGNALER</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</section>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Contenu principal -->
-        <div class="lg:col-span-2 space-y-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Colonne principale -->
+        <div class="lg:col-span-2 space-y-6">
             <!-- Description -->
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-bold mb-4">À propos du concours</h2>
-                <div class="prose max-w-none">
+                <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-purple-600">Description</h2>
+                <div class="prose max-w-none mb-6">
                     {!! nl2br(e($contest->description)) !!}
+                </div>
+
+                <!-- Points à puces avec checkmarks verts -->
+                <div class="space-y-3 mt-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
+                        <span>Votez pour votre candidat favori</span>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
+                        <span>Chaque vote compte et fait la différence</span>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
+                        <span>Concours organisé par {{ $contest->organizer->name }}</span>
+                    </div>
+                </div>
+
+                <!-- Call to action avec icône -->
+                @if($contest->isActive())
+                    <div class="mt-6 p-4 bg-purple-50 border-l-4 border-purple-500 rounded">
+                        <div class="flex items-start">
+                            <i class="fas fa-vote-yea text-purple-600 mr-3 mt-1"></i>
+                            <p class="text-gray-700">
+                                Le concours est actuellement actif ! Votez maintenant pour soutenir votre candidat favori et l'aider à remporter la victoire.
+                            </p>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="mt-4 p-4 bg-red-50 border-l-4 border-red-500 rounded">
+                    <div class="flex items-start">
+                        <i class="fas fa-exclamation-circle text-red-600 mr-3 mt-1"></i>
+                        <p class="text-gray-700">
+                            Ne manquez pas cette opportunité unique : participez au vote et faites gagner votre candidat préféré !
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Règles -->
+            <!-- Règles du concours -->
             @if($contest->rules)
                 <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-bold mb-4">Règles du concours</h2>
+                    <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-purple-600">Règles du concours</h2>
                     <div class="prose max-w-none">
                         {!! nl2br(e($contest->rules)) !!}
                     </div>
@@ -67,7 +126,7 @@
 
             <!-- Classement -->
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-bold mb-4">Classement</h2>
+                <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-purple-600">Classement</h2>
                 @if($ranking && $ranking->count() > 0)
                     <div class="space-y-4">
                         @foreach($ranking as $candidate)
@@ -97,9 +156,9 @@
                 @endif
             </div>
 
-            <!-- Liste des candidats -->
+            <!-- Candidats -->
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-bold mb-4">Candidats</h2>
+                <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-purple-600">Candidats</h2>
                 @if($candidates && $candidates->count() > 0)
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         @foreach($candidates as $candidate)
@@ -166,14 +225,72 @@
                     <p class="text-gray-500 text-center py-8">Aucun candidat pour le moment</p>
                 @endif
             </div>
+
+            <!-- Calendrier du concours -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-purple-600">Calendrier du concours</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div>
+                            <p class="font-semibold">
+                                Du {{ $contest->start_date->format('l, d F Y') }} 
+                                au {{ $contest->end_date->format('l, d F Y') }}
+                            </p>
+                            <p class="text-sm text-gray-600 mt-1">
+                                Période de vote active
+                            </p>
+                        </div>
+                        @if($contest->end_date->isPast())
+                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">
+                                Terminé
+                            </span>
+                        @elseif($contest->start_date->isFuture())
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                                À venir
+                            </span>
+                        @else
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
+                                En cours
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Sidebar -->
         <div class="space-y-6">
+            <!-- Organisateur -->
+            <div class="bg-gray-100 rounded-lg p-6">
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex items-center mb-4">
+                        <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-3">
+                            {{ strtoupper(substr($contest->organizer->name, 0, 2)) }}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">{{ $contest->organizer->name }}</h3>
+                            <p class="text-sm text-gray-500">ORGANISATEUR</p>
+                        </div>
+                    </div>
+                    @if($contest->organizer->email)
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center text-sm text-gray-700">
+                                <i class="fas fa-envelope text-purple-600 mr-2 w-5"></i>
+                                <span>{{ $contest->organizer->email }}</span>
+                            </div>
+                        </div>
+                    @endif
+                    <button onclick="contactOrganizer()" class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center justify-center gap-2">
+                        <i class="fas fa-envelope"></i>
+                        <span>Envoyer un message</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- Informations -->
-            <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
-                <h2 class="text-2xl font-bold mb-4">Informations</h2>
-                <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4">Informations</h3>
+                <div class="space-y-3">
                     <div>
                         <h3 class="font-semibold text-gray-700 mb-2">Prix par vote</h3>
                         <p class="text-2xl font-bold text-purple-600">
@@ -192,19 +309,12 @@
                             au {{ $contest->end_date->format('d/m/Y') }}
                         </p>
                     </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">Organisateur</h3>
-                        <p class="text-gray-600">
-                            <i class="fas fa-user mr-2 text-purple-600"></i>
-                            {{ $contest->organizer->name }}
-                        </p>
-                    </div>
                 </div>
             </div>
 
             <!-- Statistiques -->
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="font-semibold mb-4">Statistiques</h3>
+                <h3 class="text-xl font-bold mb-4">Statistiques</h3>
                 <div class="space-y-3">
                     <div class="flex justify-between">
                         <span class="text-gray-600">Total votes</span>
@@ -223,7 +333,7 @@
 
             <!-- Partage -->
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="font-semibold mb-4">Partager</h3>
+                <h3 class="text-xl font-bold mb-4">Partager</h3>
                 <div class="flex gap-3">
                     <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" target="_blank" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-700">
                         <i class="fab fa-facebook-f mr-2"></i>Facebook
@@ -252,6 +362,29 @@
             document.getElementById('amount_' + candidateId).textContent = total.toLocaleString('fr-FR');
         });
     });
+    
+    function shareContest() {
+        if (navigator.share) {
+            navigator.share({
+                title: '{{ $contest->name }}',
+                text: '{{ Str::limit($contest->description, 100) }}',
+                url: window.location.href
+            });
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            alert('Lien copié dans le presse-papiers !');
+        }
+    }
+    
+    function reportContest() {
+        if (confirm('Voulez-vous signaler ce concours ?')) {
+            alert('Fonctionnalité de signalement à venir');
+        }
+    }
+    
+    function contactOrganizer() {
+        alert('Fonctionnalité de contact à venir');
+    }
 </script>
 @endpush
 @endsection
