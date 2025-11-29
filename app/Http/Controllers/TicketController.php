@@ -92,10 +92,26 @@ class TicketController extends Controller
             );
         }
 
-        return redirect($payment->moneroo_reference 
-            ? route('payments.return', ['payment' => $payment->id])
-            : route('dashboard')
-        );
+        // Récupérer l'URL de checkout depuis la session ou Moneroo
+        $checkoutUrl = session('moneroo_checkout_url_' . $payment->id);
+        if ($checkoutUrl) {
+            session()->forget('moneroo_checkout_url_' . $payment->id);
+            return redirect($checkoutUrl);
+        }
+
+        // Si pas d'URL en session, essayer de récupérer depuis Moneroo
+        if ($payment->moneroo_transaction_id) {
+            try {
+                $monerooPayment = $this->paymentService->getMonerooPayment($payment->moneroo_transaction_id);
+                if (isset($monerooPayment->checkout_url)) {
+                    return redirect($monerooPayment->checkout_url);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Error getting checkout URL', ['error' => $e->getMessage()]);
+            }
+        }
+
+        return redirect(route('payments.return', ['payment' => $payment->id]));
     }
 
     public function show(Ticket $ticket)

@@ -251,16 +251,29 @@ class PaymentService
 
     public function handlePaymentCallback(array $data): void
     {
-        $payment = Payment::where('moneroo_reference', $data['reference'])->first();
+        // Le webhook Moneroo peut envoyer transaction_id ou reference
+        $transactionId = $data['transaction_id'] ?? $data['id'] ?? null;
+        $reference = $data['reference'] ?? null;
+
+        $payment = null;
+        if ($transactionId) {
+            $payment = Payment::where('moneroo_transaction_id', $transactionId)->first();
+        }
+        if (!$payment && $reference) {
+            $payment = Payment::where('moneroo_reference', $reference)->first();
+        }
 
         if (!$payment) {
+            \Log::warning('Payment not found for Moneroo callback', $data);
             return;
         }
 
-        $status = match($data['status']) {
-            'success', 'completed' => 'completed',
-            'failed' => 'failed',
-            'cancelled' => 'cancelled',
+        // Mapper les statuts Moneroo vers nos statuts
+        $status = match($data['status'] ?? '') {
+            'success', 'completed', 'paid' => 'completed',
+            'failed', 'declined' => 'failed',
+            'cancelled', 'canceled' => 'cancelled',
+            'pending', 'processing' => 'processing',
             default => 'processing',
         };
 
@@ -271,10 +284,10 @@ class PaymentService
             
             // Générer les QR codes et tokens d'accès virtuel
             foreach ($payment->tickets as $ticket) {
-                app(QrCodeService::class)->generateForTicket($ticket);
+                app(\App\Services\QrCodeService::class)->generateForTicket($ticket);
                 
                 // Si l'événement est virtuel, générer le token d'accès
-                if ($payment->event->is_virtual) {
+                if ($payment->event && $payment->event->is_virtual) {
                     $ticket->generateVirtualAccessToken();
                 }
             }
