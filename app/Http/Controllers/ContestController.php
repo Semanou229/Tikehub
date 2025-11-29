@@ -184,6 +184,11 @@ class ContestController extends Controller
             'end_date' => 'required|date|after:start_date',
             'cover_image' => 'nullable|image|max:2048',
             'event_id' => 'nullable|exists:events,id',
+            'candidates' => 'nullable|array',
+            'candidates.*.name' => 'required_with:candidates|string|max:255',
+            'candidates.*.number' => 'required_with:candidates|integer|min:1',
+            'candidates.*.description' => 'nullable|string',
+            'candidates.*.photo' => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('cover_image')) {
@@ -194,6 +199,41 @@ class ContestController extends Controller
         }
 
         $contest->update($validated);
+
+        // Créer les nouveaux candidats si fournis
+        if ($request->has('candidates') && is_array($request->candidates)) {
+            $newCandidatesCount = 0;
+            foreach ($request->candidates as $index => $candidateData) {
+                if (!empty($candidateData['name'])) {
+                    $candidateAttributes = [
+                        'contest_id' => $contest->id,
+                        'name' => $candidateData['name'],
+                        'number' => $candidateData['number'] ?? ($index + 1),
+                        'description' => $candidateData['description'] ?? null,
+                        'is_active' => true,
+                    ];
+
+                    // Gérer l'upload de la photo
+                    if ($request->hasFile("candidates.{$index}.photo")) {
+                        $photoFile = $request->file("candidates.{$index}.photo");
+                        if ($photoFile && $photoFile->isValid()) {
+                            $candidateAttributes['photo'] = $photoFile->store('contest-candidates', 'public');
+                        }
+                    }
+
+                    ContestCandidate::create($candidateAttributes);
+                    $newCandidatesCount++;
+                }
+            }
+
+            $message = 'Concours mis à jour avec succès.';
+            if ($newCandidatesCount > 0) {
+                $message .= ' ' . $newCandidatesCount . ' nouveau(x) candidat(s) ajouté(s).';
+            }
+
+            return redirect()->route('organizer.contests.index')
+                ->with('success', $message);
+        }
 
         return redirect()->route('organizer.contests.index')
             ->with('success', 'Concours mis à jour avec succès.');
