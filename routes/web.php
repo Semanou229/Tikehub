@@ -47,6 +47,40 @@ Route::middleware('auth')->group(function () {
     Route::resource('fundraisings', \App\Http\Controllers\FundraisingController::class)->except(['index', 'show']);
     Route::post('/fundraisings/{fundraising}/publish', [\App\Http\Controllers\FundraisingController::class, 'publish'])->name('fundraisings.publish');
     Route::post('/fundraisings/{fundraising}/donate', [\App\Http\Controllers\FundraisingController::class, 'donate'])->name('fundraisings.donate');
+
+    // Routes organisateur
+    Route::middleware(\App\Http\Middleware\EnsureUserIsOrganizer::class)->prefix('organizer')->name('organizer.')->group(function () {
+        // Gestion des événements
+        Route::get('/events', [\App\Http\Controllers\Organizer\EventManagementController::class, 'index'])->name('events.index');
+        Route::delete('/events/{event}', [\App\Http\Controllers\Organizer\EventManagementController::class, 'destroy'])->name('events.destroy');
+
+        // Gestion des types de billets
+        Route::get('/events/{event}/ticket-types', [\App\Http\Controllers\Organizer\TicketTypeController::class, 'index'])->name('ticket-types.index');
+        Route::get('/events/{event}/ticket-types/create', [\App\Http\Controllers\Organizer\TicketTypeController::class, 'create'])->name('ticket-types.create');
+        Route::post('/events/{event}/ticket-types', [\App\Http\Controllers\Organizer\TicketTypeController::class, 'store'])->name('ticket-types.store');
+        Route::get('/events/{event}/ticket-types/{ticketType}/edit', [\App\Http\Controllers\Organizer\TicketTypeController::class, 'edit'])->name('ticket-types.edit');
+        Route::put('/events/{event}/ticket-types/{ticketType}', [\App\Http\Controllers\Organizer\TicketTypeController::class, 'update'])->name('ticket-types.update');
+        Route::delete('/events/{event}/ticket-types/{ticketType}', [\App\Http\Controllers\Organizer\TicketTypeController::class, 'destroy'])->name('ticket-types.destroy');
+
+        // Gestion des agents
+        Route::get('/agents', [\App\Http\Controllers\Organizer\AgentController::class, 'index'])->name('agents.index');
+        Route::get('/agents/create', [\App\Http\Controllers\Organizer\AgentController::class, 'create'])->name('agents.create');
+        Route::post('/agents', [\App\Http\Controllers\Organizer\AgentController::class, 'store'])->name('agents.store');
+        Route::delete('/events/{event}/agents/{agent}', [\App\Http\Controllers\Organizer\AgentController::class, 'destroy'])->name('agents.destroy');
+
+        // Rapports
+        Route::get('/reports', [\App\Http\Controllers\Organizer\ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/events/{event}', [\App\Http\Controllers\Organizer\ReportController::class, 'eventReport'])->name('reports.event');
+        Route::get('/reports/events/{event}/export/{format}', [\App\Http\Controllers\Organizer\ReportController::class, 'exportEvent'])->name('reports.export');
+
+        // Paiements
+        Route::get('/payments', [\App\Http\Controllers\Organizer\PaymentController::class, 'index'])->name('payments.index');
+        Route::get('/payments/{payment}', [\App\Http\Controllers\Organizer\PaymentController::class, 'show'])->name('payments.show');
+
+        // Scans
+        Route::get('/events/{event}/scans', [\App\Http\Controllers\Organizer\ScanController::class, 'index'])->name('scans.index');
+        Route::post('/events/{event}/scans', [\App\Http\Controllers\Organizer\ScanController::class, 'scan'])->name('scans.scan');
+    });
 });
 
 // Routes publiques pour concours et collectes

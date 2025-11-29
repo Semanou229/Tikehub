@@ -35,7 +35,7 @@
                     <i class="fas fa-th-large w-5 mr-3"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="{{ route('events.create') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('organizer.events.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.events.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-calendar-plus w-5 mr-3"></i>
                     <span>Mes Événements</span>
                 </a>
@@ -51,15 +51,15 @@
                     <i class="fas fa-wallet w-5 mr-3"></i>
                     <span>Portefeuille</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('organizer.payments.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.payments.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-credit-card w-5 mr-3"></i>
                     <span>Paiements</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('organizer.reports.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.reports.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-chart-bar w-5 mr-3"></i>
                     <span>Rapports</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('organizer.agents.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.agents.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-users w-5 mr-3"></i>
                     <span>Agents</span>
                 </a>
