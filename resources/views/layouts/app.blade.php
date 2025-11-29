@@ -10,7 +10,6 @@
     @stack('styles')
 </head>
 <body class="bg-gray-50">
-<body class="bg-gray-50">
     <nav class="bg-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -77,6 +76,7 @@
             <p class="text-center">&copy; {{ date('Y') }} Tikehub. Tous droits réservés.</p>
         </div>
     </footer>
+    @stack('scripts')
 </body>
 </html>
 
