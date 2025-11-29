@@ -176,8 +176,8 @@
                             </span>
                         </div>
                         <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition">{{ $event->title }}</h3>
-                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
-                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <p class="text-gray-600 text-sm mb-2 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
                             <i class="fas fa-calendar mr-2"></i>
                             <span>{{ $event->start_date->translatedFormat('d/m/Y H:i') }}</span>
                             @if($event->venue_city)
@@ -186,6 +186,22 @@
                                 <span>{{ $event->venue_city }}</span>
                             @endif
                         </div>
+                        @php
+                            $minPrice = $event->ticketTypes()->where('is_active', true)->min('price') ?? 0;
+                        @endphp
+                        @if($minPrice > 0)
+                            <div class="mb-4">
+                                <span class="text-lg font-bold text-indigo-600">
+                                    À partir de {{ number_format($minPrice, 0, ',', ' ') }} XOF
+                                </span>
+                            </div>
+                        @elseif($event->is_free)
+                            <div class="mb-4">
+                                <span class="text-lg font-bold text-green-600">
+                                    Gratuit
+                                </span>
+                            </div>
+                        @endif
                         <span class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
                             Voir l'événement
                         </span>
