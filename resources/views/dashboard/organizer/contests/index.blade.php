@@ -12,87 +12,78 @@
     </div>
 
     @if($contests->count() > 0)
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Concours</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dates</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statistiques</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($contests as $contest)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-medium text-gray-900">{{ $contest->name }}</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($contests as $contest)
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-gray-900 mb-1">{{ $contest->name }}</h3>
                                 @if($contest->description)
-                                    <div class="text-sm text-gray-500 mt-1">{{ Str::limit($contest->description, 60) }}</div>
+                                    <p class="text-sm text-gray-600 line-clamp-2">{{ Str::limit($contest->description, 80) }}</p>
                                 @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $contest->start_date->format('d/m/Y') }}</div>
-                                <div class="text-sm text-gray-500">au {{ $contest->end_date->format('d/m/Y') }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">
-                                    <i class="fas fa-vote-yea text-purple-600 mr-1"></i>
-                                    {{ number_format($contest->votes_count, 0, ',', ' ') }} votes
-                                </div>
-                                <div class="text-sm text-gray-500">
-                                    <i class="fas fa-users text-purple-600 mr-1"></i>
-                                    {{ $contest->candidates_count }} candidats
-                                </div>
-                                <div class="text-sm text-gray-500">
-                                    <i class="fas fa-coins text-purple-600 mr-1"></i>
-                                    {{ number_format($contest->price_per_vote, 0, ',', ' ') }} XOF/vote
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex flex-col gap-1">
-                                    @if($contest->is_published)
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Publié</span>
-                                    @else
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Brouillon</span>
-                                    @endif
-                                    @if($contest->isActive())
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Actif</span>
-                                    @else
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Terminé</span>
-                                    @endif
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex items-center gap-2">
-                                    <a href="{{ route('contests.show', $contest) }}" class="text-indigo-600 hover:text-indigo-900" title="Voir">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('contests.edit', $contest) }}" class="text-gray-600 hover:text-gray-900" title="Modifier">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    @if(!$contest->is_published)
-                                        <form action="{{ route('contests.publish', $contest) }}" method="POST" class="inline">
-                                            @csrf
-                                            <button type="submit" class="text-green-600 hover:text-green-900" title="Publier">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                        </form>
-                                    @endif
-                                    <form action="{{ route('organizer.contests.destroy', $contest) }}" method="POST" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce concours ?');">
+                            </div>
+                            <div class="ml-4 flex flex-col gap-1">
+                                @if($contest->is_published)
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Publié</span>
+                                @else
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Brouillon</span>
+                                @endif
+                                @if($contest->isActive())
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Actif</span>
+                                @else
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Terminé</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 mb-4">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-calendar-alt text-purple-600 mr-2 w-4"></i>
+                                <span>{{ $contest->start_date->format('d/m/Y') }} au {{ $contest->end_date->format('d/m/Y') }}</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-900">
+                                <i class="fas fa-vote-yea text-purple-600 mr-2 w-4"></i>
+                                <span><strong>{{ number_format($contest->votes_count, 0, ',', ' ') }}</strong> votes</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-users text-purple-600 mr-2 w-4"></i>
+                                <span><strong>{{ $contest->candidates_count }}</strong> candidats</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-coins text-purple-600 mr-2 w-4"></i>
+                                <span>{{ number_format($contest->price_per_vote, 0, ',', ' ') }} XOF/vote</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('contests.show', $contest) }}" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50" title="Voir">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('contests.edit', $contest) }}" class="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-50" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                @if(!$contest->is_published)
+                                    <form action="{{ route('contests.publish', $contest) }}" method="POST" class="inline">
                                         @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900" title="Supprimer">
-                                            <i class="fas fa-trash"></i>
+                                        <button type="submit" class="text-green-600 hover:text-green-900 p-2 rounded-lg hover:bg-green-50" title="Publier">
+                                            <i class="fas fa-check"></i>
                                         </button>
                                     </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                                @endif
+                            </div>
+                            <form action="{{ route('organizer.contests.destroy', $contest) }}" method="POST" class="inline" onsubmit="return confirm('Êtes-vous sûr ?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50" title="Supprimer">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
 
         <div class="mt-4">
