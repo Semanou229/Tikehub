@@ -20,6 +20,16 @@
                     <div class="flex-1">
                         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $event->title }}</h1>
                         
+                        <!-- Badge virtuel -->
+                        @if($event->is_virtual)
+                            <div class="mb-3">
+                                <span class="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+                                    <i class="fas fa-video"></i>
+                                    Événement virtuel - {{ ucfirst(str_replace('_', ' ', $event->platform_type ?? 'Visioconférence')) }}
+                                </span>
+                            </div>
+                        @endif
+                        
                         <!-- Informations date et lieu -->
                         <div class="space-y-2 text-gray-700">
                             <div class="flex items-center">

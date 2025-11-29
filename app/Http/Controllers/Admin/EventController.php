@@ -125,6 +125,7 @@ class EventController extends Controller
         $validated['is_published'] = $request->has('is_published') ? true : false;
         $validated['status'] = $request->input('status', 'draft');
         $validated['type'] = 'other';
+        $validated['is_virtual'] = $request->has('is_virtual') && $request->is_virtual == '1';
         
         // Gestion du sous-domaine
         if ($request->has('subdomain_enabled') && $request->subdomain_enabled) {
