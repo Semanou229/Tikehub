@@ -20,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
+        
+        // Configurer Carbon pour utiliser le français
+        \Carbon\Carbon::setLocale('fr');
     }
 }
 

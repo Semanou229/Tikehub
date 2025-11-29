@@ -38,7 +38,7 @@
                     <p class="text-gray-600 text-sm mb-4">{{ \Illuminate\Support\Str::limit($contest->description, 100) }}</p>
                     <div class="flex items-center text-sm text-gray-500 mb-4">
                         <i class="fas fa-calendar mr-2"></i>
-                        <span>Jusqu'au {{ $contest->end_date->format('d/m/Y') }}</span>
+                        <span>Jusqu'au {{ $contest->end_date->translatedFormat('d/m/Y') }}</span>
                         <span class="mx-2">•</span>
                         <i class="fas fa-users mr-2"></i>
                         <span>{{ $contest->votes_count }} vote(s)</span>

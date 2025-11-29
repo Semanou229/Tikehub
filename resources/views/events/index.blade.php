@@ -18,7 +18,7 @@
                     @if($event->start_date)
                         <div class="flex items-center text-sm text-gray-500 mb-2">
                             <i class="fas fa-calendar mr-2"></i>
-                            {{ $event->start_date->format('d/m/Y H:i') }}
+                            {{ $event->start_date->translatedFormat('d/m/Y H:i') }}
                         </div>
                     @endif
                     @if($event->venue_city)

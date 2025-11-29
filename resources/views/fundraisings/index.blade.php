@@ -50,7 +50,7 @@
 
                     <div class="flex items-center text-sm text-gray-500 mb-4">
                         <i class="fas fa-calendar mr-2"></i>
-                        <span>Jusqu'au {{ $fundraising->end_date->format('d/m/Y') }}</span>
+                        <span>Jusqu'au {{ $fundraising->end_date->translatedFormat('d/m/Y') }}</span>
                     </div>
                     <span class="block w-full bg-green-600 text-white text-center px-4 py-2 rounded-lg hover:bg-green-700">
                         Contribuer
