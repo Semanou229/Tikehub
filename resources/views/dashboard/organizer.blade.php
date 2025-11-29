@@ -114,7 +114,9 @@
                 <h2 class="text-xl font-bold text-gray-800">Revenus (6 derniers mois)</h2>
                 <i class="fas fa-chart-line text-indigo-600"></i>
             </div>
-            <canvas id="revenueChart" height="200"></canvas>
+            <div style="position: relative; height: 300px;">
+                <canvas id="revenueChart"></canvas>
+            </div>
         </div>
 
         <!-- Répartition des revenus -->
@@ -123,7 +125,9 @@
                 <h2 class="text-xl font-bold text-gray-800">Répartition des revenus</h2>
                 <i class="fas fa-chart-pie text-purple-600"></i>
             </div>
-            <canvas id="distributionChart" height="200"></canvas>
+            <div style="position: relative; height: 300px;">
+                <canvas id="distributionChart"></canvas>
+            </div>
         </div>
     </div>
 
@@ -292,9 +296,16 @@
 
 @push('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Vérifier que Chart.js est chargé
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js n\'est pas chargé');
+        return;
+    }
+
     // Données pour les graphiques
-    const monthlyRevenueData = {!! json_encode($stats['monthly_revenue']) !!};
-    const revenueLabels = monthlyRevenueData.map(item => item.month);
+    const monthlyRevenueData = {!! json_encode($stats['monthly_revenue'] ?? []) !!};
+    const revenueLabels = monthlyRevenueData.map(item => item.month || '');
     const revenueValues = monthlyRevenueData.map(item => parseFloat(item.revenue) || 0);
 
     const distributionData = {
@@ -306,7 +317,7 @@
     // Graphique des revenus (6 derniers mois)
     const revenueCtx = document.getElementById('revenueChart');
     if (revenueCtx) {
-        new Chart(revenueCtx, {
+        const revenueChart = new Chart(revenueCtx.getContext('2d'), {
             type: 'line',
             data: {
                 labels: revenueLabels,
@@ -367,7 +378,7 @@
     if (distributionCtx) {
         const totalDistribution = distributionData.events + distributionData.contests + distributionData.fundraisings;
         
-        new Chart(distributionCtx, {
+        const distributionChart = new Chart(distributionCtx.getContext('2d'), {
             type: 'doughnut',
             data: {
                 labels: ['Événements', 'Concours', 'Collectes'],
@@ -411,6 +422,7 @@
             }
         });
     }
+});
 </script>
 @endpush
 @endsection
