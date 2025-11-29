@@ -368,6 +368,7 @@
     </div>
 </div>
 
+@push('styles')
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
@@ -395,6 +396,7 @@
     }
 </style>
 @endif
+@endpush
 
 @push('scripts')
 <script>
