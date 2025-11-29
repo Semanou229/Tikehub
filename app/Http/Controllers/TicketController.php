@@ -65,6 +65,8 @@ class TicketController extends Controller
                 'buyer_name' => 'required|string|max:255',
                 'buyer_email' => 'required|email',
                 'buyer_phone' => 'nullable|string|max:20',
+                'promo_code_id' => 'nullable|exists:promo_codes,id',
+                'discount_amount' => 'nullable|numeric|min:0',
             ]);
 
             $payment = $this->paymentService->processMultipleTicketsPurchase(
@@ -80,6 +82,8 @@ class TicketController extends Controller
                 'buyer_name' => 'required|string|max:255',
                 'buyer_email' => 'required|email',
                 'buyer_phone' => 'nullable|string|max:20',
+                'promo_code_id' => 'nullable|exists:promo_codes,id',
+                'discount_amount' => 'nullable|numeric|min:0',
             ]);
 
             $payment = $this->paymentService->processTicketPurchase(
@@ -151,6 +155,67 @@ class TicketController extends Controller
                 'event' => $ticket->event->title,
                 'buyer_name' => $ticket->buyer_name,
             ]
+        ]);
+    }
+
+    public function validatePromoCode(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string',
+            'event_id' => 'required|exists:events,id',
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        $code = strtoupper(trim($request->code));
+        $event = Event::findOrFail($request->event_id);
+        $amount = (float) $request->amount;
+
+        $promoCode = \App\Models\PromoCode::where('code', $code)
+            ->where(function ($q) use ($event) {
+                $q->where('event_id', $event->id)
+                  ->orWhereNull('event_id');
+            })
+            ->where('organizer_id', $event->organizer_id)
+            ->first();
+
+        if (!$promoCode) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Code promo invalide ou introuvable.'
+            ]);
+        }
+
+        if (!$promoCode->isValid()) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Ce code promo n\'est plus valide ou a expiré.'
+            ]);
+        }
+
+        if (!$promoCode->meetsMinimumAmount($amount)) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Le montant minimum pour utiliser ce code est de ' . number_format($promoCode->minimum_amount, 0, ',', ' ') . ' XOF.'
+            ]);
+        }
+
+        if (auth()->check() && !$promoCode->canBeUsedByUser(auth()->id())) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Vous avez atteint la limite d\'utilisation de ce code promo.'
+            ]);
+        }
+
+        $discount = $promoCode->calculateDiscount($amount);
+        $finalAmount = max(0, $amount - $discount);
+
+        return response()->json([
+            'valid' => true,
+            'message' => 'Code promo appliqué avec succès !',
+            'promo_code_id' => $promoCode->id,
+            'discount_amount' => $discount,
+            'original_amount' => $amount,
+            'final_amount' => $finalAmount,
         ]);
     }
 }

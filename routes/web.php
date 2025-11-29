@@ -112,6 +112,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/events/{event}/tickets', [TicketController::class, 'index'])->name('tickets.index');
     Route::post('/events/{event}/tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
     Route::post('/tickets/purchase', [TicketController::class, 'purchase'])->name('tickets.purchase');
+    Route::post('/tickets/validate-promo', [TicketController::class, 'validatePromoCode'])->name('tickets.validate-promo');
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::get('/tickets/{ticket}/download', [TicketController::class, 'download'])->name('tickets.download');
 

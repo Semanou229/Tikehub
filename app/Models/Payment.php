@@ -12,9 +12,12 @@ class Payment extends Model
     protected $fillable = [
         'user_id',
         'event_id',
+        'promo_code_id',
         'paymentable_type',
         'paymentable_id',
         'amount',
+        'discount_amount',
+        'original_amount',
         'currency',
         'status',
         'payment_method',
@@ -29,6 +32,8 @@ class Payment extends Model
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'original_amount' => 'decimal:2',
         'platform_commission' => 'decimal:2',
         'organizer_amount' => 'decimal:2',
         'refund_amount' => 'decimal:2',
@@ -64,6 +69,11 @@ class Payment extends Model
     public function donation()
     {
         return $this->hasOne(Donation::class);
+    }
+
+    public function promoCode()
+    {
+        return $this->belongsTo(PromoCode::class);
     }
 
     public function isRefunded(): bool

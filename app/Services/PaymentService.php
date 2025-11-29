@@ -27,7 +27,20 @@ class PaymentService
                 throw new \Exception('Ce type de billet n\'est plus en vente');
             }
 
-            $totalAmount = $ticketType->price * $ticketData['quantity'];
+            $originalAmount = $ticketType->price * $ticketData['quantity'];
+            $discountAmount = 0;
+            $promoCodeId = null;
+
+            // Appliquer le code promo si fourni
+            if (!empty($ticketData['promo_code_id']) && !empty($ticketData['discount_amount'])) {
+                $promoCode = \App\Models\PromoCode::find($ticketData['promo_code_id']);
+                if ($promoCode && $promoCode->isValid() && $promoCode->meetsMinimumAmount($originalAmount)) {
+                    $discountAmount = (float) $ticketData['discount_amount'];
+                    $promoCodeId = $promoCode->id;
+                }
+            }
+
+            $totalAmount = max(0, $originalAmount - $discountAmount);
             $commissionRate = config('platform.commission_rate', 5);
             $platformCommission = ($totalAmount * $commissionRate) / 100;
             $organizerAmount = $totalAmount - $platformCommission;
@@ -35,12 +48,29 @@ class PaymentService
             $payment = Payment::create([
                 'user_id' => $user->id,
                 'event_id' => $event->id,
+                'promo_code_id' => $promoCodeId,
                 'amount' => $totalAmount,
+                'discount_amount' => $discountAmount,
+                'original_amount' => $originalAmount,
                 'currency' => 'XOF',
                 'status' => 'pending',
                 'platform_commission' => $platformCommission,
                 'organizer_amount' => $organizerAmount,
             ]);
+
+            // Enregistrer l'utilisation du code promo
+            if ($promoCodeId && $discountAmount > 0) {
+                \App\Models\PromoCodeUsage::create([
+                    'promo_code_id' => $promoCodeId,
+                    'user_id' => $user->id,
+                    'discount_amount' => $discountAmount,
+                    'original_amount' => $originalAmount,
+                    'final_amount' => $totalAmount,
+                ]);
+
+                // Incrémenter le compteur d'utilisation
+                \App\Models\PromoCode::where('id', $promoCodeId)->increment('used_count');
+            }
 
             // Créer les billets
             for ($i = 0; $i < $ticketData['quantity']; $i++) {
@@ -126,6 +156,20 @@ class PaymentService
                 throw new \Exception('Aucun billet sélectionné');
             }
 
+            $originalAmount = $totalAmount;
+            $discountAmount = 0;
+            $promoCodeId = null;
+
+            // Appliquer le code promo si fourni
+            if (!empty($ticketData['promo_code_id']) && !empty($ticketData['discount_amount'])) {
+                $promoCode = \App\Models\PromoCode::find($ticketData['promo_code_id']);
+                if ($promoCode && $promoCode->isValid() && $promoCode->meetsMinimumAmount($originalAmount)) {
+                    $discountAmount = (float) $ticketData['discount_amount'];
+                    $promoCodeId = $promoCode->id;
+                }
+            }
+
+            $totalAmount = max(0, $originalAmount - $discountAmount);
             $commissionRate = config('platform.commission_rate', 5);
             $platformCommission = ($totalAmount * $commissionRate) / 100;
             $organizerAmount = $totalAmount - $platformCommission;
@@ -133,12 +177,29 @@ class PaymentService
             $payment = Payment::create([
                 'user_id' => $user->id,
                 'event_id' => $event->id,
+                'promo_code_id' => $promoCodeId,
                 'amount' => $totalAmount,
+                'discount_amount' => $discountAmount,
+                'original_amount' => $originalAmount,
                 'currency' => 'XOF',
                 'status' => 'pending',
                 'platform_commission' => $platformCommission,
                 'organizer_amount' => $organizerAmount,
             ]);
+
+            // Enregistrer l'utilisation du code promo
+            if ($promoCodeId && $discountAmount > 0) {
+                \App\Models\PromoCodeUsage::create([
+                    'promo_code_id' => $promoCodeId,
+                    'user_id' => $user->id,
+                    'discount_amount' => $discountAmount,
+                    'original_amount' => $originalAmount,
+                    'final_amount' => $totalAmount,
+                ]);
+
+                // Incrémenter le compteur d'utilisation
+                \App\Models\PromoCode::where('id', $promoCodeId)->increment('used_count');
+            }
 
             // Créer tous les tickets
             foreach ($ticketsToCreate as $ticketData) {
