@@ -118,6 +118,19 @@ class ContestController extends Controller
         $validated['organizer_id'] = auth()->id();
         $validated['is_published'] = false;
         $validated['is_active'] = true;
+        
+        // Gestion du sous-domaine
+        if ($request->has('subdomain_enabled') && $request->subdomain_enabled) {
+            $validated['subdomain_enabled'] = true;
+            if ($request->filled('subdomain')) {
+                $validated['subdomain'] = \Illuminate\Support\Str::slug($request->subdomain);
+            } else {
+                $validated['subdomain'] = \Illuminate\Support\Str::slug($validated['name']);
+            }
+        } else {
+            $validated['subdomain_enabled'] = false;
+            $validated['subdomain'] = null;
+        }
 
         if ($request->hasFile('cover_image')) {
             $validated['cover_image'] = $request->file('cover_image')->store('contests', 'public');

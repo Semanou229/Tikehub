@@ -10,6 +10,8 @@ class Fundraising extends Model
     use HasFactory;
 
     protected $fillable = [
+        'subdomain',
+        'subdomain_enabled',
         'event_id',
         'organizer_id',
         'name',
@@ -34,8 +36,23 @@ class Fundraising extends Model
         'show_donors' => 'boolean',
         'is_active' => 'boolean',
         'is_published' => 'boolean',
+        'subdomain_enabled' => 'boolean',
         'milestones' => 'array',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($fundraising) {
+            if (empty($fundraising->slug)) {
+                $fundraising->slug = \Illuminate\Support\Str::slug($fundraising->name);
+            }
+            if (empty($fundraising->subdomain) && $fundraising->subdomain_enabled) {
+                $fundraising->subdomain = \Illuminate\Support\Str::slug($fundraising->name);
+            }
+        });
+    }
 
     public function event()
     {

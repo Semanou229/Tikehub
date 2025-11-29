@@ -10,6 +10,8 @@ class Contest extends Model
     use HasFactory;
 
     protected $fillable = [
+        'subdomain',
+        'subdomain_enabled',
         'event_id',
         'organizer_id',
         'name',
@@ -31,8 +33,23 @@ class Contest extends Model
         'end_date' => 'datetime',
         'is_active' => 'boolean',
         'is_published' => 'boolean',
+        'subdomain_enabled' => 'boolean',
         'settings' => 'array',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($contest) {
+            if (empty($contest->slug)) {
+                $contest->slug = \Illuminate\Support\Str::slug($contest->name);
+            }
+            if (empty($contest->subdomain) && $contest->subdomain_enabled) {
+                $contest->subdomain = \Illuminate\Support\Str::slug($contest->name);
+            }
+        });
+    }
 
     public function event()
     {

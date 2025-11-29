@@ -11,6 +11,8 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
+        'subdomain',
+        'subdomain_enabled',
         'organizer_id',
         'title',
         'slug',
@@ -53,8 +55,8 @@ class Event extends Model
             if (empty($event->slug)) {
                 $event->slug = Str::slug($event->title);
             }
-            if (empty($event->subdomain)) {
-                $event->subdomain = 'ev-' . $event->slug;
+            if (empty($event->subdomain) && $event->subdomain_enabled) {
+                $event->subdomain = Str::slug($event->title);
             }
         });
     }

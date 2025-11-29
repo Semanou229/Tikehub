@@ -59,6 +59,19 @@ class FundraisingController extends Controller
         $validated['is_published'] = false;
         $validated['is_active'] = true;
         $validated['show_donors'] = $request->has('show_donors');
+        
+        // Gestion du sous-domaine
+        if ($request->has('subdomain_enabled') && $request->subdomain_enabled) {
+            $validated['subdomain_enabled'] = true;
+            if ($request->filled('subdomain')) {
+                $validated['subdomain'] = Str::slug($request->subdomain);
+            } else {
+                $validated['subdomain'] = Str::slug($validated['name']);
+            }
+        } else {
+            $validated['subdomain_enabled'] = false;
+            $validated['subdomain'] = null;
+        }
 
         if ($request->hasFile('cover_image')) {
             $validated['cover_image'] = $request->file('cover_image')->store('fundraisings', 'public');
@@ -96,6 +109,18 @@ class FundraisingController extends Controller
 
         $validated['slug'] = Str::slug($validated['name']);
         $validated['show_donors'] = $request->has('show_donors');
+        
+        // Gestion du sous-domaine
+        if ($request->has('subdomain_enabled') && $request->subdomain_enabled) {
+            $validated['subdomain_enabled'] = true;
+            if ($request->filled('subdomain')) {
+                $validated['subdomain'] = Str::slug($request->subdomain);
+            } elseif (empty($fundraising->subdomain)) {
+                $validated['subdomain'] = Str::slug($validated['name']);
+            }
+        } else {
+            $validated['subdomain_enabled'] = false;
+        }
 
         if ($request->hasFile('cover_image')) {
             if ($fundraising->cover_image) {
