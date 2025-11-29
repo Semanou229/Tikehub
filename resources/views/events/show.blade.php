@@ -648,7 +648,7 @@
                                 map.setView([lat, lng], 15);
                                 
                                 // Ajouter le marqueur
-                                const popupContent = '{{ addslashes($event->venue_name ?? $event->venue_address ?? "Lieu de l\'événement") }}';
+                                const popupContent = '{{ addslashes($event->venue_address ?? $event->venue_name ?? $event->venue_city ?? "Lieu de l\'événement") }}';
                                 L.marker([lat, lng])
                                     .addTo(map)
                                     .bindPopup(popupContent)
