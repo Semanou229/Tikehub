@@ -239,10 +239,19 @@
             return;
         }
         
+        // Options de géolocalisation plus permissives
+        const options = {
+            enableHighAccuracy: false, // Désactiver pour éviter les erreurs
+            timeout: 15000, // Augmenter le timeout à 15 secondes
+            maximumAge: 60000 // Accepter une position jusqu'à 1 minute
+        };
+        
         navigator.geolocation.getCurrentPosition(
             function(position) {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
+                
+                console.log('Position détectée:', lat, lng);
                 
                 // Mettre à jour les champs cachés
                 document.getElementById('venue_latitude').value = lat;
@@ -260,41 +269,78 @@
                 marker = L.marker([lat, lng]).addTo(map);
                 
                 // Faire un reverse géocodage pour remplir l'adresse
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`)
-                    .then(response => response.json())
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&zoom=18`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erreur HTTP: ' + response.status);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
+                        console.log('Données de reverse géocodage:', data);
+                        
                         if (data && data.address) {
-                            // Remplir l'adresse
-                            if (data.address.road && !document.getElementById('venue_address').value) {
-                                document.getElementById('venue_address').value = data.address.road;
-                            } else if (data.address.house_number && data.address.road && !document.getElementById('venue_address').value) {
-                                document.getElementById('venue_address').value = data.address.house_number + ' ' + data.address.road;
+                            const address = data.address;
+                            
+                            // Construire l'adresse complète
+                            let fullAddress = '';
+                            if (address.house_number) {
+                                fullAddress += address.house_number + ' ';
+                            }
+                            if (address.road) {
+                                fullAddress += address.road;
+                            } else if (address.pedestrian) {
+                                fullAddress += address.pedestrian;
+                            } else if (address.path) {
+                                fullAddress += address.path;
                             }
                             
-                            // Remplir la ville
+                            // Remplir l'adresse
+                            if (fullAddress.trim() && !document.getElementById('venue_address').value) {
+                                document.getElementById('venue_address').value = fullAddress.trim();
+                            } else if (address.road && !document.getElementById('venue_address').value) {
+                                document.getElementById('venue_address').value = address.road;
+                            }
+                            
+                            // Remplir la ville (priorité: city > town > village > municipality)
                             if (!document.getElementById('venue_city').value) {
-                                if (data.address.city) {
-                                    document.getElementById('venue_city').value = data.address.city;
-                                } else if (data.address.town) {
-                                    document.getElementById('venue_city').value = data.address.town;
-                                } else if (data.address.village) {
-                                    document.getElementById('venue_city').value = data.address.village;
+                                if (address.city) {
+                                    document.getElementById('venue_city').value = address.city;
+                                } else if (address.town) {
+                                    document.getElementById('venue_city').value = address.town;
+                                } else if (address.village) {
+                                    document.getElementById('venue_city').value = address.village;
+                                } else if (address.municipality) {
+                                    document.getElementById('venue_city').value = address.municipality;
+                                } else if (address.county) {
+                                    document.getElementById('venue_city').value = address.county;
                                 }
                             }
                             
                             // Remplir le pays
-                            if (!document.getElementById('venue_country').value && data.address.country) {
-                                document.getElementById('venue_country').value = data.address.country;
+                            if (!document.getElementById('venue_country').value && address.country) {
+                                document.getElementById('venue_country').value = address.country;
                             }
                             
                             // Remplir le nom du lieu si disponible
                             if (!document.getElementById('venue_name').value) {
-                                if (data.address.building) {
-                                    document.getElementById('venue_name').value = data.address.building;
-                                } else if (data.address.amenity) {
-                                    document.getElementById('venue_name').value = data.address.amenity;
+                                if (address.building) {
+                                    document.getElementById('venue_name').value = address.building;
+                                } else if (address.amenity) {
+                                    document.getElementById('venue_name').value = address.amenity;
+                                } else if (address.leisure) {
+                                    document.getElementById('venue_name').value = address.leisure;
                                 }
                             }
+                            
+                            // Afficher un message de succès
+                            const successMsg = document.createElement('div');
+                            successMsg.className = 'mt-2 p-2 bg-green-100 text-green-800 rounded text-sm';
+                            successMsg.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Localisation détectée et informations remplies automatiquement';
+                            btn.parentElement.parentElement.appendChild(successMsg);
+                            setTimeout(() => successMsg.remove(), 5000);
+                        } else {
+                            console.warn('Aucune adresse trouvée dans les données de géocodage');
                         }
                         
                         btn.disabled = false;
@@ -304,34 +350,41 @@
                         console.error('Erreur de reverse géocodage:', error);
                         btn.disabled = false;
                         btn.innerHTML = originalText;
+                        
+                        // Afficher un avertissement mais garder les coordonnées
+                        const warningMsg = document.createElement('div');
+                        warningMsg.className = 'mt-2 p-2 bg-yellow-100 text-yellow-800 rounded text-sm';
+                        warningMsg.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Position détectée mais impossible de récupérer l\'adresse. Vous pouvez la saisir manuellement.';
+                        btn.parentElement.parentElement.appendChild(warningMsg);
+                        setTimeout(() => warningMsg.remove(), 5000);
                     });
             },
             function(error) {
+                console.error('Erreur de géolocalisation:', error);
                 btn.disabled = false;
                 btn.innerHTML = originalText;
                 
                 let errorMessage = 'Erreur de géolocalisation: ';
-                switch(error.code) {
-                    case error.PERMISSION_DENIED:
-                        errorMessage += 'Permission refusée. Veuillez autoriser l\'accès à votre localisation.';
+                let errorCode = error.code || 'UNKNOWN';
+                
+                switch(errorCode) {
+                    case error.PERMISSION_DENIED || 1:
+                        errorMessage = 'Permission refusée. Veuillez autoriser l\'accès à votre localisation dans les paramètres de votre navigateur.';
                         break;
-                    case error.POSITION_UNAVAILABLE:
-                        errorMessage += 'Position indisponible.';
+                    case error.POSITION_UNAVAILABLE || 2:
+                        errorMessage = 'Position indisponible. Vérifiez que votre GPS est activé et que vous avez une connexion Internet.';
                         break;
-                    case error.TIMEOUT:
-                        errorMessage += 'Délai d\'attente dépassé.';
+                    case error.TIMEOUT || 3:
+                        errorMessage = 'Délai d\'attente dépassé. Veuillez réessayer.';
                         break;
                     default:
-                        errorMessage += 'Erreur inconnue.';
+                        errorMessage = 'Erreur lors de la géolocalisation. Code d\'erreur: ' + errorCode + '. Veuillez vérifier les paramètres de votre navigateur ou utiliser le bouton "Localiser" avec une adresse.';
                         break;
                 }
+                
                 alert(errorMessage);
             },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
+            options
         );
     });
 
