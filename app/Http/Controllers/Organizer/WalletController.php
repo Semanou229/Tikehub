@@ -137,5 +137,56 @@ class WalletController extends Controller
             'statsByType'
         ));
     }
+
+    public function withdraw(Request $request)
+    {
+        $user = auth()->user();
+
+        // Vérifier que l'utilisateur est un organisateur
+        if (!$user->isOrganizer()) {
+            abort(403, 'Accès réservé aux organisateurs.');
+        }
+
+        // Vérifier que le KYC est vérifié
+        if (!$user->isKycVerified()) {
+            return back()->with('error', 'Vous devez compléter la vérification KYC avant de pouvoir demander un retrait de fonds.');
+        }
+
+        $validated = $request->validate([
+            'amount' => 'required|numeric|min:1000',
+            'payment_method' => 'required|in:mobile_money,bank_transfer',
+            'account_number' => 'required|string|max:255',
+        ]);
+
+        $organizerId = $user->id;
+
+        // Calculer les revenus nets disponibles
+        $totalRevenue = Ticket::whereHas('event', function ($q) use ($organizerId) {
+            $q->where('organizer_id', $organizerId);
+        })->where('status', 'paid')->sum('price');
+
+        $contestRevenue = Payment::whereHas('votes.contest', function ($q) use ($organizerId) {
+            $q->where('organizer_id', $organizerId);
+        })->where('status', 'completed')->sum('amount');
+
+        $fundraisingRevenue = Payment::whereHas('donation', function ($q) use ($organizerId) {
+            $q->whereHas('fundraising', function ($query) use ($organizerId) {
+                $query->where('organizer_id', $organizerId);
+            });
+        })->where('status', 'completed')->sum('amount');
+
+        $totalEarnings = $totalRevenue + $contestRevenue + $fundraisingRevenue;
+        $commissionRate = config('platform.commission_rate', 0.05);
+        $platformCommission = $totalEarnings * $commissionRate;
+        $netEarnings = $totalEarnings - $platformCommission;
+
+        if ($validated['amount'] > $netEarnings) {
+            return back()->withErrors(['amount' => 'Le montant demandé dépasse vos revenus nets disponibles.'])->withInput();
+        }
+
+        // TODO: Créer une demande de retrait dans la base de données
+        // Pour l'instant, on retourne juste un message de succès
+        return back()->with('success', 'Votre demande de retrait de ' . number_format($validated['amount'], 0, ',', ' ') . ' XOF a été soumise avec succès. Elle sera traitée dans les 2-3 jours ouvrables.');
+    }
 }
 

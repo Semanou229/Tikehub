@@ -195,6 +195,7 @@ Route::middleware('auth')->group(function () {
 
         // Portefeuille
         Route::get('/wallet', [\App\Http\Controllers\Organizer\WalletController::class, 'index'])->name('wallet.index');
+        Route::post('/wallet/withdraw', [\App\Http\Controllers\Organizer\WalletController::class, 'withdraw'])->name('wallet.withdraw');
 
         // Profil
         Route::get('/profile', [\App\Http\Controllers\Organizer\ProfileController::class, 'index'])->name('profile.index');

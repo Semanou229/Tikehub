@@ -6,6 +6,9 @@
 <div class="p-6">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Gestion des Événements</h1>
+        <a href="<?php echo e(route('admin.events.create')); ?>" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition">
+            <i class="fas fa-plus mr-2"></i>Nouvel événement
+        </a>
     </div>
 
     <!-- Filtres -->
@@ -71,8 +74,11 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <div class="flex gap-2">
-                                        <a href="<?php echo e(route('admin.events.show', $event)); ?>" class="text-red-600 hover:text-red-900">
+                                        <a href="<?php echo e(route('admin.events.show', $event)); ?>" class="text-red-600 hover:text-red-900" title="Voir">
                                             <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="<?php echo e(route('admin.events.edit', $event)); ?>" class="text-blue-600 hover:text-blue-900" title="Modifier">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                         <?php if(!$event->is_published): ?>
                                             <form action="<?php echo e(route('admin.events.approve', $event)); ?>" method="POST" class="inline">

@@ -91,6 +91,21 @@ class User extends Authenticatable
         return $this->kyc_status === 'verified' && $this->kyc_verified_at !== null;
     }
 
+    public function needsKycForWithdrawal(): bool
+    {
+        // Les buyers n'ont pas besoin de KYC
+        if ($this->hasRole('buyer')) {
+            return false;
+        }
+        
+        // Les organisateurs ont besoin de KYC vérifié pour les retraits
+        if ($this->hasRole('organizer')) {
+            return !$this->isKycVerified();
+        }
+        
+        return false;
+    }
+
     public function contacts()
     {
         return $this->hasMany(Contact::class, 'organizer_id');

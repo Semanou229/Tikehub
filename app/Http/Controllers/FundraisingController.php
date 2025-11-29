@@ -27,7 +27,7 @@ class FundraisingController extends Controller
             abort(404);
         }
 
-        $fundraising->load(['donations.user', 'organizer']);
+        $fundraising->load(['donations.user', 'organizer', 'event']);
 
         return view('fundraisings.show', compact('fundraising'));
     }

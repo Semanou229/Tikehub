@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone')->nullable();
             $table->string('avatar')->nullable();
-            $table->enum('kyc_status', ['pending', 'verified', 'rejected'])->default('pending');
+            $table->enum('kyc_status', ['pending', 'verified', 'rejected'])->nullable();
             $table->string('kyc_document')->nullable();
             $table->timestamp('kyc_verified_at')->nullable();
             $table->boolean('is_active')->default(true);

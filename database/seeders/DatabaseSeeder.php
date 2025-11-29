@@ -98,8 +98,8 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Organisateur Test',
                 'password' => Hash::make('password'),
                 'phone' => '+229 90 00 00 02',
-                'kyc_status' => 'verified',
-                'kyc_verified_at' => now(),
+                'kyc_status' => null,
+                'kyc_verified_at' => null,
                 'is_active' => true,
             ]
         );

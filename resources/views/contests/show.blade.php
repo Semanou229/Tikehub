@@ -156,6 +156,31 @@
                 @endif
             </div>
 
+            <!-- Lieu sur carte -->
+            @php
+                $event = $contest->event;
+                $hasLocation = $event && $event->venue_latitude && $event->venue_longitude;
+            @endphp
+            @if($hasLocation)
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-purple-600">Lieu sur carte</h2>
+                    <div id="contestMap" class="w-full h-96 rounded-lg border border-gray-300 mb-4"></div>
+                    @if($event->venue_name || $event->venue_address)
+                        <div class="space-y-2 text-gray-700">
+                            @if($event->venue_name)
+                                <p class="font-semibold"><i class="fas fa-map-marker-alt text-purple-600 mr-2"></i>{{ $event->venue_name }}</p>
+                            @endif
+                            @if($event->venue_address)
+                                <p class="text-sm"><i class="fas fa-road text-gray-500 mr-2"></i>{{ $event->venue_address }}</p>
+                            @endif
+                            @if($event->venue_city)
+                                <p class="text-sm"><i class="fas fa-city text-gray-500 mr-2"></i>{{ $event->venue_city }}{{ $event->venue_country ? ', ' . $event->venue_country : '' }}</p>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+            @endif
+
             <!-- Candidats -->
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-purple-600">Candidats</h2>
@@ -347,6 +372,12 @@
     </div>
 </div>
 
+@if($hasLocation)
+@push('styles')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+@endpush
+@endif
+
 @push('scripts')
 <script>
     // Calculer le montant total en fonction du nombre de votes
@@ -386,5 +417,23 @@
         alert('Fonctionnalité de contact à venir');
     }
 </script>
+@if($hasLocation)
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const map = L.map('contestMap').setView([{{ $event->venue_latitude }}, {{ $event->venue_longitude }}], 15);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+        
+        L.marker([{{ $event->venue_latitude }}, {{ $event->venue_longitude }}])
+            .addTo(map)
+            .bindPopup('{{ $event->venue_name ?? $event->venue_city ?? "Lieu du concours" }}')
+            .openPopup();
+    });
+</script>
+@endif
 @endpush
 @endsection

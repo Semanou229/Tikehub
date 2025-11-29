@@ -46,7 +46,7 @@ class ContestController extends Controller
             return $candidate;
         });
 
-        $contest->load(['organizer']);
+        $contest->load(['organizer', 'event']);
 
         return view('contests.show', compact('contest', 'candidates', 'ranking'));
     }

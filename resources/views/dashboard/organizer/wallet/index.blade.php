@@ -84,6 +84,55 @@
         <canvas id="revenueChart" height="100"></canvas>
     </div>
 
+    <!-- Demande de retrait -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Demander un retrait</h2>
+        @if(auth()->user()->isKycVerified())
+            <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-600 mr-3"></i>
+                    <p class="text-green-800">Votre compte KYC est vérifié. Vous pouvez demander un retrait.</p>
+                </div>
+            </div>
+            <form action="{{ route('organizer.wallet.withdraw') }}" method="POST" class="space-y-4">
+                @csrf
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Montant à retirer (XOF) *</label>
+                    <input type="number" name="amount" min="1000" max="{{ $netEarnings }}" step="100" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <p class="text-sm text-gray-500 mt-1">Montant disponible: {{ number_format($netEarnings, 0, ',', ' ') }} XOF</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Méthode de paiement *</label>
+                    <select name="payment_method" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">Sélectionner une méthode</option>
+                        <option value="mobile_money">Mobile Money</option>
+                        <option value="bank_transfer">Virement bancaire</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Numéro de compte / Téléphone *</label>
+                    <input type="text" name="account_number" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">
+                    <i class="fas fa-money-bill-wave mr-2"></i>Demander le retrait
+                </button>
+            </form>
+        @else
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-4">
+                <div class="flex items-start">
+                    <i class="fas fa-exclamation-triangle text-yellow-600 mr-3 mt-1"></i>
+                    <div>
+                        <p class="text-yellow-800 font-semibold mb-2">Vérification KYC requise</p>
+                        <p class="text-yellow-700 text-sm mb-3">Vous devez compléter la vérification KYC avant de pouvoir demander un retrait de fonds.</p>
+                        <a href="{{ route('organizer.profile.kyc') }}" class="inline-block bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm font-semibold">
+                            <i class="fas fa-id-card mr-2"></i>Compléter la vérification KYC
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
+
     <!-- Transactions récentes -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="p-6 border-b border-gray-200">
