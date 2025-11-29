@@ -32,25 +32,25 @@
                             @error('description')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie *</label>
-                                <input type="text" name="category" value="{{ old('category') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Musique, Sport, Culture">
-                                @error('category')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Type d'événement *</label>
-                                <select name="type" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option value="">Sélectionner un type</option>
-                                    <option value="concert" {{ old('type') == 'concert' ? 'selected' : '' }}>Concert</option>
-                                    <option value="competition" {{ old('type') == 'competition' ? 'selected' : '' }}>Compétition</option>
-                                    <option value="fundraising" {{ old('type') == 'fundraising' ? 'selected' : '' }}>Collecte de fonds</option>
-                                    <option value="contest" {{ old('type') == 'contest' ? 'selected' : '' }}>Concours</option>
-                                    <option value="other" {{ old('type') == 'other' ? 'selected' : '' }}>Autre</option>
-                                </select>
-                                @error('type')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie *</label>
+                            <select name="category" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">Sélectionner une catégorie</option>
+                                <option value="Musique" {{ old('category') == 'Musique' ? 'selected' : '' }}>Musique</option>
+                                <option value="Sport" {{ old('category') == 'Sport' ? 'selected' : '' }}>Sport</option>
+                                <option value="Culture" {{ old('category') == 'Culture' ? 'selected' : '' }}>Culture</option>
+                                <option value="Art" {{ old('category') == 'Art' ? 'selected' : '' }}>Art</option>
+                                <option value="Business" {{ old('category') == 'Business' ? 'selected' : '' }}>Business</option>
+                                <option value="Éducation" {{ old('category') == 'Éducation' ? 'selected' : '' }}>Éducation</option>
+                                <option value="Santé" {{ old('category') == 'Santé' ? 'selected' : '' }}>Santé</option>
+                                <option value="Technologie" {{ old('category') == 'Technologie' ? 'selected' : '' }}>Technologie</option>
+                                <option value="Gastronomie" {{ old('category') == 'Gastronomie' ? 'selected' : '' }}>Gastronomie</option>
+                                <option value="Divertissement" {{ old('category') == 'Divertissement' ? 'selected' : '' }}>Divertissement</option>
+                                <option value="Famille" {{ old('category') == 'Famille' ? 'selected' : '' }}>Famille</option>
+                                <option value="Mode" {{ old('category') == 'Mode' ? 'selected' : '' }}>Mode</option>
+                                <option value="Autre" {{ old('category') == 'Autre' ? 'selected' : '' }}>Autre</option>
+                            </select>
+                            @error('category')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
@@ -86,28 +86,39 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nom du lieu</label>
-                            <input type="text" name="venue_name" value="{{ old('venue_name') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Stade de l'Amitié">
+                            <input type="text" name="venue_name" id="venue_name" value="{{ old('venue_name') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Stade de l'Amitié">
                             @error('venue_name')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-                            <input type="text" name="venue_address" value="{{ old('venue_address') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Rue 123, Quartier...">
+                            <input type="text" name="venue_address" id="venue_address" value="{{ old('venue_address') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Rue 123, Quartier...">
                             @error('venue_address')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Ville</label>
-                                <input type="text" name="venue_city" value="{{ old('venue_city') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Cotonou">
+                                <input type="text" name="venue_city" id="venue_city" value="{{ old('venue_city') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Cotonou">
                                 @error('venue_city')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Pays</label>
-                                <input type="text" name="venue_country" value="{{ old('venue_country') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Bénin">
+                                <input type="text" name="venue_country" id="venue_country" value="{{ old('venue_country') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Bénin">
                                 @error('venue_country')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                             </div>
+                        </div>
+
+                        <!-- Carte OpenStreetMap -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Localisation sur la carte *</label>
+                            <div id="map" class="w-full h-64 rounded-lg border border-gray-300"></div>
+                            <p class="text-sm text-gray-500 mt-2">Cliquez sur la carte pour définir l'emplacement exact</p>
+                            <input type="hidden" name="venue_latitude" id="venue_latitude" value="{{ old('venue_latitude') }}" required>
+                            <input type="hidden" name="venue_longitude" id="venue_longitude" value="{{ old('venue_longitude') }}" required>
+                            @error('venue_latitude')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                            @error('venue_longitude')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
                     </div>
                 </div>

@@ -88,14 +88,15 @@ class EventController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'category' => 'required|string',
-            'type' => 'required|in:concert,competition,fundraising,contest,other',
+            'category' => 'required|string|in:Musique,Sport,Culture,Art,Business,Éducation,Santé,Technologie,Gastronomie,Divertissement,Famille,Mode,Autre',
             'start_date' => 'required|date|after:now',
             'end_date' => 'required|date|after:start_date',
             'venue_name' => 'nullable|string|max:255',
             'venue_address' => 'nullable|string',
             'venue_city' => 'nullable|string|max:255',
             'venue_country' => 'nullable|string|max:255',
+            'venue_latitude' => 'required|numeric|between:-90,90',
+            'venue_longitude' => 'required|numeric|between:-180,180',
             'cover_image' => 'nullable|image|max:2048',
         ]);
 
@@ -103,6 +104,7 @@ class EventController extends Controller
         $validated['slug'] = Str::slug($validated['title']);
         $validated['is_published'] = false;
         $validated['status'] = 'draft';
+        $validated['type'] = 'other'; // Valeur par défaut puisque le type n'est plus utilisé
         
         // Gestion du sous-domaine
         if ($request->has('subdomain_enabled') && $request->subdomain_enabled) {
@@ -139,13 +141,15 @@ class EventController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'category' => 'required|string',
+            'category' => 'required|string|in:Musique,Sport,Culture,Art,Business,Éducation,Santé,Technologie,Gastronomie,Divertissement,Famille,Mode,Autre',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'venue_name' => 'nullable|string|max:255',
             'venue_address' => 'nullable|string',
             'venue_city' => 'nullable|string|max:255',
             'venue_country' => 'nullable|string|max:255',
+            'venue_latitude' => 'required|numeric|between:-90,90',
+            'venue_longitude' => 'required|numeric|between:-180,180',
             'cover_image' => 'nullable|image|max:2048',
         ]);
 

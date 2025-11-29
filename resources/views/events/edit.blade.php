@@ -33,18 +33,25 @@
                             @error('description')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie *</label>
-                                <input type="text" name="category" value="{{ old('category', $event->category) }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Musique, Sport, Culture">
-                                @error('category')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Type d'événement</label>
-                                <input type="text" value="{{ $event->type }}" disabled class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600">
-                                <p class="text-xs text-gray-500 mt-1">Le type d'événement ne peut pas être modifié</p>
-                            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie *</label>
+                            <select name="category" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">Sélectionner une catégorie</option>
+                                <option value="Musique" {{ old('category', $event->category) == 'Musique' ? 'selected' : '' }}>Musique</option>
+                                <option value="Sport" {{ old('category', $event->category) == 'Sport' ? 'selected' : '' }}>Sport</option>
+                                <option value="Culture" {{ old('category', $event->category) == 'Culture' ? 'selected' : '' }}>Culture</option>
+                                <option value="Art" {{ old('category', $event->category) == 'Art' ? 'selected' : '' }}>Art</option>
+                                <option value="Business" {{ old('category', $event->category) == 'Business' ? 'selected' : '' }}>Business</option>
+                                <option value="Éducation" {{ old('category', $event->category) == 'Éducation' ? 'selected' : '' }}>Éducation</option>
+                                <option value="Santé" {{ old('category', $event->category) == 'Santé' ? 'selected' : '' }}>Santé</option>
+                                <option value="Technologie" {{ old('category', $event->category) == 'Technologie' ? 'selected' : '' }}>Technologie</option>
+                                <option value="Gastronomie" {{ old('category', $event->category) == 'Gastronomie' ? 'selected' : '' }}>Gastronomie</option>
+                                <option value="Divertissement" {{ old('category', $event->category) == 'Divertissement' ? 'selected' : '' }}>Divertissement</option>
+                                <option value="Famille" {{ old('category', $event->category) == 'Famille' ? 'selected' : '' }}>Famille</option>
+                                <option value="Mode" {{ old('category', $event->category) == 'Mode' ? 'selected' : '' }}>Mode</option>
+                                <option value="Autre" {{ old('category', $event->category) == 'Autre' ? 'selected' : '' }}>Autre</option>
+                            </select>
+                            @error('category')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
@@ -85,28 +92,39 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nom du lieu</label>
-                            <input type="text" name="venue_name" value="{{ old('venue_name', $event->venue_name) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Stade de l'Amitié">
+                            <input type="text" name="venue_name" id="venue_name" value="{{ old('venue_name', $event->venue_name) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Stade de l'Amitié">
                             @error('venue_name')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-                            <input type="text" name="venue_address" value="{{ old('venue_address', $event->venue_address) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Rue 123, Quartier...">
+                            <input type="text" name="venue_address" id="venue_address" value="{{ old('venue_address', $event->venue_address) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Rue 123, Quartier...">
                             @error('venue_address')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Ville</label>
-                                <input type="text" name="venue_city" value="{{ old('venue_city', $event->venue_city) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Cotonou">
+                                <input type="text" name="venue_city" id="venue_city" value="{{ old('venue_city', $event->venue_city) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Cotonou">
                                 @error('venue_city')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Pays</label>
-                                <input type="text" name="venue_country" value="{{ old('venue_country', $event->venue_country) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Bénin">
+                                <input type="text" name="venue_country" id="venue_country" value="{{ old('venue_country', $event->venue_country) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Bénin">
                                 @error('venue_country')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                             </div>
+                        </div>
+
+                        <!-- Carte OpenStreetMap -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Localisation sur la carte *</label>
+                            <div id="map" class="w-full h-64 rounded-lg border border-gray-300"></div>
+                            <p class="text-sm text-gray-500 mt-2">Cliquez sur la carte pour définir ou modifier l'emplacement exact</p>
+                            <input type="hidden" name="venue_latitude" id="venue_latitude" value="{{ old('venue_latitude', $event->venue_latitude) }}" required>
+                            <input type="hidden" name="venue_longitude" id="venue_longitude" value="{{ old('venue_longitude', $event->venue_longitude) }}" required>
+                            @error('venue_latitude')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                            @error('venue_longitude')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
                     </div>
                 </div>
