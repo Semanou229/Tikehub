@@ -120,7 +120,8 @@ class ContestController extends Controller
 
         $contest = Contest::create($validated);
 
-        return redirect()->route('contests.show', $contest)->with('success', 'Concours créé avec succès');
+        return redirect()->route('contests.show', $contest)
+            ->with('success', 'Concours créé avec succès. Vous pouvez maintenant ajouter des candidats.');
     }
 
     public function publish(Contest $contest)
