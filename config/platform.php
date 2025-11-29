@@ -9,3 +9,4 @@ return [
     'vote_cooldown_minutes' => 1,
 ];
 
+

@@ -24,3 +24,4 @@ class Kernel extends ConsoleKernel
     }
 }
 
+

@@ -81,3 +81,4 @@ class TicketScanController extends Controller
     }
 }
 
+

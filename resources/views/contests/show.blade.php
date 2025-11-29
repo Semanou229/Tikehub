@@ -268,17 +268,30 @@
                                     @auth
                                         <form action="{{ route('contests.vote', ['contest' => $contest, 'candidate' => $candidate]) }}" method="POST" class="space-y-3">
                                             @csrf
-                                            <div class="flex items-center gap-2">
-                                                <label for="quantity_{{ $candidate->id }}" class="text-sm text-gray-700">Nombre de votes:</label>
-                                                <input type="number" name="quantity" id="quantity_{{ $candidate->id }}" min="1" max="100" value="1" class="w-20 px-2 py-1 border border-gray-300 rounded text-center" required>
+                                            <div class="space-y-2">
+                                                <label for="quantity_{{ $candidate->id }}" class="block text-sm font-medium text-gray-700">Nombre de votes:</label>
+                                                <div class="flex items-center gap-2">
+                                                    <button type="button" onclick="decrementVote({{ $candidate->id }})" class="w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-lg flex items-center justify-center transition">
+                                                        <i class="fas fa-minus text-gray-600"></i>
+                                                    </button>
+                                                    <input type="number" name="quantity" id="quantity_{{ $candidate->id }}" min="1" max="100" value="1" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-center font-semibold" required>
+                                                    <button type="button" onclick="incrementVote({{ $candidate->id }})" class="w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-lg flex items-center justify-center transition">
+                                                        <i class="fas fa-plus text-gray-600"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="bg-purple-50 border-2 border-purple-200 rounded-lg p-3">
+                                                <div class="flex justify-between items-center">
+                                                    <span class="text-sm text-gray-700">Prix total:</span>
+                                                    <span class="text-xl font-bold text-purple-600" id="amount_{{ $candidate->id }}">{{ number_format($contest->price_per_vote, 0, ',', ' ') }} XOF</span>
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-1 text-center">
+                                                    {{ number_format($contest->price_per_vote, 0, ',', ' ') }} XOF × <span id="total_{{ $candidate->id }}">1</span> vote(s)
+                                                </p>
                                             </div>
                                             <button type="submit" class="block w-full bg-purple-600 text-white text-center px-4 py-3 rounded-lg hover:bg-purple-700 transition font-semibold">
                                                 <i class="fas fa-vote-yea mr-2"></i>Voter pour {{ $candidate->name }}
                                             </button>
-                                            <p class="text-xs text-gray-500 text-center">
-                                                Total: {{ number_format($contest->price_per_vote, 0, ',', ' ') }} XOF × <span id="total_{{ $candidate->id }}">1</span> = 
-                                                <span class="font-semibold" id="amount_{{ $candidate->id }}">{{ number_format($contest->price_per_vote, 0, ',', ' ') }}</span> XOF
-                                            </p>
                                         </form>
                                     @else
                                         <a href="{{ route('login') }}" class="block w-full bg-purple-600 text-white text-center px-4 py-3 rounded-lg hover:bg-purple-700 transition font-semibold">
@@ -499,16 +512,62 @@
 @push('scripts')
 <script>
     // Calculer le montant total en fonction du nombre de votes
+    const pricePerVote = {{ $contest->price_per_vote }};
+    
+    function updateVoteTotal(candidateId) {
+        const input = document.getElementById('quantity_' + candidateId);
+        if (!input) return;
+        
+        let quantity = parseInt(input.value) || 1;
+        if (quantity < 1) quantity = 1;
+        if (quantity > 100) quantity = 100;
+        input.value = quantity;
+        
+        const total = pricePerVote * quantity;
+        
+        const totalElement = document.getElementById('total_' + candidateId);
+        const amountElement = document.getElementById('amount_' + candidateId);
+        
+        if (totalElement) {
+            totalElement.textContent = quantity;
+        }
+        if (amountElement) {
+            amountElement.textContent = total.toLocaleString('fr-FR') + ' XOF';
+        }
+    }
+    
+    function incrementVote(candidateId) {
+        const input = document.getElementById('quantity_' + candidateId);
+        if (input) {
+            let value = parseInt(input.value) || 1;
+            if (value < 100) {
+                input.value = value + 1;
+                updateVoteTotal(candidateId);
+            }
+        }
+    }
+    
+    function decrementVote(candidateId) {
+        const input = document.getElementById('quantity_' + candidateId);
+        if (input) {
+            let value = parseInt(input.value) || 1;
+            if (value > 1) {
+                input.value = value - 1;
+                updateVoteTotal(candidateId);
+            }
+        }
+    }
+    
+    // Écouter les changements sur tous les inputs de quantité
     document.querySelectorAll('input[type="number"][name="quantity"]').forEach(input => {
         const candidateId = input.id.replace('quantity_', '');
-        const pricePerVote = {{ $contest->price_per_vote }};
         
         input.addEventListener('input', function() {
-            const quantity = parseInt(this.value) || 1;
-            const total = pricePerVote * quantity;
-            
-            document.getElementById('total_' + candidateId).textContent = quantity;
-            document.getElementById('amount_' + candidateId).textContent = total.toLocaleString('fr-FR');
+            updateVoteTotal(candidateId);
+        });
+        
+        input.addEventListener('change', function() {
+            updateVoteTotal(candidateId);
         });
     });
     

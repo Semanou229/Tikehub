@@ -309,16 +309,31 @@ class PaymentService
         $payment->update(['status' => $status]);
 
         if ($status === 'completed') {
-            $payment->tickets()->update(['status' => 'paid']);
-            
-            // Générer les QR codes et tokens d'accès virtuel
-            foreach ($payment->tickets as $ticket) {
-                app(\App\Services\QrCodeService::class)->generateForTicket($ticket);
+            // Gérer les tickets
+            if ($payment->tickets()->count() > 0) {
+                $payment->tickets()->update(['status' => 'paid']);
                 
-                // Si l'événement est virtuel, générer le token d'accès
-                if ($payment->event && $payment->event->is_virtual) {
-                    $ticket->generateVirtualAccessToken();
+                // Générer les QR codes et tokens d'accès virtuel
+                foreach ($payment->tickets as $ticket) {
+                    app(\App\Services\QrCodeService::class)->generateForTicket($ticket);
+                    
+                    // Si l'événement est virtuel, générer le token d'accès
+                    if ($payment->event && $payment->event->is_virtual) {
+                        $ticket->generateVirtualAccessToken();
+                    }
                 }
+            }
+            
+            // Gérer les votes
+            if ($payment->paymentable_type === \App\Models\Contest::class) {
+                $voteService = app(\App\Services\VoteService::class);
+                $voteService->confirmVotes($payment);
+            }
+            
+            // Gérer les donations
+            if ($payment->paymentable_type === \App\Models\Fundraising::class) {
+                $donationService = app(\App\Services\DonationService::class);
+                $donationService->confirmDonation($payment);
             }
         }
     }

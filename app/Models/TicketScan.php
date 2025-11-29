@@ -42,3 +42,4 @@ class TicketScan extends Model
     }
 }
 
+

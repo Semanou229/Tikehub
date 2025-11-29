@@ -8,3 +8,4 @@ return [
     'format' => 'png',
 ];
 
+

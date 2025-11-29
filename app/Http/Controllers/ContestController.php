@@ -121,12 +121,25 @@ class ContestController extends Controller
                 $request->ip()
             );
 
-            // Récupérer l'URL de paiement depuis la réponse Moneroo
-            $monerooService = app(\App\Services\MonerooService::class);
-            $monerooPayment = $monerooService->getPaymentStatus($payment->moneroo_transaction_id);
-            
-            if (isset($monerooPayment['payment_url'])) {
-                return redirect($monerooPayment['payment_url']);
+            // Récupérer l'URL de checkout depuis la session ou Moneroo
+            $checkoutUrl = session('moneroo_checkout_url_' . $payment->id);
+            if ($checkoutUrl) {
+                session()->forget('moneroo_checkout_url_' . $payment->id);
+                return redirect($checkoutUrl);
+            }
+
+            // Si pas d'URL en session, essayer de récupérer depuis Moneroo
+            if ($payment->moneroo_transaction_id) {
+                try {
+                    $monerooService = app(\App\Services\MonerooService::class);
+                    $monerooPayment = $monerooService->getPayment($payment->moneroo_transaction_id);
+                    $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? null;
+                    if ($checkoutUrl) {
+                        return redirect($checkoutUrl);
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('Error getting checkout URL for vote', ['error' => $e->getMessage()]);
+                }
             }
 
             return redirect()->route('contests.show', $contest)->with('error', 'Erreur lors de la création du paiement');

@@ -11,8 +11,8 @@ return [
     |
     */
 
-    'publicKey' => env('MONEROO_PUBLIC_KEY'),
-    'secretKey' => env('MONEROO_SECRET_KEY'),
+    'publicKey' => env('MONEROO_PUBLIC_KEY', 'pvk_n0qub9|01KATGZW4TFTH03M446AKM6YEE'),
+    'secretKey' => env('MONEROO_SECRET_KEY', 'pvk_n0qub9|01KATGZW4TFTH03M446AKM6YEE'),
     'webhook_secret' => env('MONEROO_WEBHOOK_SECRET'),
     
     // Anciennes clés pour compatibilité

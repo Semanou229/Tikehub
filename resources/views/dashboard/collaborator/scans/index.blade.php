@@ -252,3 +252,4 @@ function showScanResult(data) {
 @endpush
 @endsection
 
+

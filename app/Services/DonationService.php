@@ -46,19 +46,29 @@ class DonationService
             $monerooPayment = $this->moneroo->createPayment([
                 'amount' => $amount,
                 'currency' => 'XOF',
-                'reference' => 'DON-' . $payment->id,
-                'description' => "Don pour {$fundraising->name}",
+                'description' => "Don de " . number_format($amount, 0, ',', ' ') . " XOF pour {$fundraising->name}",
+                'payment_id' => $payment->id,
                 'customer' => [
                     'name' => $user->name,
                     'email' => $user->email,
+                    'phone' => $user->phone,
                 ],
                 'return_url' => route('fundraisings.donate.return', ['payment' => $payment->id]),
             ]);
 
+            // Le SDK Moneroo retourne un objet (data de la réponse)
+            $transactionId = $monerooPayment->transaction_id ?? $monerooPayment->id ?? null;
+            $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? null;
+            
             $payment->update([
-                'moneroo_transaction_id' => $monerooPayment['transaction_id'] ?? null,
-                'moneroo_reference' => $monerooPayment['reference'] ?? null,
+                'moneroo_transaction_id' => $transactionId,
+                'moneroo_reference' => $monerooPayment->reference ?? $transactionId,
             ]);
+
+            // Stocker l'URL de checkout dans la session pour redirection
+            if ($checkoutUrl) {
+                session(['moneroo_checkout_url_' . $payment->id => $checkoutUrl]);
+            }
 
             // Créer le don (en attente de paiement)
             Donation::create([
@@ -88,4 +98,5 @@ class DonationService
         }
     }
 }
+
 

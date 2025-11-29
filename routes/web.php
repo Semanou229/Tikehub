@@ -129,6 +129,7 @@ Route::middleware('auth')->group(function () {
     // Paiements
     Route::get('/payments/{payment}/return', [PaymentController::class, 'return'])->name('payments.return');
     Route::post('/payments/callback', [PaymentController::class, 'callback'])->name('payments.callback');
+    Route::post('/webhook', [PaymentController::class, 'webhook'])->name('payments.webhook');
 
     // Concours
     Route::resource('contests', \App\Http\Controllers\ContestController::class)->except(['index', 'show']);

@@ -128,3 +128,4 @@ chown -R www-data:www-data storage bootstrap/cache
 4. Activez HTTPS en production
 5. Configurez les jobs en file d'attente pour les tâches asynchrones
 
+

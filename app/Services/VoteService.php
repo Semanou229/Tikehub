@@ -56,19 +56,29 @@ class VoteService
             $monerooPayment = $this->moneroo->createPayment([
                 'amount' => $totalAmount,
                 'currency' => 'XOF',
-                'reference' => 'VOTE-' . $payment->id,
-                'description' => "{$quantity} vote(s) pour {$candidate->name}",
+                'description' => "{$quantity} vote(s) pour {$candidate->name} dans le concours {$contest->name}",
+                'payment_id' => $payment->id,
                 'customer' => [
                     'name' => $user->name,
                     'email' => $user->email,
+                    'phone' => $user->phone,
                 ],
                 'return_url' => route('contests.vote.return', ['payment' => $payment->id]),
             ]);
 
+            // Le SDK Moneroo retourne un objet (data de la réponse)
+            $transactionId = $monerooPayment->transaction_id ?? $monerooPayment->id ?? null;
+            $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? null;
+            
             $payment->update([
-                'moneroo_transaction_id' => $monerooPayment['transaction_id'] ?? null,
-                'moneroo_reference' => $monerooPayment['reference'] ?? null,
+                'moneroo_transaction_id' => $transactionId,
+                'moneroo_reference' => $monerooPayment->reference ?? $transactionId,
             ]);
+
+            // Stocker l'URL de checkout dans la session pour redirection
+            if ($checkoutUrl) {
+                session(['moneroo_checkout_url_' . $payment->id => $checkoutUrl]);
+            }
 
             // Créer les votes (en attente de paiement)
             for ($i = 0; $i < $quantity; $i++) {
@@ -93,9 +103,14 @@ class VoteService
             return;
         }
 
+        // Les votes sont déjà créés lors de la création du paiement
+        // Ici on peut ajouter d'autres actions si nécessaire (notifications, etc.)
         $votes = $payment->votes;
+        
+        // Mettre à jour les points du candidat si nécessaire
         foreach ($votes as $vote) {
-            // Les votes sont déjà créés, juste confirmer
+            // Les votes sont déjà comptabilisés dans le classement
+            // On peut ajouter des notifications ou autres actions ici
         }
     }
 
@@ -143,4 +158,5 @@ class VoteService
         }
     }
 }
+
 

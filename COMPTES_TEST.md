@@ -43,3 +43,4 @@
 - Le compte client a le KYC en attente
 - Tous les comptes sont actifs
 
+

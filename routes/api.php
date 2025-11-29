@@ -12,3 +12,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/tickets/scan', [TicketScanController::class, 'scan'])->middleware('auth:sanctum');
 Route::post('/moneroo/webhook', [PaymentController::class, 'webhook']);
 
+

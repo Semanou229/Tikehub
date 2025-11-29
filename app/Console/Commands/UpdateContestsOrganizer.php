@@ -42,3 +42,4 @@ class UpdateContestsOrganizer extends Command
     }
 }
 
+

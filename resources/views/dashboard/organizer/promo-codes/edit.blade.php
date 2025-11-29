@@ -177,3 +177,4 @@ document.getElementById('discount_type').addEventListener('change', function() {
 @endpush
 @endsection
 
+
