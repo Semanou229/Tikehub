@@ -46,6 +46,11 @@ class Contact extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    public function getFullNameAttribute()
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class);

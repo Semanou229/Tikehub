@@ -58,7 +58,7 @@ class PipelineController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Stage mis à jour avec succès.',
+            'message' => 'Étape du pipeline mise à jour avec succès.',
         ]);
     }
 }
