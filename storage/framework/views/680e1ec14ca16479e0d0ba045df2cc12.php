@@ -252,8 +252,10 @@
                             <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">
                                 <i class="fas fa-vote-yea mr-1"></i> Concours
                             </span>
-                            <span class="text-sm text-gray-500">
-                                <?php echo e(number_format($contest->price_per_vote, 0, ',', ' ')); ?> XOF/vote
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-lg font-bold text-purple-600">
+                                À partir de <?php echo e(number_format($contest->price_per_vote, 0, ',', ' ')); ?> XOF/vote
                             </span>
                         </div>
                         <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-purple-600 transition"><?php echo e($contest->name); ?></h3>
