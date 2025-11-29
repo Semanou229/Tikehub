@@ -3,63 +3,159 @@
 namespace App\Http\Controllers\Organizer\Crm;
 
 use App\Http\Controllers\Controller;
+use App\Models\CustomForm;
+use App\Models\FormSubmission;
+use App\Models\Event;
 use Illuminate\Http\Request;
 
 class CustomFormController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $organizerId = auth()->id();
+        
+        $forms = CustomForm::where('organizer_id', $organizerId)
+            ->with('event')
+            ->latest()
+            ->paginate(20);
+
+        return view('dashboard.organizer.crm.forms.index', compact('forms'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $organizerId = auth()->id();
+        $events = Event::where('organizer_id', $organizerId)->get();
+
+        return view('dashboard.organizer.crm.forms.create', compact('events'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'form_type' => 'required|in:press,exhibitor,volunteer,vip,custom',
+            'event_id' => 'nullable|exists:events,id',
+            'fields' => 'required|array|min:1',
+            'fields.*.type' => 'required|in:text,email,phone,textarea,select,checkbox,file',
+            'fields.*.label' => 'required|string|max:255',
+            'fields.*.required' => 'boolean',
+            'requires_approval' => 'boolean',
+        ]);
+
+        $validated['organizer_id'] = auth()->id();
+        $validated['is_active'] = $request->has('is_active');
+
+        $form = CustomForm::create($validated);
+
+        return redirect()->route('organizer.crm.forms.show', $form)
+            ->with('success', 'Formulaire créé avec succès.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(CustomForm $form)
     {
-        //
+        $this->authorize('view', $form);
+
+        $form->load(['event', 'submissions.contact']);
+
+        $stats = [
+            'total_submissions' => $form->submissions()->count(),
+            'pending' => $form->submissions()->where('status', 'pending')->count(),
+            'approved' => $form->submissions()->where('status', 'approved')->count(),
+            'rejected' => $form->submissions()->where('status', 'rejected')->count(),
+        ];
+
+        return view('dashboard.organizer.crm.forms.show', compact('form', 'stats'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(CustomForm $form)
     {
-        //
+        $this->authorize('update', $form);
+
+        $organizerId = auth()->id();
+        $events = Event::where('organizer_id', $organizerId)->get();
+
+        return view('dashboard.organizer.crm.forms.edit', compact('form', 'events'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, CustomForm $form)
     {
-        //
+        $this->authorize('update', $form);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'form_type' => 'required|in:press,exhibitor,volunteer,vip,custom',
+            'event_id' => 'nullable|exists:events,id',
+            'fields' => 'required|array|min:1',
+            'fields.*.type' => 'required|in:text,email,phone,textarea,select,checkbox,file',
+            'fields.*.label' => 'required|string|max:255',
+            'fields.*.required' => 'boolean',
+            'requires_approval' => 'boolean',
+        ]);
+
+        $validated['is_active'] = $request->has('is_active');
+
+        $form->update($validated);
+
+        return redirect()->route('organizer.crm.forms.show', $form)
+            ->with('success', 'Formulaire mis à jour avec succès.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(CustomForm $form)
     {
-        //
+        $this->authorize('delete', $form);
+
+        $form->delete();
+
+        return redirect()->route('organizer.crm.forms.index')
+            ->with('success', 'Formulaire supprimé avec succès.');
+    }
+
+    public function submissions(CustomForm $form)
+    {
+        $this->authorize('view', $form);
+
+        $submissions = $form->submissions()
+            ->with('contact')
+            ->latest()
+            ->paginate(20);
+
+        return view('dashboard.organizer.crm.forms.submissions', compact('form', 'submissions'));
+    }
+
+    public function approveSubmission(Request $request, CustomForm $form, FormSubmission $submission)
+    {
+        $this->authorize('update', $form);
+
+        $request->validate([
+            'status' => 'required|in:approved,rejected',
+            'admin_notes' => 'nullable|string',
+        ]);
+
+        $submission->update([
+            'status' => $request->status,
+            'admin_notes' => $request->admin_notes,
+            'reviewed_by' => auth()->id(),
+            'reviewed_at' => now(),
+        ]);
+
+        // Créer un contact si approuvé et n'existe pas
+        if ($request->status === 'approved' && !$submission->contact_id) {
+            $contact = \App\Models\Contact::create([
+                'organizer_id' => auth()->id(),
+                'first_name' => $submission->submitter_name ?? 'N/A',
+                'last_name' => '',
+                'email' => $submission->submitter_email,
+                'phone' => $submission->submitter_phone,
+                'category' => $form->form_type === 'vip' ? 'vip' : 'participant',
+                'pipeline_stage' => 'confirmed',
+            ]);
+
+            $submission->update(['contact_id' => $contact->id]);
+        }
+
+        return back()->with('success', 'Soumission ' . ($request->status === 'approved' ? 'approuvée' : 'rejetée') . ' avec succès.');
     }
 }
