@@ -66,7 +66,8 @@ class FundraisingController extends Controller
 
         $fundraising = Fundraising::create($validated);
 
-        return redirect()->route('fundraisings.show', $fundraising)->with('success', 'Collecte de fonds créée avec succès');
+        return redirect()->route('fundraisings.show', $fundraising)
+            ->with('success', 'Collecte de fonds créée avec succès. Vous pouvez maintenant la publier et ajouter des paliers.');
     }
 
     public function publish(Fundraising $fundraising)
