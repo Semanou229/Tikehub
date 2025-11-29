@@ -67,6 +67,53 @@
                             <i class="fas fa-flag"></i>
                             <span>SIGNALER</span>
                         </button>
+                        <button onclick="addToCalendar()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>CALENDRIER</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de signalement -->
+        <div id="reportModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Signaler cette collecte</h3>
+                    <button onclick="closeReportModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Raison du signalement *</label>
+                        <select id="report-reason" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            <option value="">Sélectionnez une raison</option>
+                            <option value="inappropriate_content">Contenu inapproprié</option>
+                            <option value="false_information">Informations erronées</option>
+                            <option value="spam">Spam</option>
+                            <option value="scam">Arnaque</option>
+                            <option value="copyright">Violation de droits d'auteur</option>
+                            <option value="other">Autre</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Votre message *</label>
+                        <textarea id="report-message" rows="4" 
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                  placeholder="Décrivez le problème en détail..."></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Maximum 1000 caractères</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="submitReport()" id="submit-report-btn"
+                                class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                            <i class="fas fa-paper-plane mr-2"></i>Envoyer le signalement
+                        </button>
+                        <button onclick="closeReportModal()" 
+                                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                            Annuler
+                        </button>
                     </div>
                 </div>
             </div>
@@ -316,18 +363,87 @@
                             <p class="text-sm text-gray-500">ORGANISATEUR</p>
                         </div>
                     </div>
-                    <?php if($fundraising->organizer->email): ?>
-                        <div class="space-y-2 mb-4">
+                    
+                    <!-- Réseaux sociaux -->
+                    <?php
+                        $socialNetworks = [
+                            'facebook' => ['url' => $fundraising->organizer->facebook_url, 'icon' => 'fab fa-facebook-f', 'color' => 'text-blue-600'],
+                            'twitter' => ['url' => $fundraising->organizer->twitter_url, 'icon' => 'fab fa-twitter', 'color' => 'text-blue-400'],
+                            'instagram' => ['url' => $fundraising->organizer->instagram_url, 'icon' => 'fab fa-instagram', 'color' => 'text-pink-600'],
+                            'linkedin' => ['url' => $fundraising->organizer->linkedin_url, 'icon' => 'fab fa-linkedin-in', 'color' => 'text-blue-700'],
+                            'youtube' => ['url' => $fundraising->organizer->youtube_url, 'icon' => 'fab fa-youtube', 'color' => 'text-red-600'],
+                            'website' => ['url' => $fundraising->organizer->website_url, 'icon' => 'fas fa-globe', 'color' => 'text-gray-600'],
+                        ];
+                        $hasSocialNetworks = collect($socialNetworks)->filter(fn($network) => !empty($network['url']))->isNotEmpty();
+                    ?>
+                    
+                    <?php if($hasSocialNetworks): ?>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <?php $__currentLoopData = $socialNetworks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $name => $network): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if(!empty($network['url'])): ?>
+                                    <a href="<?php echo e($network['url']); ?>" target="_blank" rel="noopener noreferrer" 
+                                       class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition <?php echo e($network['color']); ?>"
+                                       title="<?php echo e(ucfirst($name)); ?>">
+                                        <i class="<?php echo e($network['icon']); ?>"></i>
+                                    </a>
+                                <?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if($fundraising->organizer->phone): ?>
+                        <div class="mb-4">
                             <div class="flex items-center text-sm text-gray-700">
-                                <i class="fas fa-envelope text-green-600 mr-2 w-5"></i>
-                                <span><?php echo e($fundraising->organizer->email); ?></span>
+                                <i class="fas fa-phone text-green-600 mr-2 w-5"></i>
+                                <span><?php echo e($fundraising->organizer->phone); ?></span>
                             </div>
                         </div>
                     <?php endif; ?>
-                    <button onclick="contactOrganizer()" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
+                    
+                    <button onclick="contactOrganizer('<?php echo e($fundraising->organizer->email); ?>')" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
                         <i class="fas fa-envelope"></i>
                         <span>Envoyer un message</span>
                     </button>
+                    
+                    <!-- Modal pour afficher l'email -->
+                    <div id="contactModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold">Contacter l'organisateur</h3>
+                                <button onclick="closeContactModal()" class="text-gray-500 hover:text-gray-700">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Email de l'organisateur</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="email" id="organizer-email" readonly 
+                                               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                                        <button onclick="copyEmail()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Votre message</label>
+                                    <textarea id="contact-message" rows="4" 
+                                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                              placeholder="Écrivez votre message ici..."></textarea>
+                                </div>
+                                <div class="flex gap-2">
+                                    <a id="mailto-link" href="#" 
+                                       class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-center">
+                                        <i class="fas fa-envelope mr-2"></i>Ouvrir dans votre client email
+                                    </a>
+                                    <button onclick="closeContactModal()" 
+                                            class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                        Annuler
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -389,27 +505,158 @@
     }
     
     function shareFundraising() {
-        if (navigator.share) {
-            navigator.share({
-                title: '<?php echo e($fundraising->name); ?>',
-                text: '<?php echo e(Str::limit($fundraising->description, 100)); ?>',
-                url: window.location.href
+        const shareData = {
+            title: '<?php echo e(addslashes($fundraising->name)); ?>',
+            text: '<?php echo e(addslashes(Str::limit(strip_tags($fundraising->description), 100))); ?>',
+            url: window.location.href
+        };
+        
+        if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+            navigator.share(shareData).catch(err => {
+                console.log('Erreur de partage:', err);
+                fallbackShare();
             });
         } else {
-            navigator.clipboard.writeText(window.location.href);
-            alert('Lien copié dans le presse-papiers !');
+            fallbackShare();
+        }
+        
+        function fallbackShare() {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Lien copié dans le presse-papiers !');
+                }).catch(() => {
+                    promptShare();
+                });
+            } else {
+                promptShare();
+            }
+        }
+        
+        function promptShare() {
+            const url = window.location.href;
+            prompt('Copiez ce lien pour partager:', url);
         }
     }
     
     function reportFundraising() {
-        if (confirm('Voulez-vous signaler cette collecte ?')) {
-            alert('Fonctionnalité de signalement à venir');
+        const modal = document.getElementById('reportModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.getElementById('report-reason').value = '';
+            document.getElementById('report-message').value = '';
         }
     }
     
-    function contactOrganizer() {
-        alert('Fonctionnalité de contact à venir');
+    function closeReportModal() {
+        const modal = document.getElementById('reportModal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
     }
+    
+    function submitReport() {
+        const reason = document.getElementById('report-reason').value;
+        const message = document.getElementById('report-message').value;
+        
+        if (!reason) {
+            alert('Veuillez sélectionner une raison');
+            return;
+        }
+        
+        if (!message || message.trim() === '') {
+            alert('Veuillez saisir un message');
+            return;
+        }
+        
+        const submitBtn = document.getElementById('submit-report-btn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Envoi en cours...';
+        
+        fetch('<?php echo e(route("fundraisings.report", $fundraising)); ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
+            },
+            body: JSON.stringify({
+                reason: reason,
+                message: message.trim()
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message || 'Votre signalement a été enregistré. Merci !');
+            closeReportModal();
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue. Veuillez réessayer.');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Envoyer le signalement';
+        });
+    }
+    
+    // Fermer le modal en cliquant en dehors
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('reportModal');
+        if (e.target === modal) {
+            closeReportModal();
+        }
+    });
+    
+    function addToCalendar() {
+        window.location.href = '<?php echo e(route("fundraisings.calendar", $fundraising)); ?>';
+    }
+    
+    function contactOrganizer(email) {
+        if (!email) {
+            alert('Email de l\'organisateur non disponible');
+            return;
+        }
+        
+        const modal = document.getElementById('contactModal');
+        const emailInput = document.getElementById('organizer-email');
+        const mailtoLink = document.getElementById('mailto-link');
+        
+        emailInput.value = email;
+        mailtoLink.href = 'mailto:' + email;
+        
+        modal.classList.remove('hidden');
+    }
+    
+    function closeContactModal() {
+        const modal = document.getElementById('contactModal');
+        modal.classList.add('hidden');
+        document.getElementById('contact-message').value = '';
+    }
+    
+    function copyEmail() {
+        const emailInput = document.getElementById('organizer-email');
+        emailInput.select();
+        emailInput.setSelectionRange(0, 99999); // Pour mobile
+        
+        try {
+            document.execCommand('copy');
+            const copyBtn = event.target.closest('button');
+            const originalIcon = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check text-green-600"></i>';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalIcon;
+            }, 2000);
+        } catch (err) {
+            alert('Impossible de copier l\'email');
+        }
+    }
+    
+    // Fermer le modal en cliquant en dehors
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('contactModal');
+        if (e.target === modal) {
+            closeContactModal();
+        }
+    });
 </script>
 <?php if($hasLocation): ?>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

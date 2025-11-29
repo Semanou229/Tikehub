@@ -195,12 +195,7 @@ class DashboardController extends Controller
 
     protected function buyerDashboard()
     {
-        $tickets = Ticket::where('buyer_id', auth()->id())
-            ->with(['event', 'ticketType'])
-            ->latest()
-            ->paginate(10);
-
-        return view('dashboard.buyer', compact('tickets'));
+        return redirect()->route('buyer.dashboard');
     }
 }
 

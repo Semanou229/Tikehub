@@ -112,6 +112,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::get('/tickets/{ticket}/download', [TicketController::class, 'download'])->name('tickets.download');
 
+    // Routes Buyer Dashboard
+    Route::prefix('buyer')->name('buyer.')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Buyer\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/tickets', [\App\Http\Controllers\Buyer\DashboardController::class, 'tickets'])->name('tickets');
+        Route::get('/payments', [\App\Http\Controllers\Buyer\DashboardController::class, 'payments'])->name('payments');
+        Route::get('/virtual-events', [\App\Http\Controllers\Buyer\DashboardController::class, 'virtualEvents'])->name('virtual-events');
+    });
+
     // Paiements
     Route::get('/payments/{payment}/return', [PaymentController::class, 'return'])->name('payments.return');
     Route::post('/payments/callback', [PaymentController::class, 'callback'])->name('payments.callback');

@@ -19,11 +19,16 @@
                                 <h3 class="text-lg font-bold text-gray-900 mb-1"><?php echo e($event->title); ?></h3>
                                 <p class="text-sm text-gray-500"><?php echo e($event->category); ?></p>
                             </div>
-                            <div class="ml-4">
+                            <div class="ml-4 flex flex-col gap-1">
                                 <?php if($event->is_published): ?>
                                     <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Publié</span>
                                 <?php else: ?>
                                     <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Brouillon</span>
+                                <?php endif; ?>
+                                <?php if($event->is_virtual): ?>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                        <i class="fas fa-video mr-1"></i>Virtuel
+                                    </span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -41,6 +46,15 @@
                                 <i class="fas fa-tags text-indigo-600 mr-2 w-4"></i>
                                 <span><?php echo e($event->ticket_types_count); ?> types de billets</span>
                             </div>
+                            <?php if($event->is_virtual): ?>
+                                <?php
+                                    $virtualStats = app(\App\Services\VirtualEventService::class)->getAccessStatistics($event);
+                                ?>
+                                <div class="flex items-center text-sm text-blue-600 bg-blue-50 p-2 rounded-lg">
+                                    <i class="fas fa-users text-blue-600 mr-2 w-4"></i>
+                                    <span><strong><?php echo e($virtualStats['unique_participants']); ?></strong> participant(s) connecté(s) / <?php echo e($virtualStats['total_tickets']); ?> billets</span>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="flex items-center justify-between pt-4 border-t border-gray-200">
