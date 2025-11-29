@@ -95,7 +95,7 @@ class PaymentService
                 'amount' => $totalAmount,
                 'currency' => 'XOF',
                 'reference' => 'TKT-' . $payment->id,
-                'description' => "Achat de {$ticketData['quantity']} billet(s) pour {$event->title}",
+                'description' => "Achat de {$ticketData['quantity']} billet(s) pour {$event->title}" . ($discountAmount > 0 ? " (Réduction: -" . number_format($discountAmount, 0, ',', ' ') . " XOF)" : ''),
                 'customer' => [
                     'name' => $user->name,
                     'email' => $user->email,
@@ -202,9 +202,9 @@ class PaymentService
             }
 
             // Créer tous les tickets
-            foreach ($ticketsToCreate as $ticketData) {
-                $ticketData['payment_id'] = $payment->id;
-                Ticket::create($ticketData);
+            foreach ($ticketsToCreate as $ticketInfo) {
+                $ticketInfo['payment_id'] = $payment->id;
+                Ticket::create($ticketInfo);
             }
 
             // Mettre à jour les quantités vendues
@@ -218,11 +218,16 @@ class PaymentService
             }
 
             // Créer le paiement Moneroo
+            $description = "Achat de " . count($ticketsToCreate) . " billet(s) pour {$event->title}";
+            if ($discountAmount > 0) {
+                $description .= " (Réduction: -" . number_format($discountAmount, 0, ',', ' ') . " XOF)";
+            }
+            
             $monerooPayment = $this->moneroo->createPayment([
                 'amount' => $totalAmount,
                 'currency' => 'XOF',
                 'reference' => 'TKT-' . $payment->id,
-                'description' => "Achat de " . count($ticketsToCreate) . " billet(s) pour {$event->title}",
+                'description' => $description,
                 'customer' => [
                     'name' => $user->name,
                     'email' => $user->email,
