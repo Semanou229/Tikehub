@@ -108,6 +108,11 @@ class ContestController extends Controller
             'end_date' => 'required|date|after:start_date',
             'cover_image' => 'nullable|image|max:2048',
             'event_id' => 'nullable|exists:events,id',
+            'candidates' => 'nullable|array',
+            'candidates.*.name' => 'required_with:candidates|string|max:255',
+            'candidates.*.number' => 'required_with:candidates|integer|min:1',
+            'candidates.*.description' => 'nullable|string',
+            'candidates.*.photo' => 'nullable|image|max:2048',
         ]);
 
         $validated['organizer_id'] = auth()->id();
@@ -120,8 +125,39 @@ class ContestController extends Controller
 
         $contest = Contest::create($validated);
 
-        return redirect()->route('contests.show', $contest)
-            ->with('success', 'Concours créé avec succès. Vous pouvez maintenant ajouter des candidats.');
+        // Créer les candidats si fournis
+        if ($request->has('candidates') && is_array($request->candidates)) {
+            foreach ($request->candidates as $candidateData) {
+                if (!empty($candidateData['name'])) {
+                    $candidateAttributes = [
+                        'contest_id' => $contest->id,
+                        'name' => $candidateData['name'],
+                        'number' => $candidateData['number'] ?? 1,
+                        'description' => $candidateData['description'] ?? null,
+                        'is_active' => true,
+                    ];
+
+                    // Gérer l'upload de la photo
+                    if (isset($candidateData['photo']) && $request->hasFile("candidates.{$candidateData['number']}.photo")) {
+                        $photoFile = $request->file("candidates.{$candidateData['number']}.photo");
+                        if ($photoFile && $photoFile->isValid()) {
+                            $candidateAttributes['photo'] = $photoFile->store('contest-candidates', 'public');
+                        }
+                    }
+
+                    ContestCandidate::create($candidateAttributes);
+                }
+            }
+        }
+
+        $message = 'Concours créé avec succès.';
+        if ($contest->candidates()->count() > 0) {
+            $message .= ' ' . $contest->candidates()->count() . ' candidat(s) ajouté(s).';
+        } else {
+            $message .= ' Vous pouvez maintenant ajouter des candidats.';
+        }
+
+        return redirect()->route('contests.show', $contest)->with('success', $message);
     }
 
     public function publish(Contest $contest)
