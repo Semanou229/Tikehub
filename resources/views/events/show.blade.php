@@ -550,7 +550,7 @@
                     
                     // Ajouter le marqueur
                     const marker = L.marker([lat, lng]).addTo(map);
-                    const popupContent = '{{ addslashes($event->venue_name ?? $event->venue_city ?? "Lieu de l\'événement") }}';
+                    const popupContent = '{{ addslashes($event->venue_address ?? $event->venue_name ?? $event->venue_city ?? "Lieu de l\'événement") }}';
                     marker.bindPopup(popupContent).openPopup();
                     console.log('Marqueur ajouté');
                     
