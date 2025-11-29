@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
+
+// Profil public de l'organisateur
+Route::get('/organizer/{organizer}', [\App\Http\Controllers\Public\OrganizerProfileController::class, 'show'])->name('organizer.profile.show');
 // IMPORTANT: events/{event} doit être défini APRÈS events/create pour éviter les conflits
 // Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 

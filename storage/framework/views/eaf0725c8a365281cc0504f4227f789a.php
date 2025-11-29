@@ -49,9 +49,13 @@
                     <i class="fas fa-credit-card w-5 mr-3"></i>
                     <span>Mes Paiements</span>
                 </a>
-                <a href="<?php echo e(route('events.index')); ?>" class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="<?php echo e(route('home')); ?>" class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
                     <i class="fas fa-search w-5 mr-3"></i>
                     <span>Découvrir</span>
+                </a>
+                <a href="<?php echo e(route('buyer.profile')); ?>" class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo e(request()->routeIs('buyer.profile*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100'); ?>">
+                    <i class="fas fa-user w-5 mr-3"></i>
+                    <span>Mon Profil</span>
                 </a>
             </nav>
 

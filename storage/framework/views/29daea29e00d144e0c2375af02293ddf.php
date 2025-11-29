@@ -101,7 +101,7 @@
         <div class="bg-white rounded-lg shadow-md p-12 text-center">
             <i class="fas fa-receipt text-6xl text-gray-300 mb-4"></i>
             <p class="text-gray-500 mb-4">Aucun paiement enregistré</p>
-            <a href="<?php echo e(route('events.index')); ?>" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
+            <a href="<?php echo e(route('home')); ?>" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
                 <i class="fas fa-search mr-2"></i>Découvrir des événements
             </a>
         </div>

@@ -143,7 +143,7 @@
                     </div>
                     <div class="flex items-start">
                         <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
-                        <span>Collecte organisée par {{ $fundraising->organizer->name }}</span>
+                        <span>Collecte organisée par <a href="{{ route('organizer.profile.show', $fundraising->organizer) }}" class="text-green-600 hover:text-green-800 font-semibold hover:underline">{{ $fundraising->organizer->name }}</a></span>
                     </div>
                 </div>
 
@@ -356,7 +356,9 @@
                             {{ strtoupper(substr($fundraising->organizer->name, 0, 2)) }}
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg">{{ $fundraising->organizer->name }}</h3>
+                            <a href="{{ route('organizer.profile.show', $fundraising->organizer) }}" class="hover:underline">
+                                <h3 class="font-bold text-lg text-gray-900 hover:text-green-600 transition">{{ $fundraising->organizer->name }}</h3>
+                            </a>
                             <p class="text-sm text-gray-500">ORGANISATEUR</p>
                         </div>
                     </div>

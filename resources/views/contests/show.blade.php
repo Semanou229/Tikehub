@@ -135,7 +135,7 @@
                     </div>
                     <div class="flex items-start">
                         <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
-                        <span>Concours organisé par {{ $contest->organizer->name }}</span>
+                        <span>Concours organisé par <a href="{{ route('organizer.profile.show', $contest->organizer) }}" class="text-purple-600 hover:text-purple-800 font-semibold hover:underline">{{ $contest->organizer->name }}</a></span>
                     </div>
                 </div>
 
@@ -340,7 +340,9 @@
                             {{ strtoupper(substr($contest->organizer->name, 0, 2)) }}
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg">{{ $contest->organizer->name }}</h3>
+                            <a href="{{ route('organizer.profile.show', $contest->organizer) }}" class="hover:underline">
+                                <h3 class="font-bold text-lg text-gray-900 hover:text-purple-600 transition">{{ $contest->organizer->name }}</h3>
+                            </a>
                             <p class="text-sm text-gray-500">ORGANISATEUR</p>
                         </div>
                     </div>

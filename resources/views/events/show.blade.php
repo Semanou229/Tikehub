@@ -152,7 +152,7 @@
                         @endif
                         <div class="flex items-start">
                             <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
-                            <span>Événement organisé par {{ $event->organizer->name }}</span>
+                            <span>Événement organisé par <a href="{{ route('organizer.profile.show', $event->organizer) }}" class="text-indigo-600 hover:text-indigo-800 font-semibold hover:underline">{{ $event->organizer->name }}</a></span>
                         </div>
                     </div>
                 @endif
@@ -449,7 +449,9 @@
                             {{ strtoupper(substr($event->organizer->name, 0, 2)) }}
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg">{{ $event->organizer->name }}</h3>
+                            <a href="{{ route('organizer.profile.show', $event->organizer) }}" class="hover:underline">
+                                <h3 class="font-bold text-lg text-gray-900 hover:text-indigo-600 transition">{{ $event->organizer->name }}</h3>
+                            </a>
                             <p class="text-sm text-gray-500">ORGANISATEUR</p>
                         </div>
                     </div>

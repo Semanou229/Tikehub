@@ -157,5 +157,17 @@ class Event extends Model
         $participants = $this->virtualParticipantsCount;
         return ($participants / $totalTickets) * 100;
     }
+
+    /**
+     * Obtenir le prix minimum des tickets
+     */
+    public function getMinTicketPriceAttribute()
+    {
+        $minPrice = $this->ticketTypes()
+            ->where('is_active', true)
+            ->min('price');
+        
+        return $minPrice ?? 0;
+    }
 }
 
