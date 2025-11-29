@@ -27,7 +27,8 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
 
             $host = parse_url(config('app.url', 'http://localhost'), PHP_URL_HOST);
-            if ($host) {
+            // Ne charger les routes de sous-domaine que si on n'est pas en localhost
+            if ($host && $host !== 'localhost' && $host !== '127.0.0.1') {
                 Route::middleware('web')
                     ->domain('{subdomain}.' . $host)
                     ->group(base_path('routes/subdomain.php'));

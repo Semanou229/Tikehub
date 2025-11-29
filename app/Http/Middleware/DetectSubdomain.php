@@ -11,7 +11,13 @@ class DetectSubdomain
     public function handle(Request $request, Closure $next): Response
     {
         $host = $request->getHost();
-        $domain = parse_url(config('app.url'), PHP_URL_HOST) ?? 'tikehub.com';
+        $appUrl = config('app.url', 'http://localhost');
+        $domain = parse_url($appUrl, PHP_URL_HOST);
+        
+        // Si on est en localhost, pas de gestion de sous-domaine
+        if (!$domain || $domain === 'localhost' || $domain === '127.0.0.1') {
+            return $next($request);
+        }
         
         // Extraire le sous-domaine
         $subdomain = str_replace('.' . $domain, '', $host);
