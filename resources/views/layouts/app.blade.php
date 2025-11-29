@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @stack('styles')
 </head>
-<body class="bg-gray-50">
-    <nav class="bg-white shadow-lg">
+<body class="bg-gray-50" style="margin: 0; padding: 0;">
+    <nav class="bg-white shadow-lg" style="position: relative; top: 0; left: 0; right: 0; width: 100%; z-index: 1000;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
@@ -47,7 +47,7 @@
         </div>
     </nav>
 
-    <main class="py-4" style="flex: 1;">
+    <main class="py-4">
         @if(session('success'))
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
