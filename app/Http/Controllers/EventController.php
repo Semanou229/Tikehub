@@ -220,6 +220,46 @@ class EventController extends Controller
             $validated['cover_image'] = $request->file('cover_image')->store('events', 'public');
         }
 
+        // Si les coordonnées ne sont pas fournies mais qu'une adresse, ville ou pays existe, géocoder
+        if (empty($validated['venue_latitude']) && empty($validated['venue_longitude'])) {
+            // Prioriser l'adresse pour le géocodage
+            $addressToGeocode = null;
+            if (!empty($validated['venue_address'])) {
+                $addressToGeocode = $validated['venue_address'];
+            } elseif (!empty($validated['venue_city'])) {
+                $addressToGeocode = $validated['venue_city'];
+            } elseif (!empty($validated['venue_country'])) {
+                $addressToGeocode = $validated['venue_country'];
+            }
+            
+            if ($addressToGeocode) {
+                $fullAddress = $geocoding->buildAddress(
+                    $validated['venue_address'] ?? null,
+                    $validated['venue_city'] ?? null,
+                    $validated['venue_country'] ?? null
+                );
+                
+                $geocoded = $geocoding->geocode($fullAddress);
+                
+                if ($geocoded) {
+                    $validated['venue_latitude'] = $geocoded['latitude'];
+                    $validated['venue_longitude'] = $geocoded['longitude'];
+                    
+                    // Compléter les informations manquantes si disponibles
+                    if (isset($geocoded['details'])) {
+                        if (empty($validated['venue_city']) && isset($geocoded['details']['city'])) {
+                            $validated['venue_city'] = $geocoded['details']['city'];
+                        } elseif (empty($validated['venue_city']) && isset($geocoded['details']['town'])) {
+                            $validated['venue_city'] = $geocoded['details']['town'];
+                        }
+                        if (empty($validated['venue_country']) && isset($geocoded['details']['country'])) {
+                            $validated['venue_country'] = $geocoded['details']['country'];
+                        }
+                    }
+                }
+            }
+        }
+
         $event->update($validated);
 
         return redirect()->route('events.edit', $event)->with('success', 'Événement mis à jour');
