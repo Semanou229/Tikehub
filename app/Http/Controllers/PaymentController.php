@@ -30,7 +30,8 @@ class PaymentController extends Controller
                 $monerooPayment = $this->monerooService->verifyPayment($payment->moneroo_transaction_id);
                 
                 // Mapper les statuts Moneroo vers nos statuts
-                $status = match($monerooPayment->status ?? '') {
+                $monerooStatus = $monerooPayment->status ?? '';
+                $status = match($monerooStatus) {
                     'success', 'completed', 'paid' => 'completed',
                     'failed', 'declined' => 'failed',
                     'cancelled', 'canceled' => 'cancelled',
@@ -44,8 +45,8 @@ class PaymentController extends Controller
                     // Si le paiement est complété, mettre à jour les tickets
                     if ($status === 'completed') {
                         $this->paymentService->handlePaymentCallback([
-                            'transaction_id' => $monerooPayment->transaction_id ?? $monerooPayment->id,
-                            'status' => $monerooPayment->status,
+                            'transaction_id' => $monerooPayment->transaction_id ?? $monerooPayment->id ?? $payment->moneroo_transaction_id,
+                            'status' => $monerooStatus,
                         ]);
                     }
                 }
