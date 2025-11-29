@@ -73,29 +73,95 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Créer un admin par défaut
+        // Créer les comptes de test pour tous les rôles
+        
+        // ADMIN
         $admin = User::firstOrCreate(
             ['email' => 'admin@tikehub.com'],
             [
                 'name' => 'Administrateur',
                 'password' => Hash::make('password'),
+                'phone' => '+229 90 00 00 01',
                 'kyc_status' => 'verified',
                 'kyc_verified_at' => now(),
+                'is_active' => true,
             ]
         );
-        $admin->assignRole('admin');
+        if (!$admin->hasRole('admin')) {
+            $admin->assignRole('admin');
+        }
 
-        // Créer un organisateur de test
+        // ORGANISATEUR
         $organizer = User::firstOrCreate(
             ['email' => 'organizer@tikehub.com'],
             [
                 'name' => 'Organisateur Test',
                 'password' => Hash::make('password'),
+                'phone' => '+229 90 00 00 02',
                 'kyc_status' => 'verified',
                 'kyc_verified_at' => now(),
+                'is_active' => true,
             ]
         );
-        $organizer->assignRole('organizer');
+        if (!$organizer->hasRole('organizer')) {
+            $organizer->assignRole('organizer');
+        }
+
+        // CLIENT / BUYER
+        $buyer = User::firstOrCreate(
+            ['email' => 'client@tikehub.com'],
+            [
+                'name' => 'Client Test',
+                'password' => Hash::make('password'),
+                'phone' => '+229 90 00 00 03',
+                'kyc_status' => 'pending',
+                'is_active' => true,
+            ]
+        );
+        if (!$buyer->hasRole('buyer')) {
+            $buyer->assignRole('buyer');
+        }
+
+        // AGENT
+        $agent = User::firstOrCreate(
+            ['email' => 'agent@tikehub.com'],
+            [
+                'name' => 'Agent Test',
+                'password' => Hash::make('password'),
+                'phone' => '+229 90 00 00 04',
+                'kyc_status' => 'verified',
+                'kyc_verified_at' => now(),
+                'is_active' => true,
+            ]
+        );
+        if (!$agent->hasRole('agent')) {
+            $agent->assignRole('agent');
+        }
+
+        // Afficher les informations de connexion
+        $this->command->info('');
+        $this->command->info('═══════════════════════════════════════════════════════');
+        $this->command->info('  COMPTES DE TEST CRÉÉS');
+        $this->command->info('═══════════════════════════════════════════════════════');
+        $this->command->info('');
+        $this->command->info('🔴 ADMINISTRATEUR:');
+        $this->command->info('   Email: admin@tikehub.com');
+        $this->command->info('   Mot de passe: password');
+        $this->command->info('');
+        $this->command->info('🟣 ORGANISATEUR:');
+        $this->command->info('   Email: organizer@tikehub.com');
+        $this->command->info('   Mot de passe: password');
+        $this->command->info('');
+        $this->command->info('🟢 CLIENT / BUYER:');
+        $this->command->info('   Email: client@tikehub.com');
+        $this->command->info('   Mot de passe: password');
+        $this->command->info('');
+        $this->command->info('🟡 AGENT:');
+        $this->command->info('   Email: agent@tikehub.com');
+        $this->command->info('   Mot de passe: password');
+        $this->command->info('');
+        $this->command->info('═══════════════════════════════════════════════════════');
+        $this->command->info('');
 
         // Créer des données de test (événements, concours, collectes)
         $this->call(ContentSeeder::class);
