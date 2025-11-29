@@ -29,7 +29,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Événements (création, édition, publication - nécessitent auth)
-    Route::resource('events', EventController::class)->except(['index', 'show']);
+    // Route explicite pour create pour éviter les problèmes de routage
+    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
+    Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
+    Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
     Route::post('/events/{event}/publish', [EventController::class, 'publish'])->name('events.publish');
 
     // Billets
