@@ -248,15 +248,19 @@ class PaymentService
                 'return_url' => route('payments.return', ['payment' => $payment->id]),
             ]);
 
-            // Le SDK Moneroo retourne un objet avec checkout_url et transaction_id
+            // Le SDK Moneroo retourne un objet (data de la réponse)
+            // La réponse peut contenir: id, transaction_id, checkout_url, status, etc.
+            $transactionId = $monerooPayment->transaction_id ?? $monerooPayment->id ?? null;
+            $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? null;
+            
             $payment->update([
-                'moneroo_transaction_id' => $monerooPayment->transaction_id ?? $monerooPayment->id ?? null,
-                'moneroo_reference' => $monerooPayment->reference ?? $monerooPayment->transaction_id ?? null,
+                'moneroo_transaction_id' => $transactionId,
+                'moneroo_reference' => $monerooPayment->reference ?? $transactionId,
             ]);
 
             // Stocker l'URL de checkout dans la session pour redirection
-            if (isset($monerooPayment->checkout_url)) {
-                session(['moneroo_checkout_url_' . $payment->id => $monerooPayment->checkout_url]);
+            if ($checkoutUrl) {
+                session(['moneroo_checkout_url_' . $payment->id => $checkoutUrl]);
             }
 
             return $payment;
