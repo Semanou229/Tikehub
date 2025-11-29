@@ -369,33 +369,6 @@
 </div>
 
 @push('styles')
-<style>
-    /* S'assurer que le header reste en haut */
-    body {
-        display: flex !important;
-        flex-direction: column !important;
-        min-height: 100vh !important;
-    }
-    nav {
-        position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        order: 1 !important;
-        flex-shrink: 0 !important;
-        z-index: 1000 !important;
-    }
-    main {
-        order: 2 !important;
-        flex: 1 !important;
-        position: relative !important;
-    }
-    footer {
-        order: 3 !important;
-        flex-shrink: 0 !important;
-    }
-</style>
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
@@ -404,22 +377,52 @@
         height: 384px !important;
         min-height: 384px !important;
         position: relative !important;
-        z-index: 1 !important;
+        z-index: 10 !important;
         background: #e5e7eb !important;
     }
     .leaflet-container {
         width: 100% !important;
         height: 100% !important;
-        z-index: 1 !important;
+        z-index: 10 !important;
         background: #e5e7eb !important;
+        position: relative !important;
+    }
+    .leaflet-tile-container {
+        z-index: 1 !important;
     }
     .leaflet-tile-container img {
         max-width: none !important;
         max-height: none !important;
+        display: block !important;
     }
     .leaflet-tile {
         visibility: visible !important;
         opacity: 1 !important;
+        display: block !important;
+    }
+    .leaflet-pane {
+        z-index: 400 !important;
+    }
+    .leaflet-map-pane {
+        z-index: 400 !important;
+    }
+    .leaflet-tile-pane {
+        z-index: 200 !important;
+    }
+    .leaflet-overlay-pane {
+        z-index: 400 !important;
+    }
+    .leaflet-shadow-pane {
+        z-index: 500 !important;
+    }
+    .leaflet-marker-pane {
+        z-index: 600 !important;
+    }
+    .leaflet-tooltip-pane {
+        z-index: 650 !important;
+    }
+    .leaflet-popup-pane {
+        z-index: 700 !important;
     }
 </style>
 @endif
@@ -540,6 +543,9 @@
                     mapDiv.style.width = '100%';
                     mapDiv.style.height = '384px';
                     mapDiv.style.minHeight = '384px';
+                    mapDiv.style.position = 'relative';
+                    mapDiv.style.zIndex = '10';
+                    mapDiv.style.background = '#e5e7eb';
                     
                     // Initialiser la carte
                     const map = L.map('eventMap', {
@@ -547,7 +553,8 @@
                         scrollWheelZoom: true,
                         preferCanvas: false,
                         fadeAnimation: true,
-                        zoomAnimation: true
+                        zoomAnimation: true,
+                        attributionControl: true
                     }).setView([lat, lng], 15);
                     
                     console.log('Carte initialisée avec succès');
@@ -606,6 +613,9 @@
                     mapDiv.style.width = '100%';
                     mapDiv.style.height = '384px';
                     mapDiv.style.minHeight = '384px';
+                    mapDiv.style.position = 'relative';
+                    mapDiv.style.zIndex = '10';
+                    mapDiv.style.background = '#e5e7eb';
                     
                     // Initialiser la carte avec une position par défaut
                     const map = L.map('eventMap', {
@@ -613,7 +623,8 @@
                         scrollWheelZoom: true,
                         preferCanvas: false,
                         fadeAnimation: true,
-                        zoomAnimation: true
+                        zoomAnimation: true,
+                        attributionControl: true
                     }).setView([6.4969, 2.6283], 13);
                     
                     console.log('Carte initialisée avec position par défaut');
