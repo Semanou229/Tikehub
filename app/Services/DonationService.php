@@ -54,6 +54,11 @@ class DonationService
                     'phone' => $user->phone,
                 ],
                 'return_url' => route('payments.return', ['payment' => $payment->id]),
+                'metadata' => [
+                    'payment_id' => (string) $payment->id,
+                    'fundraising_id' => (string) $fundraising->id,
+                    'type' => 'donation',
+                ],
             ]);
 
             // Log pour déboguer la structure de la réponse

@@ -60,13 +60,20 @@ class MonerooService
             }
 
             // Ajouter les métadonnées si présentes
+            // Moneroo exige que les valeurs dans metadata soient string, boolean ou integer
             if (isset($data['metadata'])) {
-                $paymentData['metadata'] = $data['metadata'];
+                $paymentData['metadata'] = $this->sanitizeMetadata($data['metadata']);
             } else {
-                $paymentData['metadata'] = [
-                    'payment_id' => $data['payment_id'] ?? null,
-                    'event_id' => $data['event_id'] ?? null,
-                ];
+                $metadata = [];
+                if (isset($data['payment_id'])) {
+                    $metadata['payment_id'] = (string) $data['payment_id'];
+                }
+                if (isset($data['event_id']) && $data['event_id'] !== null) {
+                    $metadata['event_id'] = (string) $data['event_id'];
+                }
+                if (!empty($metadata)) {
+                    $paymentData['metadata'] = $metadata;
+                }
             }
 
             // Ajouter les méthodes de paiement autorisées si spécifiées
@@ -315,5 +322,33 @@ class MonerooService
         }
 
         return $phoneInt;
+    }
+
+    /**
+     * Sanitize metadata values to ensure they are string, boolean or integer
+     * Moneroo requires metadata values to be primitive types
+     * 
+     * @param array $metadata
+     * @return array
+     */
+    protected function sanitizeMetadata(array $metadata): array
+    {
+        $sanitized = [];
+        foreach ($metadata as $key => $value) {
+            if ($value === null) {
+                continue; // Skip null values
+            }
+            if (is_bool($value)) {
+                $sanitized[$key] = $value;
+            } elseif (is_int($value)) {
+                $sanitized[$key] = $value;
+            } elseif (is_string($value)) {
+                $sanitized[$key] = $value;
+            } else {
+                // Convert other types to string
+                $sanitized[$key] = (string) $value;
+            }
+        }
+        return $sanitized;
     }
 }

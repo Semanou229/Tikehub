@@ -64,6 +64,12 @@ class VoteService
                     'phone' => $user->phone,
                 ],
                 'return_url' => route('payments.return', ['payment' => $payment->id]),
+                'metadata' => [
+                    'payment_id' => (string) $payment->id,
+                    'contest_id' => (string) $contest->id,
+                    'candidate_id' => (string) $candidate->id,
+                    'type' => 'vote',
+                ],
             ]);
 
             // Log pour déboguer la structure de la réponse
