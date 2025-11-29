@@ -101,15 +101,26 @@ class EventController extends Controller
             'cover_image' => 'nullable|image|max:2048',
         ]);
 
-        // Si les coordonnées ne sont pas fournies mais qu'une adresse l'est, géocoder l'adresse
-        if (empty($validated['venue_latitude']) && empty($validated['venue_longitude']) && !empty($validated['venue_address'])) {
-            $fullAddress = $geocoding->buildAddress(
-                $validated['venue_address'],
-                $validated['venue_city'] ?? null,
-                $validated['venue_country'] ?? null
-            );
+        // Si les coordonnées ne sont pas fournies mais qu'une adresse, ville ou pays existe, géocoder
+        if (empty($validated['venue_latitude']) && empty($validated['venue_longitude'])) {
+            // Prioriser l'adresse pour le géocodage
+            $addressToGeocode = null;
+            if (!empty($validated['venue_address'])) {
+                $addressToGeocode = $validated['venue_address'];
+            } elseif (!empty($validated['venue_city'])) {
+                $addressToGeocode = $validated['venue_city'];
+            } elseif (!empty($validated['venue_country'])) {
+                $addressToGeocode = $validated['venue_country'];
+            }
             
-            $geocoded = $geocoding->geocode($fullAddress);
+            if ($addressToGeocode) {
+                $fullAddress = $geocoding->buildAddress(
+                    $validated['venue_address'] ?? null,
+                    $validated['venue_city'] ?? null,
+                    $validated['venue_country'] ?? null
+                );
+                
+                $geocoded = $geocoding->geocode($fullAddress);
             
             if ($geocoded) {
                 $validated['venue_latitude'] = $geocoded['latitude'];

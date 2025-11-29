@@ -75,7 +75,17 @@ class GeocodingService
      */
     public function buildAddress(?string $address, ?string $city, ?string $country): string
     {
-        $parts = array_filter([$address, $city, $country]);
+        // Prioriser l'adresse si elle existe, sinon utiliser la ville, puis le pays
+        $parts = [];
+        if (!empty($address)) {
+            $parts[] = $address;
+        }
+        if (!empty($city)) {
+            $parts[] = $city;
+        }
+        if (!empty($country)) {
+            $parts[] = $country;
+        }
         return implode(', ', $parts);
     }
 }
