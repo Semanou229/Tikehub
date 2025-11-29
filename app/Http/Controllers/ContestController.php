@@ -135,12 +135,20 @@ class ContestController extends Controller
                     $monerooService = app(\App\Services\MonerooService::class);
                     $monerooPayment = $monerooService->getPayment($payment->moneroo_transaction_id);
                     
-                    // Essayer différentes propriétés
+                    // Le SDK Moneroo retourne $payload->data ?? $payload
                     $checkoutUrl = null;
                     if (is_object($monerooPayment)) {
-                        $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? $monerooPayment->data->checkout_url ?? $monerooPayment->data->checkoutUrl ?? $monerooPayment->url ?? $monerooPayment->data->url ?? null;
+                        $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? $monerooPayment->url ?? null;
+                        if (!$checkoutUrl && isset($monerooPayment->data)) {
+                            $data = is_object($monerooPayment->data) ? $monerooPayment->data : (object) $monerooPayment->data;
+                            $checkoutUrl = $data->checkout_url ?? $data->checkoutUrl ?? $data->url ?? null;
+                        }
                     } elseif (is_array($monerooPayment)) {
-                        $checkoutUrl = $monerooPayment['checkout_url'] ?? $monerooPayment['checkoutUrl'] ?? $monerooPayment['data']['checkout_url'] ?? $monerooPayment['data']['checkoutUrl'] ?? $monerooPayment['url'] ?? $monerooPayment['data']['url'] ?? null;
+                        $checkoutUrl = $monerooPayment['checkout_url'] ?? $monerooPayment['checkoutUrl'] ?? $monerooPayment['url'] ?? null;
+                        if (!$checkoutUrl && isset($monerooPayment['data'])) {
+                            $data = $monerooPayment['data'];
+                            $checkoutUrl = $data['checkout_url'] ?? $data['checkoutUrl'] ?? $data['url'] ?? null;
+                        }
                     }
                     
                     if ($checkoutUrl) {

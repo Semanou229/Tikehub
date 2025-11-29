@@ -73,17 +73,31 @@ class VoteService
                 'response' => is_object($monerooPayment) ? (array) $monerooPayment : $monerooPayment,
             ]);
 
-            // Le SDK Moneroo retourne un objet (data de la réponse)
-            // Essayer différentes propriétés possibles
+            // Le SDK Moneroo retourne $payload->data ?? $payload
+            // Donc la réponse peut être directement dans l'objet ou dans ->data
             $transactionId = null;
             $checkoutUrl = null;
             
             if (is_object($monerooPayment)) {
-                $transactionId = $monerooPayment->transaction_id ?? $monerooPayment->id ?? $monerooPayment->data->transaction_id ?? $monerooPayment->data->id ?? null;
-                $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? $monerooPayment->data->checkout_url ?? $monerooPayment->data->checkoutUrl ?? $monerooPayment->url ?? $monerooPayment->data->url ?? null;
+                // Essayer d'abord directement sur l'objet
+                $transactionId = $monerooPayment->transaction_id ?? $monerooPayment->id ?? null;
+                $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? $monerooPayment->url ?? null;
+                
+                // Si pas trouvé, essayer dans ->data
+                if (!$transactionId && isset($monerooPayment->data)) {
+                    $data = is_object($monerooPayment->data) ? $monerooPayment->data : (object) $monerooPayment->data;
+                    $transactionId = $data->transaction_id ?? $data->id ?? $transactionId;
+                    $checkoutUrl = $data->checkout_url ?? $data->checkoutUrl ?? $data->url ?? $checkoutUrl;
+                }
             } elseif (is_array($monerooPayment)) {
-                $transactionId = $monerooPayment['transaction_id'] ?? $monerooPayment['id'] ?? $monerooPayment['data']['transaction_id'] ?? $monerooPayment['data']['id'] ?? null;
-                $checkoutUrl = $monerooPayment['checkout_url'] ?? $monerooPayment['checkoutUrl'] ?? $monerooPayment['data']['checkout_url'] ?? $monerooPayment['data']['checkoutUrl'] ?? $monerooPayment['url'] ?? $monerooPayment['data']['url'] ?? null;
+                $transactionId = $monerooPayment['transaction_id'] ?? $monerooPayment['id'] ?? null;
+                $checkoutUrl = $monerooPayment['checkout_url'] ?? $monerooPayment['checkoutUrl'] ?? $monerooPayment['url'] ?? null;
+                
+                if (!$transactionId && isset($monerooPayment['data'])) {
+                    $data = $monerooPayment['data'];
+                    $transactionId = $data['transaction_id'] ?? $data['id'] ?? $transactionId;
+                    $checkoutUrl = $data['checkout_url'] ?? $data['checkoutUrl'] ?? $data['url'] ?? $checkoutUrl;
+                }
             }
             
             $payment->update([
