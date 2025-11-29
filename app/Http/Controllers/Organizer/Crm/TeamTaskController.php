@@ -50,6 +50,9 @@ class TeamTaskController extends Controller
         ]);
 
         $validated['team_id'] = $team->id;
+        $validated['assigned_to'] = $validated['assigned_to_user_id'] ?? null;
+        $validated['created_by'] = auth()->id();
+        unset($validated['assigned_to_user_id']);
 
         $task = TeamTask::create($validated);
 
@@ -86,6 +89,9 @@ class TeamTaskController extends Controller
             'due_date' => 'nullable|date',
             'status' => 'required|in:todo,in_progress,done',
         ]);
+
+        $validated['assigned_to'] = $validated['assigned_to_user_id'] ?? null;
+        unset($validated['assigned_to_user_id']);
 
         $task->update($validated);
 
