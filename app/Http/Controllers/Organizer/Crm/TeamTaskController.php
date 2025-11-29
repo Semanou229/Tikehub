@@ -3,63 +3,107 @@
 namespace App\Http\Controllers\Organizer\Crm;
 
 use App\Http\Controllers\Controller;
+use App\Models\Team;
+use App\Models\TeamTask;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TeamTaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Team $team)
     {
-        //
+        $this->authorize('view', $team);
+
+        $status = $request->get('status');
+        $query = $team->tasks()
+            ->with(['assignedUser']);
+        
+        if ($status) {
+            $query->where('status', $status);
+        }
+        
+        $tasks = $query->latest()->paginate(20);
+
+        return view('dashboard.organizer.crm.teams.tasks.index', compact('team', 'tasks'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(Team $team)
     {
-        //
+        $this->authorize('update', $team);
+
+        $members = User::where('team_id', $team->id)->get();
+        $allUsers = User::where('id', '!=', auth()->id())->get();
+
+        return view('dashboard.organizer.crm.teams.tasks.create', compact('team', 'members', 'allUsers'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request, Team $team)
     {
-        //
+        $this->authorize('update', $team);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'assigned_to_user_id' => 'nullable|exists:users,id',
+            'due_date' => 'nullable|date|after:today',
+            'status' => 'required|in:todo,in_progress,done',
+        ]);
+
+        $validated['team_id'] = $team->id;
+
+        $task = TeamTask::create($validated);
+
+        return redirect()->route('organizer.crm.teams.tasks.index', $team)
+            ->with('success', 'Tâche créée avec succès.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Team $team, TeamTask $task)
     {
-        //
+        $this->authorize('update', $team);
+
+        if ($task->team_id !== $team->id) {
+            abort(404);
+        }
+
+        $members = User::where('team_id', $team->id)->get();
+        $allUsers = User::where('id', '!=', auth()->id())->get();
+
+        return view('dashboard.organizer.crm.teams.tasks.edit', compact('team', 'task', 'members', 'allUsers'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Team $team, TeamTask $task)
     {
-        //
+        $this->authorize('update', $team);
+
+        if ($task->team_id !== $team->id) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'assigned_to_user_id' => 'nullable|exists:users,id',
+            'due_date' => 'nullable|date',
+            'status' => 'required|in:todo,in_progress,done',
+        ]);
+
+        $task->update($validated);
+
+        return redirect()->route('organizer.crm.teams.tasks.index', $team)
+            ->with('success', 'Tâche mise à jour avec succès.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Team $team, TeamTask $task)
     {
-        //
-    }
+        $this->authorize('update', $team);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($task->team_id !== $team->id) {
+            abort(404);
+        }
+
+        $task->delete();
+
+        return redirect()->route('organizer.crm.teams.tasks.index', $team)
+            ->with('success', 'Tâche supprimée avec succès.');
     }
 }

@@ -52,7 +52,7 @@ class TeamController extends Controller
     {
         $this->authorize('view', $team);
 
-        $team->load(['members', 'tasks.assignedUser', 'tasks.creator']);
+        $team->load(['members', 'tasks.assignedUser']);
 
         $stats = [
             'members_count' => $team->members()->count(),
