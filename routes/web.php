@@ -13,6 +13,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
+// Formulaires publics
+Route::get('/form/{slug}', [\App\Http\Controllers\PublicFormController::class, 'show'])->name('forms.show');
+Route::post('/form/{slug}/submit', [\App\Http\Controllers\PublicFormController::class, 'submit'])->name('forms.submit');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
