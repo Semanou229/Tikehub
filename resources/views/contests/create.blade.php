@@ -103,17 +103,39 @@
                 </div>
 
                 <!-- Candidats -->
-                <div>
+                <div class="bg-purple-50 border-2 border-purple-200 rounded-lg p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-bold text-gray-800">Candidats</h2>
-                        <button type="button" id="addCandidateBtn" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                                <i class="fas fa-users text-purple-600 mr-2"></i>
+                                Candidats / Candidates
+                            </h2>
+                            <p class="text-sm text-gray-600 mt-1">Ajoutez les candidats qui participeront à ce concours</p>
+                        </div>
+                        <button type="button" id="addCandidateBtn" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition font-semibold shadow-md">
                             <i class="fas fa-plus mr-2"></i>Ajouter un candidat
                         </button>
                     </div>
-                    <p class="text-sm text-gray-600 mb-4">Vous pouvez ajouter des candidats maintenant ou plus tard. Au moins un candidat est nécessaire pour publier le concours.</p>
+                    
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 mt-1 mr-2"></i>
+                            <p class="text-sm text-yellow-800">
+                                <strong>Important :</strong> Vous devez ajouter au moins un candidat pour pouvoir publier le concours. 
+                                Les candidats peuvent être ajoutés maintenant ou plus tard depuis la page de modification.
+                            </p>
+                        </div>
+                    </div>
+                    
                     <div id="candidatesContainer" class="space-y-4">
                         <!-- Les candidats seront ajoutés ici dynamiquement -->
                     </div>
+                    
+                    <div id="noCandidatesMessage" class="text-center py-8 text-gray-500">
+                        <i class="fas fa-user-plus text-4xl mb-3 text-gray-300"></i>
+                        <p class="text-sm">Aucun candidat ajouté pour le moment. Cliquez sur "Ajouter un candidat" pour commencer.</p>
+                    </div>
+                    
                     @error('candidates')<p class="text-red-500 text-sm mt-2">{{ $message }}</p>@enderror
                     @error('candidates.*')<p class="text-red-500 text-sm mt-2">{{ $message }}</p>@enderror
                 </div>
@@ -136,7 +158,12 @@
             <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
             <div class="text-sm text-blue-800">
                 <p class="font-semibold mb-1">Note importante :</p>
-                <p>Le concours sera créé en mode "Brouillon". Vous pouvez ajouter des candidats maintenant ou plus tard. Après publication, les utilisateurs pourront voter pour les candidats.</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li>Le concours sera créé en mode "Brouillon" et ne sera pas visible publiquement</li>
+                    <li>Vous devez ajouter au moins un candidat pour pouvoir publier le concours</li>
+                    <li>Vous pouvez ajouter des candidats maintenant ou plus tard depuis la page de modification</li>
+                    <li>Après publication, les utilisateurs pourront voter pour les candidats</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -148,17 +175,27 @@ let candidateIndex = 0;
 
 document.getElementById('addCandidateBtn').addEventListener('click', function() {
     const container = document.getElementById('candidatesContainer');
+    const noCandidatesMessage = document.getElementById('noCandidatesMessage');
+    
+    // Masquer le message "aucun candidat"
+    if (noCandidatesMessage) {
+        noCandidatesMessage.style.display = 'none';
+    }
+    
     const candidateHtml = `
-        <div class="candidate-item border border-gray-200 rounded-lg p-4 bg-gray-50">
+        <div class="candidate-item border-2 border-purple-200 rounded-lg p-5 bg-white shadow-sm hover:shadow-md transition">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-sm font-semibold text-gray-700">Candidat #<span class="candidate-number">${candidateIndex + 1}</span></h3>
-                <button type="button" class="removeCandidateBtn text-red-600 hover:text-red-800 text-sm">
-                    <i class="fas fa-trash"></i> Supprimer
+                <h3 class="text-base font-bold text-purple-700 flex items-center">
+                    <i class="fas fa-user-circle mr-2"></i>
+                    Candidat #<span class="candidate-number">${candidateIndex + 1}</span>
+                </h3>
+                <button type="button" class="removeCandidateBtn text-red-600 hover:text-red-800 hover:bg-red-50 px-3 py-1 rounded-lg transition text-sm font-medium">
+                    <i class="fas fa-trash mr-1"></i> Supprimer
                 </button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Nom du candidat *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nom complet *</label>
                     <input type="text" name="candidates[${candidateIndex}][name]" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Ex: Amina Diallo">
                 </div>
                 <div>
@@ -167,32 +204,41 @@ document.getElementById('addCandidateBtn').addEventListener('click', function() 
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Photo (optionnel)</label>
-                    <input type="file" name="candidates[${candidateIndex}][photo]" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    <input type="file" name="candidates[${candidateIndex}][photo]" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm">
+                    <p class="text-xs text-gray-500 mt-1">JPG, PNG (max 2MB)</p>
                 </div>
             </div>
             <div class="mt-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                <textarea name="candidates[${candidateIndex}][description]" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Courte description du candidat..."></textarea>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Description / Biographie</label>
+                <textarea name="candidates[${candidateIndex}][description]" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Courte description ou biographie du candidat..."></textarea>
+                <p class="text-xs text-gray-500 mt-1">Cette description sera visible sur la page publique du concours</p>
             </div>
         </div>
     `;
     container.insertAdjacentHTML('beforeend', candidateHtml);
     candidateIndex++;
     updateCandidateNumbers();
+    updateNoCandidatesMessage();
     
     // Ajouter l'événement de suppression
-    container.querySelectorAll('.removeCandidateBtn').forEach(btn => {
-        btn.addEventListener('click', function() {
+    const newItem = container.lastElementChild;
+    const removeBtn = newItem.querySelector('.removeCandidateBtn');
+    if (removeBtn) {
+        removeBtn.addEventListener('click', function() {
             this.closest('.candidate-item').remove();
             updateCandidateNumbers();
+            updateNoCandidatesMessage();
         });
-    });
+    }
 });
 
 function updateCandidateNumbers() {
     const items = document.querySelectorAll('.candidate-item');
     items.forEach((item, index) => {
-        item.querySelector('.candidate-number').textContent = index + 1;
+        const numberSpan = item.querySelector('.candidate-number');
+        if (numberSpan) {
+            numberSpan.textContent = index + 1;
+        }
         const numberInput = item.querySelector('input[name*="[number]"]');
         if (numberInput) {
             numberInput.value = index + 1;
@@ -200,11 +246,24 @@ function updateCandidateNumbers() {
     });
 }
 
+function updateNoCandidatesMessage() {
+    const container = document.getElementById('candidatesContainer');
+    const noCandidatesMessage = document.getElementById('noCandidatesMessage');
+    const items = container.querySelectorAll('.candidate-item');
+    
+    if (items.length === 0 && noCandidatesMessage) {
+        noCandidatesMessage.style.display = 'block';
+    } else if (noCandidatesMessage) {
+        noCandidatesMessage.style.display = 'none';
+    }
+}
+
 // Permettre la suppression des candidats
 document.addEventListener('click', function(e) {
     if (e.target.closest('.removeCandidateBtn')) {
         e.target.closest('.candidate-item').remove();
         updateCandidateNumbers();
+        updateNoCandidatesMessage();
     }
 });
 </script>

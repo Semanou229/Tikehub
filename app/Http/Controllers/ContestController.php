@@ -203,9 +203,14 @@ class ContestController extends Controller
     {
         $this->authorize('update', $contest);
 
+        // Vérifier qu'il y a au moins un candidat
+        if ($contest->candidates()->count() === 0) {
+            return back()->with('error', 'Vous devez ajouter au moins un candidat avant de publier le concours.');
+        }
+
         $contest->update(['is_published' => true]);
 
-        return back()->with('success', 'Concours publié');
+        return back()->with('success', 'Concours publié avec succès !');
     }
 }
 
