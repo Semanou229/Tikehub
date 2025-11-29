@@ -127,19 +127,19 @@ class ContestController extends Controller
 
         // Créer les candidats si fournis
         if ($request->has('candidates') && is_array($request->candidates)) {
-            foreach ($request->candidates as $candidateData) {
+            foreach ($request->candidates as $index => $candidateData) {
                 if (!empty($candidateData['name'])) {
                     $candidateAttributes = [
                         'contest_id' => $contest->id,
                         'name' => $candidateData['name'],
-                        'number' => $candidateData['number'] ?? 1,
+                        'number' => $candidateData['number'] ?? ($index + 1),
                         'description' => $candidateData['description'] ?? null,
                         'is_active' => true,
                     ];
 
                     // Gérer l'upload de la photo
-                    if (isset($candidateData['photo']) && $request->hasFile("candidates.{$candidateData['number']}.photo")) {
-                        $photoFile = $request->file("candidates.{$candidateData['number']}.photo");
+                    if ($request->hasFile("candidates.{$index}.photo")) {
+                        $photoFile = $request->file("candidates.{$index}.photo");
                         if ($photoFile && $photoFile->isValid()) {
                             $candidateAttributes['photo'] = $photoFile->store('contest-candidates', 'public');
                         }
