@@ -369,6 +369,33 @@
 </div>
 
 @push('styles')
+<style>
+    /* S'assurer que le header reste en haut */
+    body {
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 100vh !important;
+    }
+    nav {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        order: 1 !important;
+        flex-shrink: 0 !important;
+        z-index: 1000 !important;
+    }
+    main {
+        order: 2 !important;
+        flex: 1 !important;
+        position: relative !important;
+    }
+    footer {
+        order: 3 !important;
+        flex-shrink: 0 !important;
+    }
+</style>
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
