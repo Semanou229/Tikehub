@@ -18,9 +18,13 @@ class User extends Authenticatable
         'password',
         'phone',
         'avatar',
+        'company_name',
+        'bio',
         'kyc_status',
         'kyc_document',
+        'kyc_document_type',
         'kyc_verified_at',
+        'kyc_submitted_at',
         'is_active',
     ];
 

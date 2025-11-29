@@ -47,7 +47,7 @@
                     <i class="fas fa-heart w-5 mr-3"></i>
                     <span>Mes Collectes</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('organizer.wallet.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.wallet.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-wallet w-5 mr-3"></i>
                     <span>Portefeuille</span>
                 </a>
@@ -63,11 +63,11 @@
                     <i class="fas fa-users w-5 mr-3"></i>
                     <span>Agents</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('organizer.notifications.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.notifications.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-bell w-5 mr-3"></i>
                     <span>Notifications</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('organizer.profile.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.profile.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-user w-5 mr-3"></i>
                     <span>Mon Compte</span>
                 </a>

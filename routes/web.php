@@ -88,6 +88,20 @@ Route::middleware('auth')->group(function () {
         // Gestion des collectes
         Route::get('/fundraisings', [\App\Http\Controllers\Organizer\FundraisingManagementController::class, 'index'])->name('fundraisings.index');
         Route::delete('/fundraisings/{fundraising}', [\App\Http\Controllers\Organizer\FundraisingManagementController::class, 'destroy'])->name('fundraisings.destroy');
+
+        // Portefeuille
+        Route::get('/wallet', [\App\Http\Controllers\Organizer\WalletController::class, 'index'])->name('wallet.index');
+
+        // Profil
+        Route::get('/profile', [\App\Http\Controllers\Organizer\ProfileController::class, 'index'])->name('profile.index');
+        Route::put('/profile', [\App\Http\Controllers\Organizer\ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile/kyc', [\App\Http\Controllers\Organizer\ProfileController::class, 'kyc'])->name('profile.kyc');
+        Route::post('/profile/kyc', [\App\Http\Controllers\Organizer\ProfileController::class, 'submitKyc'])->name('profile.kyc.submit');
+
+        // Notifications
+        Route::get('/notifications', [\App\Http\Controllers\Organizer\NotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/{id}/read', [\App\Http\Controllers\Organizer\NotificationController::class, 'markAsRead'])->name('notifications.markRead');
+        Route::post('/notifications/read-all', [\App\Http\Controllers\Organizer\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
     });
 });
 
