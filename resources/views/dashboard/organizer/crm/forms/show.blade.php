@@ -18,6 +18,22 @@
             <a href="{{ route('organizer.crm.forms.submissions', $form) }}" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
                 <i class="fas fa-list mr-2"></i>Voir les soumissions
             </a>
+            @if($stats['total_submissions'] > 0)
+                <div class="relative group">
+                    <button class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition flex items-center">
+                        <i class="fas fa-download mr-2"></i>Exporter
+                        <i class="fas fa-chevron-down ml-2 text-sm"></i>
+                    </button>
+                    <div class="hidden group-hover:block absolute right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-10 min-w-[150px]">
+                        <a href="{{ route('organizer.crm.forms.export', ['form' => $form, 'format' => 'xlsx']) }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-t-lg">
+                            <i class="fas fa-file-excel mr-2 text-green-600"></i>Excel (.xlsx)
+                        </a>
+                        <a href="{{ route('organizer.crm.forms.export', ['form' => $form, 'format' => 'csv']) }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-lg">
+                            <i class="fas fa-file-csv mr-2 text-blue-600"></i>CSV (.csv)
+                        </a>
+                    </div>
+                </div>
+            @endif
             <a href="{{ route('organizer.crm.forms.index') }}" class="text-indigo-600 hover:text-indigo-800 px-6 py-3">
                 <i class="fas fa-arrow-left mr-2"></i>Retour
             </a>

@@ -1,33 +1,17 @@
-@extends('layouts.dashboard')
 
-@section('title', 'Soumissions - ' . $form->name)
 
-@section('content')
+<?php $__env->startSection('title', 'Soumissions - ' . $form->name); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="p-6">
     <div class="flex items-center justify-between mb-6">
         <div>
             <h1 class="text-3xl font-bold text-gray-800">Soumissions</h1>
-            <p class="text-gray-600 mt-1">{{ $form->name }}</p>
+            <p class="text-gray-600 mt-1"><?php echo e($form->name); ?></p>
         </div>
-        <div class="flex gap-3">
-            <div class="relative group">
-                <button class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition flex items-center">
-                    <i class="fas fa-download mr-2"></i>Exporter
-                    <i class="fas fa-chevron-down ml-2 text-sm"></i>
-                </button>
-                <div class="hidden group-hover:block absolute right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-10 min-w-[150px]">
-                    <a href="{{ route('organizer.crm.forms.export', ['form' => $form, 'format' => 'xlsx']) }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-t-lg">
-                        <i class="fas fa-file-excel mr-2 text-green-600"></i>Excel (.xlsx)
-                    </a>
-                    <a href="{{ route('organizer.crm.forms.export', ['form' => $form, 'format' => 'csv']) }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-lg">
-                        <i class="fas fa-file-csv mr-2 text-blue-600"></i>CSV (.csv)
-                    </a>
-                </div>
-            </div>
-            <a href="{{ route('organizer.crm.forms.show', $form) }}" class="text-indigo-600 hover:text-indigo-800 px-6 py-3">
-                <i class="fas fa-arrow-left mr-2"></i>Retour au formulaire
-            </a>
-        </div>
+        <a href="<?php echo e(route('organizer.crm.forms.show', $form)); ?>" class="text-indigo-600 hover:text-indigo-800">
+            <i class="fas fa-arrow-left mr-2"></i>Retour au formulaire
+        </a>
     </div>
 
     <!-- Liste des soumissions -->
@@ -42,70 +26,76 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($submissions as $submission)
+                <?php $__empty_1 = true; $__currentLoopData = $submissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4">
-                            <div class="font-semibold text-gray-900">{{ $submission->submitter_name ?? 'N/A' }}</div>
-                            @if($submission->submitter_email)
-                                <div class="text-sm text-gray-500">{{ $submission->submitter_email }}</div>
-                            @endif
-                            @if($submission->submitter_phone)
-                                <div class="text-xs text-gray-400">{{ $submission->submitter_phone }}</div>
-                            @endif
+                            <div class="font-semibold text-gray-900"><?php echo e($submission->submitter_name ?? 'N/A'); ?></div>
+                            <?php if($submission->submitter_email): ?>
+                                <div class="text-sm text-gray-500"><?php echo e($submission->submitter_email); ?></div>
+                            <?php endif; ?>
+                            <?php if($submission->submitter_phone): ?>
+                                <div class="text-xs text-gray-400"><?php echo e($submission->submitter_phone); ?></div>
+                            <?php endif; ?>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-600">
-                            {{ $submission->created_at->format('d/m/Y H:i') }}
+                            <?php echo e($submission->created_at->format('d/m/Y H:i')); ?>
+
                         </td>
                         <td class="px-6 py-4">
                             <span class="px-2 py-1 text-xs font-semibold rounded-full
-                                {{ $submission->status === 'approved' ? 'bg-green-100 text-green-800' : '' }}
-                                {{ $submission->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                {{ $submission->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}
-                                {{ $submission->status === 'archived' ? 'bg-gray-100 text-gray-800' : '' }}">
-                                {{ ucfirst($submission->status) }}
+                                <?php echo e($submission->status === 'approved' ? 'bg-green-100 text-green-800' : ''); ?>
+
+                                <?php echo e($submission->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : ''); ?>
+
+                                <?php echo e($submission->status === 'rejected' ? 'bg-red-100 text-red-800' : ''); ?>
+
+                                <?php echo e($submission->status === 'archived' ? 'bg-gray-100 text-gray-800' : ''); ?>">
+                                <?php echo e(ucfirst($submission->status)); ?>
+
                             </span>
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-2">
-                                <button onclick="showSubmission({{ $submission->id }})" class="text-indigo-600 hover:text-indigo-900" title="Voir">
+                                <button onclick="showSubmission(<?php echo e($submission->id); ?>)" class="text-indigo-600 hover:text-indigo-900" title="Voir">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                @if($submission->status === 'pending' && $form->requires_approval)
-                                    <form action="{{ route('organizer.crm.forms.submissions.approve', [$form, $submission]) }}" method="POST" class="inline">
-                                        @csrf
+                                <?php if($submission->status === 'pending' && $form->requires_approval): ?>
+                                    <form action="<?php echo e(route('organizer.crm.forms.submissions.approve', [$form, $submission])); ?>" method="POST" class="inline">
+                                        <?php echo csrf_field(); ?>
                                         <input type="hidden" name="status" value="approved">
                                         <button type="submit" class="text-green-600 hover:text-green-900" title="Approuver" onclick="return confirm('Approuver cette soumission ?')">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </form>
-                                    <form action="{{ route('organizer.crm.forms.submissions.approve', [$form, $submission]) }}" method="POST" class="inline">
-                                        @csrf
+                                    <form action="<?php echo e(route('organizer.crm.forms.submissions.approve', [$form, $submission])); ?>" method="POST" class="inline">
+                                        <?php echo csrf_field(); ?>
                                         <input type="hidden" name="status" value="rejected">
                                         <button type="submit" class="text-red-600 hover:text-red-900" title="Rejeter" onclick="return confirm('Rejeter cette soumission ?')">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </form>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>
-                @empty
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr>
                         <td colspan="4" class="px-6 py-12 text-center text-gray-500">
                             <i class="fas fa-inbox text-4xl mb-3 text-gray-300"></i>
                             <p>Aucune soumission trouvée</p>
                         </td>
                     </tr>
-                @endforelse
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 
-    @if($submissions->hasPages())
+    <?php if($submissions->hasPages()): ?>
         <div class="mt-4">
-            {{ $submissions->links() }}
+            <?php echo e($submissions->links()); ?>
+
         </div>
-    @endif
+    <?php endif; ?>
 </div>
 
 <!-- Modal pour afficher les détails d'une soumission -->
@@ -123,11 +113,11 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 function showSubmission(id) {
     // Charger les détails de la soumission via AJAX
-    fetch(`/organizer/crm/forms/{{ $form->id }}/submissions/${id}`)
+    fetch(`/organizer/crm/forms/<?php echo e($form->id); ?>/submissions/${id}`)
         .then(response => response.json())
         .then(data => {
             let html = '<div class="space-y-4">';
@@ -157,6 +147,8 @@ function closeSubmission() {
     document.getElementById('submissionModal').classList.add('hidden');
 }
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
 
+
+<?php echo $__env->make('layouts.dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\adoun\Music\Tikehub\resources\views/dashboard/organizer/crm/forms/submissions.blade.php ENDPATH**/ ?>

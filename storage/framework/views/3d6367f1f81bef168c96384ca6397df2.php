@@ -165,48 +165,79 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('revenueChart');
-    if (ctx) {
-        const monthlyData = <?php echo json_encode($monthlyRevenue, 15, 512) ?>;
-        const labels = monthlyData.map(item => {
-            const date = new Date(item.month + '-01');
-            return date.toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' });
-        }).reverse();
-        const data = monthlyData.map(item => parseFloat(item.total)).reverse();
+    if (!ctx) return;
+    
+    const monthlyData = <?php echo json_encode($monthlyRevenue, 15, 512) ?>;
+    
+    // Formater les labels en français
+    const labels = monthlyData.map(item => {
+        const [year, month] = item.month.split('-');
+        const date = new Date(year, month - 1, 1);
+        return date.toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' });
+    });
+    
+    // Extraire les données
+    const data = monthlyData.map(item => parseFloat(item.total || 0));
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Revenus (XOF)',
-                    data: data,
-                    borderColor: 'rgb(99, 102, 241)',
-                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+    // Créer le graphique
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Revenus (XOF)',
+                data: data,
+                borderColor: 'rgb(99, 102, 241)',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: 'rgb(99, 102, 241)',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 2,
+            plugins: {
+                legend: {
+                    display: false
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return new Intl.NumberFormat('fr-FR').format(value) + ' XOF';
-                            }
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return new Intl.NumberFormat('fr-FR', {
+                                style: 'currency',
+                                currency: 'XOF',
+                                minimumFractionDigits: 0
+                            }).format(context.parsed.y);
                         }
                     }
                 }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat('fr-FR').format(value) + ' XOF';
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
             }
-        });
-    }
+        }
+    });
 });
 </script>
 <?php $__env->stopPush(); ?>

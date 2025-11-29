@@ -7,6 +7,8 @@ use App\Models\CustomForm;
 use App\Models\FormSubmission;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use App\Exports\FormSubmissionsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomFormController extends Controller
 {
@@ -170,5 +172,16 @@ class CustomFormController extends Controller
         }
 
         return back()->with('success', 'Soumission ' . ($request->status === 'approved' ? 'approuvée' : 'rejetée') . ' avec succès.');
+    }
+
+    public function export(CustomForm $form, Request $request)
+    {
+        $this->authorize('view', $form);
+
+        $format = $request->get('format', 'xlsx'); // xlsx ou csv
+
+        $fileName = 'soumissions_' . str_replace(' ', '_', $form->name) . '_' . now()->format('Y-m-d_His') . '.' . $format;
+
+        return Excel::download(new FormSubmissionsExport($form), $fileName);
     }
 }
