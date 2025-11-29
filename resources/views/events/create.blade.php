@@ -277,16 +277,21 @@
                         return response.json();
                     })
                     .then(data => {
-                        console.log('Données de reverse géocodage:', data);
+                        console.log('Données de reverse géocodage complètes:', data);
+                        console.log('Adresse extraite:', data.address);
                         
                         if (data && data.address) {
                             const address = data.address;
                             
                             // Construire l'adresse complète (REMPLACER au lieu de seulement remplir si vide)
                             let fullAddress = '';
+                            
+                            // Essayer plusieurs champs pour construire l'adresse
                             if (address.house_number) {
                                 fullAddress += address.house_number + ' ';
                             }
+                            
+                            // Priorité: road > pedestrian > path > street > residential > neighbourhood
                             if (address.road) {
                                 fullAddress += address.road;
                             } else if (address.pedestrian) {
@@ -295,20 +300,47 @@
                                 fullAddress += address.path;
                             } else if (address.street) {
                                 fullAddress += address.street;
+                            } else if (address.residential) {
+                                fullAddress += address.residential;
+                            } else if (address.neighbourhood) {
+                                fullAddress += address.neighbourhood;
+                            } else if (address.suburb) {
+                                fullAddress += address.suburb;
+                            } else if (address.quarter) {
+                                fullAddress += address.quarter;
                             }
                             
                             // REMPLACER l'adresse (pas seulement si vide)
                             const addressField = document.getElementById('venue_address');
+                            
                             if (fullAddress.trim()) {
                                 addressField.value = fullAddress.trim();
-                                console.log('Adresse remplie:', fullAddress.trim());
-                            } else if (address.road) {
-                                addressField.value = address.road;
-                                console.log('Adresse remplie (road):', address.road);
-                            } else if (address.display_name) {
+                                console.log('Adresse remplie (construite):', fullAddress.trim());
+                            } else if (data.display_name) {
                                 // Utiliser le nom d'affichage complet comme fallback
-                                addressField.value = data.display_name.split(',')[0];
-                                console.log('Adresse remplie (display_name):', data.display_name.split(',')[0]);
+                                // Extraire la première partie (généralement l'adresse)
+                                const displayParts = data.display_name.split(',');
+                                // Prendre les 2-3 premières parties (adresse + quartier)
+                                let extractedAddress = displayParts.slice(0, 2).join(', ').trim();
+                                // Si c'est trop long, prendre seulement la première partie
+                                if (extractedAddress.length > 100) {
+                                    extractedAddress = displayParts[0].trim();
+                                }
+                                addressField.value = extractedAddress;
+                                console.log('Adresse remplie (display_name):', extractedAddress);
+                            } else {
+                                // Dernier recours : utiliser tous les champs disponibles
+                                const fallbackParts = [];
+                                if (address.house_number) fallbackParts.push(address.house_number);
+                                if (address.road) fallbackParts.push(address.road);
+                                if (address.neighbourhood) fallbackParts.push(address.neighbourhood);
+                                if (address.suburb) fallbackParts.push(address.suburb);
+                                if (fallbackParts.length > 0) {
+                                    addressField.value = fallbackParts.join(', ');
+                                    console.log('Adresse remplie (fallback):', fallbackParts.join(', '));
+                                } else {
+                                    console.warn('Impossible de trouver une adresse dans les données');
+                                }
                             }
                             
                             // REMPLACER la ville (priorité: city > town > village > municipality)
