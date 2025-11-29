@@ -90,6 +90,12 @@ class EventController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category' => 'required|string|in:Musique,Sport,Culture,Art,Business,Éducation,Santé,Technologie,Gastronomie,Divertissement,Famille,Mode,Autre',
+            'is_virtual' => 'nullable|boolean',
+            'platform_type' => 'required_if:is_virtual,1|nullable|in:google_meet,zoom,teams,webex,other',
+            'meeting_link' => 'required_if:is_virtual,1|nullable|url|max:500',
+            'meeting_id' => 'nullable|string|max:255',
+            'meeting_password' => 'nullable|string|max:255',
+            'virtual_access_instructions' => 'nullable|string|max:2000',
             'start_date' => 'required|date|after:now',
             'end_date' => 'required|date|after:start_date',
             'venue_name' => 'nullable|string|max:255',
@@ -152,6 +158,16 @@ class EventController extends Controller
         $validated['is_published'] = false;
         $validated['status'] = 'draft';
         $validated['type'] = 'other'; // Valeur par défaut puisque le type n'est plus utilisé
+        $validated['is_virtual'] = $request->has('is_virtual') && $request->is_virtual == '1';
+        
+        // Si l'événement n'est pas virtuel, ne pas exiger les champs de lieu
+        if (!$validated['is_virtual']) {
+            // Si toujours pas de coordonnées, utiliser des valeurs par défaut (Cotonou)
+            if (empty($validated['venue_latitude']) || empty($validated['venue_longitude'])) {
+                $validated['venue_latitude'] = 6.4969;
+                $validated['venue_longitude'] = 2.6283;
+            }
+        }
         
         // Gestion du sous-domaine
         if ($request->has('subdomain_enabled') && $request->subdomain_enabled) {

@@ -80,8 +80,68 @@
                     </div>
                 </div>
 
-                <!-- Lieu -->
+                <!-- Type d'événement -->
                 <div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Type d'événement</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="is_virtual" id="is_virtual" value="1" {{ old('is_virtual') ? 'checked' : '' }} class="mr-2 w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                <span class="text-sm font-medium text-gray-700">Événement virtuel (visioconférence)</span>
+                            </label>
+                            <p class="text-xs text-gray-500 mt-1 ml-7">Cochez cette case si votre événement se déroule en ligne</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuration virtuelle (masqué par défaut) -->
+                <div id="virtual-config" class="hidden">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Configuration de la visioconférence</h2>
+                    <div class="space-y-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Plateforme *</label>
+                            <select name="platform_type" id="platform_type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">Sélectionner une plateforme</option>
+                                <option value="google_meet" {{ old('platform_type') == 'google_meet' ? 'selected' : '' }}>Google Meet</option>
+                                <option value="zoom" {{ old('platform_type') == 'zoom' ? 'selected' : '' }}>Zoom</option>
+                                <option value="teams" {{ old('platform_type') == 'teams' ? 'selected' : '' }}>Microsoft Teams</option>
+                                <option value="webex" {{ old('platform_type') == 'webex' ? 'selected' : '' }}>Cisco Webex</option>
+                                <option value="other" {{ old('platform_type') == 'other' ? 'selected' : '' }}>Autre</option>
+                            </select>
+                            @error('platform_type')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Lien de la visioconférence *</label>
+                            <input type="url" name="meeting_link" id="meeting_link" value="{{ old('meeting_link') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="https://meet.google.com/xxx-xxxx-xxx ou https://zoom.us/j/xxxxx">
+                            @error('meeting_link')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                            <p class="text-xs text-gray-500 mt-1">Collez le lien complet de votre réunion</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ID de la réunion (optionnel)</label>
+                                <input type="text" name="meeting_id" id="meeting_id" value="{{ old('meeting_id') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: abc-defg-hij">
+                                @error('meeting_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Mot de passe (optionnel)</label>
+                                <input type="text" name="meeting_password" id="meeting_password" value="{{ old('meeting_password') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Mot de passe de la réunion">
+                                @error('meeting_password')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Instructions d'accès (optionnel)</label>
+                            <textarea name="virtual_access_instructions" id="virtual_access_instructions" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Instructions spéciales pour les participants (ex: Activer la caméra, utiliser un nom spécifique, etc.)">{{ old('virtual_access_instructions') }}</textarea>
+                            @error('virtual_access_instructions')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lieu (masqué si virtuel) -->
+                <div id="venue-section">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Lieu</h2>
                     <div class="space-y-4">
                         <div>
@@ -581,5 +641,36 @@
     });
 </script>
 @endpush
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isVirtualCheckbox = document.getElementById('is_virtual');
+    const virtualConfig = document.getElementById('virtual-config');
+    const venueSection = document.getElementById('venue-section');
+    const platformType = document.getElementById('platform_type');
+    const meetingLink = document.getElementById('meeting_link');
+
+    function toggleVirtualConfig() {
+        if (isVirtualCheckbox.checked) {
+            virtualConfig.classList.remove('hidden');
+            venueSection.classList.add('hidden');
+            platformType.required = true;
+            meetingLink.required = true;
+        } else {
+            virtualConfig.classList.add('hidden');
+            venueSection.classList.remove('hidden');
+            platformType.required = false;
+            meetingLink.required = false;
+        }
+    }
+
+    isVirtualCheckbox.addEventListener('change', toggleVirtualConfig);
+    
+    // Initialiser l'état au chargement
+    toggleVirtualConfig();
+});
+</script>
+@endpush
+
 @endsection
 

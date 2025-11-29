@@ -97,6 +97,23 @@ class DashboardController extends Controller
             $q->where('organizer_id', $organizerId);
         })->where('status', 'paid')->count();
 
+        // Statistiques événements virtuels
+        $virtualEvents = Event::where('organizer_id', $organizerId)
+            ->where('is_virtual', true)
+            ->get();
+        
+        $virtualStats = [
+            'total_virtual_events' => $virtualEvents->count(),
+            'total_virtual_participants' => 0,
+            'total_virtual_accesses' => 0,
+        ];
+        
+        foreach ($virtualEvents as $event) {
+            $eventStats = app(\App\Services\VirtualEventService::class)->getAccessStatistics($event);
+            $virtualStats['total_virtual_participants'] += $eventStats['unique_participants'];
+            $virtualStats['total_virtual_accesses'] += $eventStats['total_accesses'];
+        }
+
         // Paiements en attente
         $pendingPayments = Payment::where(function ($q) use ($organizerId) {
             $q->whereHas('event', function ($query) use ($organizerId) {
@@ -164,6 +181,7 @@ class DashboardController extends Controller
             'pending_payments' => $pendingPayments,
             'monthly_revenue' => $monthlyRevenue,
             'revenue_distribution' => $revenueDistribution,
+            'virtual_stats' => $virtualStats,
         ];
 
         return view('dashboard.organizer', compact('events', 'contests', 'fundraisings', 'stats'));

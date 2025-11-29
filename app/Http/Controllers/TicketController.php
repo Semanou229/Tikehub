@@ -105,6 +105,12 @@ class TicketController extends Controller
             $ticket->refresh();
         }
 
+        // Générer le token d'accès virtuel si nécessaire
+        if ($ticket->event->is_virtual && !$ticket->virtual_access_token && $ticket->status === 'paid') {
+            $ticket->generateVirtualAccessToken();
+            $ticket->refresh();
+        }
+
         return view('tickets.show', compact('ticket'));
     }
 

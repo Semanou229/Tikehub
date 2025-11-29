@@ -97,7 +97,14 @@ class EventController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'organizer_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
+            'is_virtual' => 'nullable|boolean',
+            'platform_type' => 'required_if:is_virtual,1|nullable|in:google_meet,zoom,teams,webex,other',
+            'meeting_link' => 'required_if:is_virtual,1|nullable|url|max:500',
+            'meeting_id' => 'nullable|string|max:255',
+            'meeting_password' => 'nullable|string|max:255',
+            'virtual_access_instructions' => 'nullable|string|max:2000',
             'description' => 'required|string',
             'category' => 'required|string|in:Musique,Sport,Culture,Art,Business,Éducation,Santé,Technologie,Gastronomie,Divertissement,Famille,Mode,Autre',
             'start_date' => 'required|date',

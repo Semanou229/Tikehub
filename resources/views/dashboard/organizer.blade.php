@@ -106,6 +106,32 @@
         </div>
     </div>
 
+    <!-- Statistiques événements virtuels -->
+    @if(isset($stats['virtual_stats']) && $stats['virtual_stats']['total_virtual_events'] > 0)
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-video text-blue-600 mr-2"></i>
+                    Événements Virtuels
+                </h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white rounded-lg p-4 border border-blue-200">
+                    <p class="text-sm text-gray-600 mb-1">Événements virtuels</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ $stats['virtual_stats']['total_virtual_events'] }}</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 border border-blue-200">
+                    <p class="text-sm text-gray-600 mb-1">Participants connectés</p>
+                    <p class="text-2xl font-bold text-indigo-600">{{ $stats['virtual_stats']['total_virtual_participants'] }}</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 border border-blue-200">
+                    <p class="text-sm text-gray-600 mb-1">Total accès</p>
+                    <p class="text-2xl font-bold text-purple-600">{{ $stats['virtual_stats']['total_virtual_accesses'] }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Graphiques et tableaux -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- Revenus (6 derniers mois) -->
@@ -167,15 +193,22 @@
                                     <div class="text-sm text-gray-500">{{ $event->ticket_types_count }} types</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @if($event->is_published)
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                            Publié
-                                        </span>
-                                    @else
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
-                                            Brouillon
-                                        </span>
-                                    @endif
+                                    <div class="flex flex-col gap-1">
+                                        @if($event->is_published)
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                                Publié
+                                            </span>
+                                        @else
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                Brouillon
+                                            </span>
+                                        @endif
+                                        @if($event->is_virtual)
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                <i class="fas fa-video mr-1"></i>Virtuel
+                                            </span>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <a href="{{ route('events.show', $event) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">

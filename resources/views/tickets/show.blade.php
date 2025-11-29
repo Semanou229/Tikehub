@@ -13,7 +13,29 @@
                 <p><strong>Type:</strong> {{ $ticket->ticketType->name }}</p>
                 <p><strong>Code:</strong> <span class="font-mono">{{ $ticket->code }}</span></p>
                 <p><strong>Date:</strong> {{ $ticket->event->start_date->format('d/m/Y H:i') }}</p>
-                <p><strong>Lieu:</strong> {{ $ticket->event->venue_name }}, {{ $ticket->event->venue_city }}</p>
+                @if($ticket->event->is_virtual)
+            <p><strong>Type:</strong> Événement virtuel ({{ ucfirst(str_replace('_', ' ', $ticket->event->platform_type ?? 'Visioconférence')) }})</p>
+            @if($ticket->virtual_access_token)
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                    <h3 class="font-bold text-blue-800 mb-2">Accès à l'événement virtuel</h3>
+                    <a href="{{ $ticket->getVirtualAccessUrl() }}" target="_blank" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition mb-2">
+                        <i class="fas fa-video mr-2"></i>Rejoindre l'événement
+                    </a>
+                    @if($ticket->event->virtual_access_instructions)
+                        <p class="text-sm text-gray-700 mt-2">
+                            <strong>Instructions:</strong> {{ $ticket->event->virtual_access_instructions }}
+                        </p>
+                    @endif
+                    @if($ticket->event->meeting_password)
+                        <p class="text-sm text-gray-700 mt-1">
+                            <strong>Mot de passe:</strong> {{ $ticket->event->meeting_password }}
+                        </p>
+                    @endif
+                </div>
+            @endif
+        @else
+            <p><strong>Lieu:</strong> {{ $ticket->event->venue_name }}, {{ $ticket->event->venue_city }}</p>
+        @endif
                 <p><strong>Acheteur:</strong> {{ $ticket->buyer_name }}</p>
             </div>
             
