@@ -197,7 +197,7 @@
             @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-red-600">Lieu sur carte</h2>
-                    <div id="eventMap" class="w-full h-96 rounded-lg border border-gray-300 mb-4" style="min-height: 384px; position: relative; z-index: 0;"></div>
+                    <div id="eventMap" class="w-full rounded-lg border border-gray-300 mb-4" style="width: 100%; height: 384px; min-height: 384px; position: relative; z-index: 0; background-color: #f0f0f0;"></div>
                     @if($event->venue_name || $event->venue_address)
                         <div class="space-y-2 text-gray-700">
                             @if($event->venue_name)
@@ -371,6 +371,21 @@
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    #eventMap {
+        width: 100% !important;
+        height: 384px !important;
+        min-height: 384px !important;
+        position: relative !important;
+        z-index: 0 !important;
+        background-color: #f0f0f0 !important;
+    }
+    .leaflet-container {
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 0 !important;
+    }
+</style>
 @endpush
 @endif
 
@@ -446,13 +461,27 @@
     }
 </script>
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
     (function() {
+        let mapInitialized = false;
+        
         function initMap() {
+            if (mapInitialized) {
+                return;
+            }
+            
             const mapContainer = document.getElementById('eventMap');
             if (!mapContainer) {
                 console.error('Conteneur de carte non trouvé');
+                return;
+            }
+            
+            // Vérifier que le conteneur est visible
+            const rect = mapContainer.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) {
+                console.warn('Conteneur de carte non visible, nouvelle tentative...');
+                setTimeout(initMap, 200);
                 return;
             }
             
@@ -463,7 +492,8 @@
                 return;
             }
             
-            console.log('Initialisation de la carte...');
+            console.log('Initialisation de la carte...', 'Dimensions:', rect.width, 'x', rect.height);
+            mapInitialized = true;
             
             @if($event->venue_latitude && $event->venue_longitude)
                 // Si les coordonnées existent, les utiliser directement
@@ -479,28 +509,44 @@
                 }
                 
                 try {
+                    // S'assurer que le conteneur a les bonnes dimensions
+                    mapContainer.style.width = '100%';
+                    mapContainer.style.height = '384px';
+                    mapContainer.style.minHeight = '384px';
+                    
                     // Initialiser la carte
                     const map = L.map('eventMap', {
                         zoomControl: true,
                         scrollWheelZoom: true,
-                        preferCanvas: false
+                        preferCanvas: false,
+                        fadeAnimation: true,
+                        zoomAnimation: true
                     }).setView([lat, lng], 15);
                     
-                    console.log('Carte initialisée');
+                    console.log('Carte initialisée avec succès');
                     
                     // Ajouter les tuiles avec retry
                     const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                         maxZoom: 19,
-                        errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+                        minZoom: 1,
+                        errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                        crossOrigin: true
                     });
                     
                     tileLayer.on('tileerror', function(error, tile) {
-                        console.error('Erreur de chargement de tuile:', error);
+                        console.error('Erreur de chargement de tuile:', error, tile);
+                    });
+                    
+                    tileLayer.on('tileload', function(e) {
+                        console.log('Tuile chargée:', e.tile.src);
                     });
                     
                     tileLayer.addTo(map);
                     console.log('Tuiles ajoutées');
+                    
+                    // Forcer le redimensionnement immédiatement
+                    map.invalidateSize();
                     
                     // Ajouter le marqueur
                     const marker = L.marker([lat, lng]).addTo(map);
@@ -529,11 +575,18 @@
             @elseif($event->venue_address)
                 // Si seulement l'adresse existe, géocoder l'adresse
                 try {
+                    // S'assurer que le conteneur a les bonnes dimensions
+                    mapContainer.style.width = '100%';
+                    mapContainer.style.height = '384px';
+                    mapContainer.style.minHeight = '384px';
+                    
                     // Initialiser la carte avec une position par défaut
                     const map = L.map('eventMap', {
                         zoomControl: true,
                         scrollWheelZoom: true,
-                        preferCanvas: false
+                        preferCanvas: false,
+                        fadeAnimation: true,
+                        zoomAnimation: true
                     }).setView([6.4969, 2.6283], 13);
                     
                     console.log('Carte initialisée avec position par défaut');
@@ -542,15 +595,24 @@
                     const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                         maxZoom: 19,
-                        errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+                        minZoom: 1,
+                        errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                        crossOrigin: true
                     });
                     
                     tileLayer.on('tileerror', function(error, tile) {
-                        console.error('Erreur de chargement de tuile:', error);
+                        console.error('Erreur de chargement de tuile:', error, tile);
+                    });
+                    
+                    tileLayer.on('tileload', function(e) {
+                        console.log('Tuile chargée:', e.tile.src);
                     });
                     
                     tileLayer.addTo(map);
                     console.log('Tuiles ajoutées');
+                    
+                    // Forcer le redimensionnement immédiatement
+                    map.invalidateSize();
                     
                     // Construire l'adresse complète
                     let fullAddress = '{{ addslashes($event->venue_address) }}';
