@@ -146,5 +146,74 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    #map { z-index: 0; }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // Initialiser la carte OpenStreetMap
+    let map = L.map('map').setView([6.4969, 2.6283], 13); // Cotonou par défaut
+    
+    // Ajouter la couche de tuiles OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
+    
+    let marker = null;
+    
+    // Gérer le clic sur la carte
+    map.on('click', function(e) {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+        
+        // Mettre à jour les champs cachés
+        document.getElementById('venue_latitude').value = lat;
+        document.getElementById('venue_longitude').value = lng;
+        
+        // Supprimer l'ancien marqueur s'il existe
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        
+        // Ajouter un nouveau marqueur
+        marker = L.marker([lat, lng]).addTo(map);
+        
+        // Faire un reverse geocoding pour remplir l'adresse
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.address) {
+                    if (data.address.road && !document.getElementById('venue_address').value) {
+                        document.getElementById('venue_address').value = data.address.road;
+                    }
+                    if (data.address.city && !document.getElementById('venue_city').value) {
+                        document.getElementById('venue_city').value = data.address.city;
+                    } else if (data.address.town && !document.getElementById('venue_city').value) {
+                        document.getElementById('venue_city').value = data.address.town;
+                    }
+                    if (data.address.country && !document.getElementById('venue_country').value) {
+                        document.getElementById('venue_country').value = data.address.country;
+                    }
+                }
+            })
+            .catch(err => console.error('Erreur de géocodage:', err));
+    });
+    
+    // Si des coordonnées existent déjà (en cas d'erreur de validation)
+    const existingLat = document.getElementById('venue_latitude').value;
+    const existingLng = document.getElementById('venue_longitude').value;
+    if (existingLat && existingLng) {
+        map.setView([existingLat, existingLng], 13);
+        marker = L.marker([existingLat, existingLng]).addTo(map);
+    }
+</script>
+@endpush
 @endsection
 
