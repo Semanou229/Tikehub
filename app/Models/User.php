@@ -25,6 +25,9 @@ class User extends Authenticatable
         'kyc_document_type',
         'kyc_verified_at',
         'kyc_submitted_at',
+        'team_id',
+        'team_role',
+        'team_permissions',
         'is_active',
     ];
 

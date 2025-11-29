@@ -153,6 +153,28 @@ Route::middleware('auth')->group(function () {
 // Route publique pour afficher un événement (APRÈS les routes auth pour éviter les conflits)
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
+// Routes collaborateur
+Route::middleware(['auth', 'collaborator'])->prefix('collaborator')->name('collaborator.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Collaborator\DashboardController::class, 'index'])->name('dashboard');
+    
+    // Événements assignés
+    Route::get('/events', [\App\Http\Controllers\Collaborator\EventController::class, 'index'])->name('events.index');
+    Route::get('/events/{event}', [\App\Http\Controllers\Collaborator\EventController::class, 'show'])->name('events.show');
+    
+    // Scans de tickets
+    Route::get('/events/{event}/scans', [\App\Http\Controllers\Collaborator\ScanController::class, 'index'])->name('scans.index');
+    Route::post('/events/{event}/scans', [\App\Http\Controllers\Collaborator\ScanController::class, 'scan'])->name('scans.scan');
+    
+    // Tâches
+    Route::get('/tasks', [\App\Http\Controllers\Collaborator\TaskController::class, 'index'])->name('tasks.index');
+    Route::get('/tasks/{task}', [\App\Http\Controllers\Collaborator\TaskController::class, 'show'])->name('tasks.show');
+    Route::put('/tasks/{task}/status', [\App\Http\Controllers\Collaborator\TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
+    
+    // Profil
+    Route::get('/profile', [\App\Http\Controllers\Collaborator\ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [\App\Http\Controllers\Collaborator\ProfileController::class, 'update'])->name('profile.update');
+});
+
 // Routes publiques pour concours et collectes
 Route::get('/contests', [\App\Http\Controllers\ContestController::class, 'index'])->name('contests.index');
 Route::get('/contests/{contest}', [\App\Http\Controllers\ContestController::class, 'show'])->name('contests.show');
