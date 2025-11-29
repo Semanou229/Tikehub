@@ -56,19 +56,37 @@ class TicketController extends Controller
 
     public function purchase(Request $request)
     {
-        $validated = $request->validate([
-            'event_id' => 'required|exists:events,id',
-            'ticket_type_id' => 'required|exists:ticket_types,id',
-            'quantity' => 'required|integer|min:1|max:10',
-            'buyer_name' => 'required|string|max:255',
-            'buyer_email' => 'required|email',
-            'buyer_phone' => 'nullable|string|max:20',
-        ]);
+        // Vérifier si c'est un achat multi-tickets
+        if ($request->has('tickets') && is_array($request->tickets)) {
+            $validated = $request->validate([
+                'event_id' => 'required|exists:events,id',
+                'tickets' => 'required|array',
+                'tickets.*' => 'required|integer|min:1|max:10',
+                'buyer_name' => 'required|string|max:255',
+                'buyer_email' => 'required|email',
+                'buyer_phone' => 'nullable|string|max:20',
+            ]);
 
-        $payment = $this->paymentService->processTicketPurchase(
-            auth()->user(),
-            $validated
-        );
+            $payment = $this->paymentService->processMultipleTicketsPurchase(
+                auth()->user(),
+                $validated
+            );
+        } else {
+            // Ancien système (un seul type de ticket)
+            $validated = $request->validate([
+                'event_id' => 'required|exists:events,id',
+                'ticket_type_id' => 'required|exists:ticket_types,id',
+                'quantity' => 'required|integer|min:1|max:10',
+                'buyer_name' => 'required|string|max:255',
+                'buyer_email' => 'required|email',
+                'buyer_phone' => 'nullable|string|max:20',
+            ]);
+
+            $payment = $this->paymentService->processTicketPurchase(
+                auth()->user(),
+                $validated
+            );
+        }
 
         return redirect($payment->moneroo_reference 
             ? route('payments.return', ['payment' => $payment->id])
