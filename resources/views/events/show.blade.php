@@ -157,21 +157,50 @@
                 @if($event->ticketTypes->count() > 0)
                     <div class="mt-6 space-y-4">
                         @foreach($event->ticketTypes as $ticketType)
-                            <div class="border border-gray-200 rounded-lg p-4 hover:border-red-500 transition">
+                            @php
+                                $urgencyBadges = $ticketType->getUrgencyBadges();
+                            @endphp
+                            <div class="border border-gray-200 rounded-lg p-4 hover:border-red-500 transition relative">
+                                <!-- Badges d'urgence -->
+                                @if(count($urgencyBadges) > 0)
+                                    <div class="absolute top-2 right-2 flex flex-wrap gap-2">
+                                        @foreach($urgencyBadges as $badge)
+                                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold 
+                                                @if($badge['color'] === 'red') bg-red-100 text-red-700 border border-red-300
+                                                @elseif($badge['color'] === 'orange') bg-orange-100 text-orange-700 border border-orange-300
+                                                @else bg-yellow-100 text-yellow-700 border border-yellow-300
+                                                @endif
+                                                animate-pulse">
+                                                <i class="fas fa-{{ $badge['icon'] }}"></i>
+                                                {{ $badge['text'] }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @endif
+                                
                                 <div class="flex justify-between items-start">
-                                    <div class="flex-1">
+                                    <div class="flex-1 pr-24">
                                         <h3 class="font-semibold text-lg mb-1">{{ $ticketType->name }}</h3>
                                         @if($ticketType->description)
                                             <p class="text-gray-600 text-sm mb-2">{{ $ticketType->description }}</p>
                                         @endif
-                                        <div class="flex items-center gap-4 text-sm text-gray-500">
-                                            <span>
+                                        <div class="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
+                                            <span class="flex items-center">
                                                 <i class="fas fa-ticket-alt mr-1"></i>
                                                 {{ $ticketType->available_quantity }} disponible(s)
                                             </span>
-                                            @if($ticketType->sale_start_date && $ticketType->sale_end_date)
+                                            @if($ticketType->quantity > 0)
+                                                @php
+                                                    $percentageSold = ($ticketType->sold_quantity / $ticketType->quantity) * 100;
+                                                @endphp
+                                                <span class="flex items-center">
+                                                    <i class="fas fa-chart-line mr-1"></i>
+                                                    {{ number_format($percentageSold, 0) }}% vendu
+                                                </span>
+                                            @endif
+                                            @if($ticketType->start_sale_date && $ticketType->end_sale_date)
                                                 <span>
-                                                    Du {{ $ticketType->sale_start_date->format('d/m/Y') }} au {{ $ticketType->sale_end_date->format('d/m/Y') }}
+                                                    Du {{ $ticketType->start_sale_date->format('d/m/Y') }} au {{ $ticketType->end_sale_date->format('d/m/Y') }}
                                                 </span>
                                             @endif
                                         </div>
@@ -181,8 +210,8 @@
                                             {{ number_format($ticketType->price, 0, ',', ' ') }} XOF
                                         </div>
                                         @if($ticketType->isOnSale() && auth()->check())
-                                            <a href="{{ route('tickets.index', $event) }}" class="mt-2 inline-block bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm">
-                                                Acheter
+                                            <a href="{{ route('tickets.index', $event) }}" class="mt-2 inline-block bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
+                                                <i class="fas fa-shopping-cart mr-1"></i>Acheter
                                             </a>
                                         @endif
                                     </div>
