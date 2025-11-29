@@ -197,7 +197,7 @@
             @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-red-600">Lieu sur carte</h2>
-                    <div id="eventMap" style="width: 100%; height: 384px; min-height: 384px; position: relative; z-index: 1; background: #e5e7eb;"></div>
+                    <div id="eventMap" style="width: 100%; height: 384px; min-height: 384px; position: relative; z-index: 10; background: #e5e7eb; display: block !important; visibility: visible !important;"></div>
                     @if($event->venue_name || $event->venue_address)
                         <div class="space-y-2 text-gray-700">
                             @if($event->venue_name)
