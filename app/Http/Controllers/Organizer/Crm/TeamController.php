@@ -21,10 +21,8 @@ class TeamController extends Controller
 
         // Récupérer aussi les agents (pour migration depuis l'ancien système)
         $agents = User::role('agent')
-            ->whereHas('agentEvents', function ($q) use ($organizerId) {
-                $q->whereHas('event', function ($query) use ($organizerId) {
-                    $query->where('organizer_id', $organizerId);
-                });
+            ->whereHas('events', function ($q) use ($organizerId) {
+                $q->where('organizer_id', $organizerId);
             })
             ->get();
 
