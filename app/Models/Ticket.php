@@ -18,6 +18,8 @@ class Ticket extends Model
         'code',
         'qr_code',
         'qr_token',
+        'virtual_access_token', // Token unique pour accès virtuel
+        'virtual_access_used_at', // Date d'utilisation du token virtuel
         'price',
         'status',
         'payment_id',
@@ -34,6 +36,7 @@ class Ticket extends Model
     protected $casts = [
         'price' => 'decimal:2',
         'scanned_at' => 'datetime',
+        'virtual_access_used_at' => 'datetime',
         'is_physical' => 'boolean',
         'metadata' => 'array',
     ];
@@ -130,6 +133,64 @@ class Ticket extends Model
         $expectedSignature = hash_hmac('sha256', json_encode($payload), $secret);
 
         return hash_equals($expectedSignature, $parts[1]);
+    }
+
+    /**
+     * Générer un token unique pour l'accès virtuel
+     */
+    public function generateVirtualAccessToken(): string
+    {
+        if ($this->virtual_access_token) {
+            return $this->virtual_access_token;
+        }
+
+        $token = Str::random(64);
+        $this->virtual_access_token = $token;
+        $this->save();
+
+        return $token;
+    }
+
+    /**
+     * Vérifier si le ticket a déjà été utilisé pour un événement virtuel
+     */
+    public function isVirtualAccessUsed(): bool
+    {
+        return $this->virtual_access_used_at !== null;
+    }
+
+    /**
+     * Marquer le ticket comme utilisé pour un événement virtuel
+     */
+    public function markVirtualAccessAsUsed(): void
+    {
+        if (!$this->isVirtualAccessUsed()) {
+            $this->virtual_access_used_at = now();
+            $this->save();
+        }
+    }
+
+    /**
+     * Obtenir le lien d'accès virtuel
+     */
+    public function getVirtualAccessUrl(): ?string
+    {
+        if (!$this->event->is_virtual || !$this->virtual_access_token) {
+            return null;
+        }
+
+        return route('virtual-events.access', [
+            'ticket' => $this->id,
+            'token' => $this->virtual_access_token
+        ]);
+    }
+
+    /**
+     * Relation avec les logs d'accès virtuel
+     */
+    public function virtualAccessLogs()
+    {
+        return $this->hasMany(VirtualEventAccessLog::class);
     }
 }
 

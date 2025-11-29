@@ -56,6 +56,20 @@
         </div>
     </div>
 
+    <!-- Signalements en attente -->
+    <?php if(isset($totalPendingReports) && $totalPendingReports > 0): ?>
+        <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-lg shadow-lg p-6 text-white mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-red-100 text-sm mb-1">Signalements en attente</p>
+                    <p class="text-3xl font-bold"><?php echo e($totalPendingReports); ?></p>
+                    <p class="text-red-100 text-sm mt-1">À examiner</p>
+                </div>
+                <i class="fas fa-flag text-4xl text-red-200"></i>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Graphique des revenus -->
         <div class="bg-white rounded-lg shadow-md p-6">
@@ -149,6 +163,79 @@
             <?php endif; ?>
         </div>
     </div>
+
+    <!-- Signalements en attente -->
+    <?php if(isset($pendingReports) && $pendingReports->count() > 0): ?>
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Signalements en attente</h2>
+                <a href="<?php echo e(route('admin.reports.index')); ?>" class="text-red-600 hover:text-red-800 text-sm">
+                    Voir tout <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            <div class="space-y-3">
+                <?php $__currentLoopData = $pendingReports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $report): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <h3 class="font-semibold text-gray-800">
+                                        <?php if($report->reportable_type === 'App\Models\Event'): ?>
+                                            <i class="fas fa-calendar-alt text-blue-600"></i> Événement
+                                        <?php elseif($report->reportable_type === 'App\Models\Contest'): ?>
+                                            <i class="fas fa-trophy text-purple-600"></i> Concours
+                                        <?php elseif($report->reportable_type === 'App\Models\Fundraising'): ?>
+                                            <i class="fas fa-hand-holding-heart text-green-600"></i> Collecte
+                                        <?php endif; ?>
+                                    </h3>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                        <?php if($report->reason === 'inappropriate_content'): ?> bg-red-100 text-red-800
+                                        <?php elseif($report->reason === 'scam'): ?> bg-orange-100 text-orange-800
+                                        <?php else: ?> bg-yellow-100 text-yellow-800
+                                        <?php endif; ?>">
+                                        <?php echo e($report->reason_label); ?>
+
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">
+                                    <strong>Contenu signalé:</strong> 
+                                    <?php if($report->reportable_type === 'App\Models\Event'): ?>
+                                        <?php echo e($report->reportable->title ?? 'N/A'); ?>
+
+                                    <?php elseif($report->reportable_type === 'App\Models\Contest'): ?>
+                                        <?php echo e($report->reportable->name ?? 'N/A'); ?>
+
+                                    <?php elseif($report->reportable_type === 'App\Models\Fundraising'): ?>
+                                        <?php echo e($report->reportable->name ?? 'N/A'); ?>
+
+                                    <?php endif; ?>
+                                </p>
+                                <p class="text-sm text-gray-700 mb-2">
+                                    <strong>Message:</strong> <?php echo e(Str::limit($report->message, 150)); ?>
+
+                                </p>
+                                <p class="text-xs text-gray-500">
+                                    <i class="fas fa-user mr-1"></i>Signalé par <?php echo e($report->reporter->name ?? 'Utilisateur'); ?>
+
+                                    <span class="ml-3">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        <?php echo e($report->created_at->translatedFormat('d M Y H:i')); ?>
+
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="ml-4 flex gap-2">
+                                <a href="<?php echo e(route('admin.reports.show', $report)); ?>" 
+                                   class="px-3 py-1 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition">
+                                    <i class="fas fa-eye mr-1"></i>Examiner
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <!-- Top organisateurs -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-6">

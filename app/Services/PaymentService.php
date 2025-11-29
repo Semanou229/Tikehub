@@ -199,9 +199,14 @@ class PaymentService
         if ($status === 'completed') {
             $payment->tickets()->update(['status' => 'paid']);
             
-            // Générer les QR codes
+            // Générer les QR codes et tokens d'accès virtuel
             foreach ($payment->tickets as $ticket) {
                 app(QrCodeService::class)->generateForTicket($ticket);
+                
+                // Si l'événement est virtuel, générer le token d'accès
+                if ($payment->event->is_virtual) {
+                    $ticket->generateVirtualAccessToken();
+                }
             }
         }
     }

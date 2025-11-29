@@ -266,3 +266,7 @@ Route::get('/contests/{contest}', [\App\Http\Controllers\ContestController::clas
 Route::get('/fundraisings', [\App\Http\Controllers\FundraisingController::class, 'index'])->name('fundraisings.index');
 Route::get('/fundraisings/{fundraising}', [\App\Http\Controllers\FundraisingController::class, 'show'])->name('fundraisings.show');
 
+// Routes pour événements virtuels
+Route::get('/virtual-events/tickets/{ticket}/access/{token}', [\App\Http\Controllers\VirtualEventController::class, 'access'])->name('virtual-events.access');
+Route::get('/virtual-events/qr/{token}', [\App\Http\Controllers\VirtualEventController::class, 'accessByQr'])->name('virtual-events.access-by-qr');
+
