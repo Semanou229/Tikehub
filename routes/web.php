@@ -287,3 +287,6 @@ Route::get('/fundraisings/{fundraising}', [\App\Http\Controllers\FundraisingCont
 Route::get('/virtual-events/tickets/{ticket}/access/{token}', [\App\Http\Controllers\VirtualEventController::class, 'access'])->name('virtual-events.access');
 Route::get('/virtual-events/qr/{token}', [\App\Http\Controllers\VirtualEventController::class, 'accessByQr'])->name('virtual-events.access-by-qr');
 
+// Profil public de l'organisateur (doit être APRÈS les routes protégées pour éviter les conflits)
+Route::get('/organizer/{organizer}', [\App\Http\Controllers\Public\OrganizerProfileController::class, 'show'])->name('organizer.profile.show');
+
