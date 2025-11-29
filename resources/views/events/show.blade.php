@@ -679,21 +679,7 @@
                 }
             @endif
         }
-        
-        // Essayer plusieurs fois d'initialiser la carte
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(initMap, 300);
-            });
-        } else {
-            setTimeout(initMap, 300);
-        }
-        
-        // Essayer aussi après le chargement complet de la page
-        window.addEventListener('load', function() {
-            setTimeout(initMap, 500);
-        });
-    })();
+    });
 </script>
 @endif
 @endpush
