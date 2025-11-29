@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class TeamTaskController extends Controller
 {
-    public function index(Team $team)
+    public function index(Request $request, Team $team)
     {
         $this->authorize('view', $team);
 
