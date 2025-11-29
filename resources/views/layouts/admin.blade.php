@@ -58,6 +58,15 @@
                     <i class="fas fa-money-bill-wave w-5 mr-3"></i>
                     <span>Paiements</span>
                 </a>
+                <a href="{{ route('admin.withdrawals.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.withdrawals.*') ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                    <i class="fas fa-hand-holding-usd w-5 mr-3"></i>
+                    <span>Retraits</span>
+                    @if(\App\Models\Withdrawal::where('status', 'pending')->count() > 0)
+                        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                            {{ \App\Models\Withdrawal::where('status', 'pending')->count() }}
+                        </span>
+                    @endif
+                </a>
                 <a href="{{ route('admin.contests.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.contests.*') ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-trophy w-5 mr-3"></i>
                     <span>Concours</span>

@@ -4,8 +4,11 @@
 
 <?php $__env->startSection('content'); ?>
 <div class="p-6">
-    <div class="mb-6">
+    <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Gestion des Collectes</h1>
+        <a href="<?php echo e(route('admin.fundraisings.create')); ?>" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition">
+            <i class="fas fa-plus mr-2"></i>Nouvelle collecte
+        </a>
     </div>
 
     <!-- Filtres -->
@@ -59,9 +62,14 @@
 
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <a href="<?php echo e(route('admin.fundraisings.show', $fundraising)); ?>" class="text-red-600 hover:text-red-900">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+                                    <div class="flex gap-2">
+                                        <a href="<?php echo e(route('admin.fundraisings.show', $fundraising)); ?>" class="text-red-600 hover:text-red-900" title="Voir">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="<?php echo e(route('admin.fundraisings.edit', $fundraising)); ?>" class="text-blue-600 hover:text-blue-900" title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

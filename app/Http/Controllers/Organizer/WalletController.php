@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Organizer;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\Ticket;
+use App\Models\Withdrawal;
+use App\Models\PlatformSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -128,13 +130,19 @@ class WalletController extends Controller
             ],
         ];
 
+        // Demandes de retrait
+        $withdrawals = Withdrawal::where('user_id', $organizerId)
+            ->latest()
+            ->paginate(10);
+
         return view('dashboard.organizer.wallet.index', compact(
             'totalEarnings',
             'netEarnings',
             'platformCommission',
             'monthlyRevenue',
             'recentTransactions',
-            'statsByType'
+            'statsByType',
+            'withdrawals'
         ));
     }
 
@@ -148,15 +156,40 @@ class WalletController extends Controller
         }
 
         // Vérifier que le KYC est vérifié
-        if (!$user->isKycVerified()) {
+        $kycRequired = PlatformSetting::get('kyc_required_for_withdrawal', true);
+        if ($kycRequired && !$user->isKycVerified()) {
             return back()->with('error', 'Vous devez compléter la vérification KYC avant de pouvoir demander un retrait de fonds.');
         }
 
-        $validated = $request->validate([
-            'amount' => 'required|numeric|min:1000',
-            'payment_method' => 'required|in:mobile_money,bank_transfer',
-            'account_number' => 'required|string|max:255',
-        ]);
+        // Règles de validation selon la méthode de paiement
+        $rules = [
+            'amount' => 'required|numeric',
+            'payment_method' => 'required|in:mobile_money,bank_transfer,crypto',
+        ];
+
+        $minAmount = PlatformSetting::get('min_withdrawal_amount', 1000);
+        $maxAmount = PlatformSetting::get('max_withdrawal_amount', 10000000);
+        
+        $rules['amount'] .= "|min:{$minAmount}|max:{$maxAmount}";
+
+        // Validation selon la méthode de paiement
+        if ($request->payment_method === 'mobile_money') {
+            $rules['mobile_network'] = 'required|string|max:50';
+            $rules['country_code'] = 'required|string|max:10';
+            $rules['phone_number'] = 'required|string|max:20';
+        } elseif ($request->payment_method === 'bank_transfer') {
+            $rules['bank_name'] = 'required|string|max:255';
+            $rules['account_number'] = 'required|string|max:255';
+            $rules['account_holder_name'] = 'required|string|max:255';
+            $rules['iban'] = 'nullable|string|max:50';
+            $rules['swift_code'] = 'nullable|string|max:20';
+        } elseif ($request->payment_method === 'crypto') {
+            $rules['crypto_currency'] = 'required|string|max:20';
+            $rules['crypto_wallet_address'] = 'required|string|max:255';
+            $rules['crypto_network'] = 'nullable|string|max:50';
+        }
+
+        $validated = $request->validate($rules);
 
         $organizerId = $user->id;
 
@@ -176,17 +209,42 @@ class WalletController extends Controller
         })->where('status', 'completed')->sum('amount');
 
         $totalEarnings = $totalRevenue + $contestRevenue + $fundraisingRevenue;
-        $commissionRate = config('platform.commission_rate', 0.05);
+        $commissionRate = PlatformSetting::get('commission_rate', 5) / 100;
         $platformCommission = $totalEarnings * $commissionRate;
         $netEarnings = $totalEarnings - $platformCommission;
 
-        if ($validated['amount'] > $netEarnings) {
-            return back()->withErrors(['amount' => 'Le montant demandé dépasse vos revenus nets disponibles.'])->withInput();
+        // Vérifier les retraits en attente
+        $pendingWithdrawals = Withdrawal::where('user_id', $organizerId)
+            ->whereIn('status', ['pending', 'approved'])
+            ->sum('amount');
+
+        $availableBalance = $netEarnings - $pendingWithdrawals;
+
+        if ($validated['amount'] > $availableBalance) {
+            return back()->withErrors(['amount' => 'Le montant demandé dépasse votre solde disponible. Solde disponible: ' . number_format($availableBalance, 0, ',', ' ') . ' XOF'])->withInput();
         }
 
-        // TODO: Créer une demande de retrait dans la base de données
-        // Pour l'instant, on retourne juste un message de succès
-        return back()->with('success', 'Votre demande de retrait de ' . number_format($validated['amount'], 0, ',', ' ') . ' XOF a été soumise avec succès. Elle sera traitée dans les 2-3 jours ouvrables.');
+        // Créer la demande de retrait
+        $withdrawal = Withdrawal::create([
+            'user_id' => $organizerId,
+            'amount' => $validated['amount'],
+            'currency' => 'XOF',
+            'payment_method' => $validated['payment_method'],
+            'mobile_network' => $validated['mobile_network'] ?? null,
+            'country_code' => $validated['country_code'] ?? null,
+            'phone_number' => $validated['phone_number'] ?? null,
+            'bank_name' => $validated['bank_name'] ?? null,
+            'account_number' => $validated['account_number'] ?? null,
+            'account_holder_name' => $validated['account_holder_name'] ?? null,
+            'iban' => $validated['iban'] ?? null,
+            'swift_code' => $validated['swift_code'] ?? null,
+            'crypto_currency' => $validated['crypto_currency'] ?? null,
+            'crypto_wallet_address' => $validated['crypto_wallet_address'] ?? null,
+            'crypto_network' => $validated['crypto_network'] ?? null,
+            'status' => 'pending',
+        ]);
+
+        return back()->with('success', 'Votre demande de retrait de ' . number_format($validated['amount'], 0, ',', ' ') . ' XOF a été soumise avec succès. Elle sera traitée dans les ' . PlatformSetting::get('withdrawal_processing_days', 3) . ' jours ouvrables.');
     }
 }
 
