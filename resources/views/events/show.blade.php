@@ -467,37 +467,41 @@
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    (function() {
-        let mapInitialized = false;
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            initEventMap();
+        }, 500);
+    });
+    
+    function initEventMap() {
+        const mapContainer = document.getElementById('eventMap');
+        if (!mapContainer) {
+            console.error('Conteneur de carte non trouvé');
+            return;
+        }
         
-        function initMap() {
-            if (mapInitialized) {
-                return;
-            }
-            
-            const mapContainer = document.getElementById('eventMap');
-            if (!mapContainer) {
-                console.error('Conteneur de carte non trouvé');
-                return;
-            }
-            
-            // Vérifier que le conteneur est visible
-            const rect = mapContainer.getBoundingClientRect();
-            if (rect.width === 0 || rect.height === 0) {
-                console.warn('Conteneur de carte non visible, nouvelle tentative...');
-                setTimeout(initMap, 200);
-                return;
-            }
-            
-            // Vérifier que Leaflet est chargé
-            if (typeof L === 'undefined') {
-                console.error('Leaflet n\'est pas chargé');
-                setTimeout(initMap, 100);
-                return;
-            }
-            
-            console.log('Initialisation de la carte...', 'Dimensions:', rect.width, 'x', rect.height);
-            mapInitialized = true;
+        // Vérifier que Leaflet est chargé
+        if (typeof L === 'undefined') {
+            console.error('Leaflet n\'est pas chargé');
+            setTimeout(initEventMap, 200);
+            return;
+        }
+        
+        // Vérifier que le conteneur est visible
+        const rect = mapContainer.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) {
+            console.warn('Conteneur de carte non visible, dimensions:', rect.width, 'x', rect.height);
+            setTimeout(initEventMap, 200);
+            return;
+        }
+        
+        console.log('Initialisation de la carte...', 'Dimensions:', rect.width, 'x', rect.height);
+        
+        // S'assurer que le conteneur a les bonnes dimensions
+        mapContainer.style.width = '100%';
+        mapContainer.style.height = '384px';
+        mapContainer.style.minHeight = '384px';
+        mapContainer.style.display = 'block';
             
             @if($event->venue_latitude && $event->venue_longitude)
                 // Si les coordonnées existent, les utiliser directement
