@@ -120,6 +120,7 @@ Route::middleware('auth')->group(function () {
             // Custom Forms
             Route::resource('forms', \App\Http\Controllers\Organizer\Crm\CustomFormController::class);
             Route::get('/forms/{form}/submissions', [\App\Http\Controllers\Organizer\Crm\CustomFormController::class, 'submissions'])->name('forms.submissions');
+            Route::get('/forms/{form}/submissions/{submission}', [\App\Http\Controllers\Organizer\Crm\CustomFormController::class, 'showSubmission'])->name('forms.submissions.show');
             Route::post('/forms/{form}/submissions/{submission}/approve', [\App\Http\Controllers\Organizer\Crm\CustomFormController::class, 'approveSubmission'])->name('forms.submissions.approve');
         });
 

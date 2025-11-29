@@ -125,6 +125,19 @@ class CustomFormController extends Controller
         return view('dashboard.organizer.crm.forms.submissions', compact('form', 'submissions'));
     }
 
+    public function showSubmission(CustomForm $form, FormSubmission $submission)
+    {
+        $this->authorize('view', $form);
+
+        return response()->json([
+            'submitter_name' => $submission->submitter_name,
+            'submitter_email' => $submission->submitter_email,
+            'submitter_phone' => $submission->submitter_phone,
+            'form_data' => $submission->form_data,
+            'admin_notes' => $submission->admin_notes,
+        ]);
+    }
+
     public function approveSubmission(Request $request, CustomForm $form, FormSubmission $submission)
     {
         $this->authorize('update', $form);
