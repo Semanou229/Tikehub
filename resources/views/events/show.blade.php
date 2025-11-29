@@ -518,10 +518,21 @@
         
         const rect = mapDiv.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) {
-            console.log('Conteneur non visible, attente...');
+            console.log('Conteneur non visible, attente... Dimensions:', rect.width, 'x', rect.height);
             setTimeout(initMap, 200);
             return;
         }
+        
+        // Forcer la visibilité du conteneur
+        mapDiv.style.display = 'block';
+        mapDiv.style.visibility = 'visible';
+        mapDiv.style.opacity = '1';
+        mapDiv.style.width = '100%';
+        mapDiv.style.height = '384px';
+        mapDiv.style.minHeight = '384px';
+        mapDiv.style.position = 'relative';
+        mapDiv.style.zIndex = '10';
+        mapDiv.style.background = '#e5e7eb';
         
         console.log('Initialisation de la carte...', 'Dimensions:', rect.width, 'x', rect.height);
             
