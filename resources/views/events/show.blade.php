@@ -369,28 +369,29 @@
 </div>
 
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
-      crossorigin=""/>
+@push('styles')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
     #eventMap {
         width: 100% !important;
         height: 384px !important;
         min-height: 384px !important;
         position: relative !important;
-        z-index: 0 !important;
-        background-color: #e5e7eb !important;
+        z-index: 1 !important;
+        background: #e5e7eb !important;
     }
     .leaflet-container {
         width: 100% !important;
         height: 100% !important;
-        z-index: 0 !important;
-        background-color: #e5e7eb !important;
+        z-index: 1 !important;
+        background: #e5e7eb !important;
     }
     .leaflet-tile-container img {
         max-width: none !important;
+        max-height: none !important;
     }
 </style>
+@endpush
 @endif
 
 @push('scripts')
