@@ -206,7 +206,7 @@
         <!-- Derniers concours -->
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold text-gray-800">Mes Concours</h2>
+                <h2 class="text-xl font-bold text-gray-800">Mes Concours ({{ $contests->count() }})</h2>
                 <a href="{{ route('contests.create') }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm">
                     <i class="fas fa-plus mr-2"></i>Nouveau
                 </a>
