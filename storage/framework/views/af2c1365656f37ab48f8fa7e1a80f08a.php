@@ -158,6 +158,31 @@
                 <?php endif; ?>
             </div>
 
+            <!-- Lieu sur carte -->
+            <?php
+                $event = $contest->event;
+                $hasLocation = $event && ($event->venue_latitude && $event->venue_longitude || $event->venue_address);
+            ?>
+            <?php if($hasLocation): ?>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-purple-600">Lieu sur carte</h2>
+                    <div id="contestMap" class="w-full h-96 rounded-lg border border-gray-300 mb-4"></div>
+                    <?php if($event->venue_name || $event->venue_address): ?>
+                        <div class="space-y-2 text-gray-700">
+                            <?php if($event->venue_name): ?>
+                                <p class="font-semibold"><i class="fas fa-map-marker-alt text-purple-600 mr-2"></i><?php echo e($event->venue_name); ?></p>
+                            <?php endif; ?>
+                            <?php if($event->venue_address): ?>
+                                <p class="text-sm"><i class="fas fa-road text-gray-500 mr-2"></i><?php echo e($event->venue_address); ?></p>
+                            <?php endif; ?>
+                            <?php if($event->venue_city): ?>
+                                <p class="text-sm"><i class="fas fa-city text-gray-500 mr-2"></i><?php echo e($event->venue_city); ?><?php echo e($event->venue_country ? ', ' . $event->venue_country : ''); ?></p>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+
             <!-- Candidats -->
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-purple-600">Candidats</h2>
@@ -354,6 +379,12 @@
     </div>
 </div>
 
+<?php if($hasLocation): ?>
+<?php $__env->startPush('styles'); ?>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<?php $__env->stopPush(); ?>
+<?php endif; ?>
+
 <?php $__env->startPush('scripts'); ?>
 <script>
     // Calculer le montant total en fonction du nombre de votes
@@ -393,6 +424,62 @@
         alert('Fonctionnalité de contact à venir');
     }
 </script>
+<?php if($hasLocation): ?>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php if($event->venue_latitude && $event->venue_longitude): ?>
+            // Si les coordonnées existent, les utiliser directement
+            const lat = <?php echo e($event->venue_latitude); ?>;
+            const lng = <?php echo e($event->venue_longitude); ?>;
+            const map = L.map('contestMap').setView([lat, lng], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+            
+            L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup('<?php echo e($event->venue_name ?? $event->venue_city ?? "Lieu du concours"); ?>')
+                .openPopup();
+        <?php elseif($event->venue_address): ?>
+            // Si seulement l'adresse existe, géocoder l'adresse
+            const map = L.map('contestMap').setView([6.4969, 2.6283], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+            
+            let fullAddress = '<?php echo e($event->venue_address); ?>';
+            <?php if($event->venue_city): ?>
+                fullAddress += ', <?php echo e($event->venue_city); ?>';
+            <?php endif; ?>
+            <?php if($event->venue_country): ?>
+                fullAddress += ', <?php echo e($event->venue_country); ?>';
+            <?php endif; ?>
+            
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&limit=1`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const lat = parseFloat(data[0].lat);
+                        const lng = parseFloat(data[0].lon);
+                        
+                        map.setView([lat, lng], 15);
+                        
+                        L.marker([lat, lng])
+                            .addTo(map)
+                            .bindPopup('<?php echo e($event->venue_name ?? $event->venue_address ?? "Lieu du concours"); ?>')
+                            .openPopup();
+                    }
+                })
+                .catch(error => console.error('Erreur de géocodage:', error));
+        <?php endif; ?>
+    });
+</script>
+<?php endif; ?>
 <?php $__env->stopPush(); ?>
 <?php $__env->stopSection(); ?>
 

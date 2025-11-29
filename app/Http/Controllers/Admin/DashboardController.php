@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Models\Ticket;
 use App\Models\Contest;
 use App\Models\Fundraising;
+use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -98,6 +99,15 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Signalements en attente
+        $pendingReports = Report::where('status', 'pending')
+            ->with(['reporter', 'reportable'])
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $totalPendingReports = Report::where('status', 'pending')->count();
+
         return view('dashboard.admin.index', compact(
             'stats',
             'monthlyRevenue',
@@ -106,7 +116,9 @@ class DashboardController extends Controller
             'recentUsers',
             'pendingKyc',
             'recentPayments',
-            'topOrganizers'
+            'topOrganizers',
+            'pendingReports',
+            'totalPendingReports'
         ));
     }
 }

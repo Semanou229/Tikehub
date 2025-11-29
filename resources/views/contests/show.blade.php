@@ -68,6 +68,49 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Modal de signalement -->
+        <div id="reportModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Signaler ce concours</h3>
+                    <button onclick="closeReportModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Raison du signalement *</label>
+                        <select id="report-reason" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <option value="">Sélectionnez une raison</option>
+                            <option value="inappropriate_content">Contenu inapproprié</option>
+                            <option value="false_information">Informations erronées</option>
+                            <option value="spam">Spam</option>
+                            <option value="scam">Arnaque</option>
+                            <option value="copyright">Violation de droits d'auteur</option>
+                            <option value="other">Autre</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Votre message *</label>
+                        <textarea id="report-message" rows="4" 
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                  placeholder="Décrivez le problème en détail..."></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Maximum 1000 caractères</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="submitReport()" id="submit-report-btn"
+                                class="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                            <i class="fas fa-paper-plane mr-2"></i>Envoyer le signalement
+                        </button>
+                        <button onclick="closeReportModal()" 
+                                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -502,13 +545,38 @@
     }
     
     function reportContest() {
-        const reason = prompt('Pourquoi souhaitez-vous signaler ce concours ?\n\nRaisons possibles :\n- Contenu inapproprié\n- Informations erronées\n- Spam\n- Autre');
+        const modal = document.getElementById('reportModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.getElementById('report-reason').value = '';
+            document.getElementById('report-message').value = '';
+        }
+    }
+    
+    function closeReportModal() {
+        const modal = document.getElementById('reportModal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+    
+    function submitReport() {
+        const reason = document.getElementById('report-reason').value;
+        const message = document.getElementById('report-message').value;
         
-        if (!reason || reason.trim() === '') {
+        if (!reason) {
+            alert('Veuillez sélectionner une raison');
             return;
         }
         
-        const details = prompt('Détails supplémentaires (optionnel) :');
+        if (!message || message.trim() === '') {
+            alert('Veuillez saisir un message');
+            return;
+        }
+        
+        const submitBtn = document.getElementById('submit-report-btn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Envoi en cours...';
         
         fetch('{{ route("contests.report", $contest) }}', {
             method: 'POST',
@@ -517,19 +585,32 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({
-                reason: reason.trim(),
-                details: details ? details.trim() : null
+                reason: reason,
+                message: message.trim()
             })
         })
         .then(response => response.json())
         .then(data => {
             alert(data.message || 'Votre signalement a été enregistré. Merci !');
+            closeReportModal();
         })
         .catch(error => {
             console.error('Erreur:', error);
             alert('Une erreur est survenue. Veuillez réessayer.');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Envoyer le signalement';
         });
     }
+    
+    // Fermer le modal en cliquant en dehors
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('reportModal');
+        if (e.target === modal) {
+            closeReportModal();
+        }
+    });
     
     function addToCalendar() {
         window.location.href = '{{ route("contests.calendar", $contest) }}';

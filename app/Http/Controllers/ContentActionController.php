@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Contest;
 use App\Models\Fundraising;
+use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -115,15 +116,17 @@ class ContentActionController extends Controller
     public function reportEvent(Request $request, Event $event)
     {
         $validated = $request->validate([
-            'reason' => 'required|string|max:500',
-            'details' => 'nullable|string|max:1000',
+            'reason' => 'required|string|in:inappropriate_content,false_information,spam,scam,copyright,other',
+            'message' => 'required|string|max:1000',
         ]);
 
-        Log::info('Signalement d\'événement', [
-            'event_id' => $event->id,
-            'user_id' => auth()->id(),
+        Report::create([
+            'reportable_type' => Event::class,
+            'reportable_id' => $event->id,
+            'reporter_id' => auth()->id(),
             'reason' => $validated['reason'],
-            'details' => $validated['details'] ?? null,
+            'message' => $validated['message'],
+            'status' => 'pending',
         ]);
 
         return response()->json([
@@ -138,15 +141,17 @@ class ContentActionController extends Controller
     public function reportContest(Request $request, Contest $contest)
     {
         $validated = $request->validate([
-            'reason' => 'required|string|max:500',
-            'details' => 'nullable|string|max:1000',
+            'reason' => 'required|string|in:inappropriate_content,false_information,spam,scam,copyright,other',
+            'message' => 'required|string|max:1000',
         ]);
 
-        Log::info('Signalement de concours', [
-            'contest_id' => $contest->id,
-            'user_id' => auth()->id(),
+        Report::create([
+            'reportable_type' => Contest::class,
+            'reportable_id' => $contest->id,
+            'reporter_id' => auth()->id(),
             'reason' => $validated['reason'],
-            'details' => $validated['details'] ?? null,
+            'message' => $validated['message'],
+            'status' => 'pending',
         ]);
 
         return response()->json([
@@ -161,15 +166,17 @@ class ContentActionController extends Controller
     public function reportFundraising(Request $request, Fundraising $fundraising)
     {
         $validated = $request->validate([
-            'reason' => 'required|string|max:500',
-            'details' => 'nullable|string|max:1000',
+            'reason' => 'required|string|in:inappropriate_content,false_information,spam,scam,copyright,other',
+            'message' => 'required|string|max:1000',
         ]);
 
-        Log::info('Signalement de collecte de fonds', [
-            'fundraising_id' => $fundraising->id,
-            'user_id' => auth()->id(),
+        Report::create([
+            'reportable_type' => Fundraising::class,
+            'reportable_id' => $fundraising->id,
+            'reporter_id' => auth()->id(),
             'reason' => $validated['reason'],
-            'details' => $validated['details'] ?? null,
+            'message' => $validated['message'],
+            'status' => 'pending',
         ]);
 
         return response()->json([
