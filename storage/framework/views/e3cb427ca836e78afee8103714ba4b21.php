@@ -143,7 +143,7 @@
                     </div>
                     <div class="flex items-start">
                         <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
-                        <span>Collecte organisée par <?php echo e($fundraising->organizer->name); ?></span>
+                        <span>Collecte organisée par <a href="<?php echo e(route('organizer.profile.show', $fundraising->organizer)); ?>" class="text-green-600 hover:text-green-800 font-semibold hover:underline"><?php echo e($fundraising->organizer->name); ?></a></span>
                     </div>
                 </div>
 
@@ -359,7 +359,9 @@
 
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg"><?php echo e($fundraising->organizer->name); ?></h3>
+                            <a href="<?php echo e(route('organizer.profile.show', $fundraising->organizer)); ?>" class="hover:underline">
+                                <h3 class="font-bold text-lg text-gray-900 hover:text-green-600 transition"><?php echo e($fundraising->organizer->name); ?></h3>
+                            </a>
                             <p class="text-sm text-gray-500">ORGANISATEUR</p>
                         </div>
                     </div>

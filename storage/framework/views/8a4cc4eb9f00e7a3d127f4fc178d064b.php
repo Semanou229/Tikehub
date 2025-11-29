@@ -18,6 +18,17 @@
                     <div class="flex-1">
                         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4"><?php echo e($event->title); ?></h1>
                         
+                        <!-- Badge virtuel -->
+                        <?php if($event->is_virtual): ?>
+                            <div class="mb-3">
+                                <span class="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+                                    <i class="fas fa-video"></i>
+                                    Événement virtuel - <?php echo e(ucfirst(str_replace('_', ' ', $event->platform_type ?? 'Visioconférence'))); ?>
+
+                                </span>
+                            </div>
+                        <?php endif; ?>
+                        
                         <!-- Informations date et lieu -->
                         <div class="space-y-2 text-gray-700">
                             <div class="flex items-center">
@@ -143,7 +154,7 @@
                         <?php endif; ?>
                         <div class="flex items-start">
                             <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
-                            <span>Événement organisé par <?php echo e($event->organizer->name); ?></span>
+                            <span>Événement organisé par <a href="<?php echo e(route('organizer.profile.show', $event->organizer)); ?>" class="text-indigo-600 hover:text-indigo-800 font-semibold hover:underline"><?php echo e($event->organizer->name); ?></a></span>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -446,7 +457,9 @@
 
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg"><?php echo e($event->organizer->name); ?></h3>
+                            <a href="<?php echo e(route('organizer.profile.show', $event->organizer)); ?>" class="hover:underline">
+                                <h3 class="font-bold text-lg text-gray-900 hover:text-indigo-600 transition"><?php echo e($event->organizer->name); ?></h3>
+                            </a>
                             <p class="text-sm text-gray-500">ORGANISATEUR</p>
                         </div>
                     </div>

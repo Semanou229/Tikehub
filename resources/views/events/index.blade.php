@@ -13,6 +13,23 @@
                     <img src="{{ asset('storage/' . $event->cover_image) }}" alt="{{ $event->title }}" class="w-full h-48 object-cover">
                 @endif
                 <div class="p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-3 py-1 rounded-full">
+                            {{ $event->category }}
+                        </span>
+                        <div class="flex gap-2">
+                            @if($event->is_virtual)
+                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                    <i class="fas fa-video mr-1"></i>Virtuel
+                                </span>
+                            @endif
+                            @if($event->is_free)
+                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                    Gratuit
+                                </span>
+                            @endif
+                        </div>
+                    </div>
                     <h3 class="text-xl font-semibold mb-2 hover:text-indigo-600 transition">{{ $event->title }}</h3>
                     <p class="text-gray-600 text-sm mb-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
                     @if($event->start_date)

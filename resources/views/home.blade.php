@@ -118,11 +118,18 @@
                             <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-3 py-1 rounded-full">
                                 {{ $event->category }}
                             </span>
-                            @if($event->is_free)
-                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
-                                    Gratuit
-                                </span>
-                            @endif
+                            <div class="flex gap-2">
+                                @if($event->is_virtual)
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                        <i class="fas fa-video mr-1"></i>Virtuel
+                                    </span>
+                                @endif
+                                @if($event->is_free)
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                        Gratuit
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                         <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition">{{ $event->title }}</h3>
                         <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
@@ -171,9 +178,16 @@
                             <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">
                                 <i class="fas fa-fire mr-1"></i> Populaire
                             </span>
-                            <span class="text-sm text-gray-500">
-                                {{ $event->tickets_count }} billet(s) vendu(s)
-                            </span>
+                            <div class="flex items-center gap-2">
+                                @if($event->is_virtual)
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                        <i class="fas fa-video mr-1"></i>Virtuel
+                                    </span>
+                                @endif
+                                <span class="text-sm text-gray-500">
+                                    {{ $event->tickets_count }} billet(s) vendu(s)
+                                </span>
+                            </div>
                         </div>
                         <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition">{{ $event->title }}</h3>
                         <p class="text-gray-600 text-sm mb-2 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
