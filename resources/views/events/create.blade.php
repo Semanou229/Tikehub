@@ -118,9 +118,14 @@
 
                         <!-- Carte OpenStreetMap -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Localisation sur la carte</label>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="block text-sm font-medium text-gray-700">Localisation sur la carte</label>
+                                <button type="button" id="geolocateBtn" class="px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2">
+                                    <i class="fas fa-crosshairs"></i> Ma localisation
+                                </button>
+                            </div>
                             <div id="map" class="w-full h-64 rounded-lg border border-gray-300"></div>
-                            <p class="text-sm text-gray-500 mt-2">Saisissez une adresse et cliquez sur "Localiser", ou cliquez directement sur la carte</p>
+                            <p class="text-sm text-gray-500 mt-2">Saisissez une adresse et cliquez sur "Localiser", utilisez "Ma localisation", ou cliquez directement sur la carte</p>
                             <input type="hidden" name="venue_latitude" id="venue_latitude" value="{{ old('venue_latitude') }}">
                             <input type="hidden" name="venue_longitude" id="venue_longitude" value="{{ old('venue_longitude') }}">
                             @error('venue_latitude')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
@@ -219,6 +224,116 @@
         map.setView([existingLat, existingLng], 13);
         marker = L.marker([existingLat, existingLng]).addTo(map);
     }
+
+    // Géolocalisation automatique
+    document.getElementById('geolocateBtn').addEventListener('click', function() {
+        const btn = this;
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Localisation...';
+        
+        if (!navigator.geolocation) {
+            alert('La géolocalisation n\'est pas supportée par votre navigateur.');
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            return;
+        }
+        
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                // Mettre à jour les champs cachés
+                document.getElementById('venue_latitude').value = lat;
+                document.getElementById('venue_longitude').value = lng;
+                
+                // Centrer la carte sur la position
+                map.setView([lat, lng], 15);
+                
+                // Supprimer l'ancien marqueur
+                if (marker) {
+                    map.removeLayer(marker);
+                }
+                
+                // Ajouter un nouveau marqueur
+                marker = L.marker([lat, lng]).addTo(map);
+                
+                // Faire un reverse géocodage pour remplir l'adresse
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.address) {
+                            // Remplir l'adresse
+                            if (data.address.road && !document.getElementById('venue_address').value) {
+                                document.getElementById('venue_address').value = data.address.road;
+                            } else if (data.address.house_number && data.address.road && !document.getElementById('venue_address').value) {
+                                document.getElementById('venue_address').value = data.address.house_number + ' ' + data.address.road;
+                            }
+                            
+                            // Remplir la ville
+                            if (!document.getElementById('venue_city').value) {
+                                if (data.address.city) {
+                                    document.getElementById('venue_city').value = data.address.city;
+                                } else if (data.address.town) {
+                                    document.getElementById('venue_city').value = data.address.town;
+                                } else if (data.address.village) {
+                                    document.getElementById('venue_city').value = data.address.village;
+                                }
+                            }
+                            
+                            // Remplir le pays
+                            if (!document.getElementById('venue_country').value && data.address.country) {
+                                document.getElementById('venue_country').value = data.address.country;
+                            }
+                            
+                            // Remplir le nom du lieu si disponible
+                            if (!document.getElementById('venue_name').value) {
+                                if (data.address.building) {
+                                    document.getElementById('venue_name').value = data.address.building;
+                                } else if (data.address.amenity) {
+                                    document.getElementById('venue_name').value = data.address.amenity;
+                                }
+                            }
+                        }
+                        
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    })
+                    .catch(error => {
+                        console.error('Erreur de reverse géocodage:', error);
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    });
+            },
+            function(error) {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                
+                let errorMessage = 'Erreur de géolocalisation: ';
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage += 'Permission refusée. Veuillez autoriser l\'accès à votre localisation.';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage += 'Position indisponible.';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage += 'Délai d\'attente dépassé.';
+                        break;
+                    default:
+                        errorMessage += 'Erreur inconnue.';
+                        break;
+                }
+                alert(errorMessage);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    });
 
     // Géocodage automatique de l'adresse
     document.getElementById('geocodeBtn').addEventListener('click', function() {
