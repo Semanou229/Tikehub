@@ -369,8 +369,9 @@
 </div>
 
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
-@push('styles')
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+      crossorigin=""/>
 <style>
     #eventMap {
         width: 100% !important;
@@ -378,15 +379,18 @@
         min-height: 384px !important;
         position: relative !important;
         z-index: 0 !important;
-        background-color: #f0f0f0 !important;
+        background-color: #e5e7eb !important;
     }
     .leaflet-container {
         width: 100% !important;
         height: 100% !important;
         z-index: 0 !important;
+        background-color: #e5e7eb !important;
+    }
+    .leaflet-tile-container img {
+        max-width: none !important;
     }
 </style>
-@endpush
 @endif
 
 @push('scripts')
@@ -461,8 +465,35 @@
     }
 </script>
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
+    // Charger Leaflet de manière asynchrone
+    (function() {
+        // Charger le CSS si pas déjà chargé
+        if (!document.querySelector('link[href*="leaflet.css"]')) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+            link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+            link.crossOrigin = '';
+            document.head.appendChild(link);
+        }
+        
+        // Charger le JS
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+        script.crossOrigin = '';
+        script.onload = function() {
+            console.log('Leaflet chargé avec succès');
+            initMapAfterLoad();
+        };
+        script.onerror = function() {
+            console.error('Erreur de chargement de Leaflet');
+        };
+        document.head.appendChild(script);
+    })();
+    
+    function initMapAfterLoad() {
     (function() {
         let mapInitialized = false;
         
