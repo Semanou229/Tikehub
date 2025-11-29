@@ -740,10 +740,53 @@
         alert('Fonctionnalité d\'ajout au calendrier à venir');
     }
     
-    function contactOrganizer() {
-        // TODO: Ouvrir un formulaire de contact
-        alert('Fonctionnalité de contact à venir');
+    function contactOrganizer(email) {
+        if (!email) {
+            alert('Email de l\'organisateur non disponible');
+            return;
+        }
+        
+        const modal = document.getElementById('contactModal');
+        const emailInput = document.getElementById('organizer-email');
+        const mailtoLink = document.getElementById('mailto-link');
+        
+        emailInput.value = email;
+        mailtoLink.href = 'mailto:' + email;
+        
+        modal.classList.remove('hidden');
     }
+    
+    function closeContactModal() {
+        const modal = document.getElementById('contactModal');
+        modal.classList.add('hidden');
+        document.getElementById('contact-message').value = '';
+    }
+    
+    function copyEmail() {
+        const emailInput = document.getElementById('organizer-email');
+        emailInput.select();
+        emailInput.setSelectionRange(0, 99999); // Pour mobile
+        
+        try {
+            document.execCommand('copy');
+            const copyBtn = event.target.closest('button');
+            const originalIcon = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check text-green-600"></i>';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalIcon;
+            }, 2000);
+        } catch (err) {
+            alert('Impossible de copier l\'email');
+        }
+    }
+    
+    // Fermer le modal en cliquant en dehors
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('contactModal');
+        if (e.target === modal) {
+            closeContactModal();
+        }
+    });
 </script>
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
