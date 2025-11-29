@@ -167,7 +167,7 @@ class MonerooService
                     'email' => $data['customer']['email'] ?? '',
                     'first_name' => $this->extractFirstName($data['customer']['name'] ?? ''),
                     'last_name' => $this->extractLastName($data['customer']['name'] ?? ''),
-                    'phone' => $data['customer']['phone'] ?? null,
+                    'phone' => $this->normalizePhoneNumber($data['customer']['phone'] ?? null),
                 ],
             ];
 
