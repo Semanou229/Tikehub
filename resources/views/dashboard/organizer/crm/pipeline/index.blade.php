@@ -54,10 +54,23 @@
                             @if($contact->company)
                                 <div class="text-sm text-gray-600 mb-3">{{ $contact->company }}</div>
                             @endif
-                            <div class="flex flex-wrap gap-2">
+                            <div class="flex flex-wrap gap-2 mt-2">
                                 @if($contact->category)
+                                    @php
+                                        $categoryLabels = [
+                                            'participant' => 'Participant',
+                                            'sponsor' => 'Sponsor',
+                                            'staff' => 'Équipe',
+                                            'press' => 'Presse',
+                                            'vip' => 'VIP',
+                                            'partner' => 'Partenaire',
+                                            'prospect' => 'Prospect',
+                                            'other' => 'Autre'
+                                        ];
+                                        $categoryLabel = $categoryLabels[$contact->category] ?? ucfirst($contact->category);
+                                    @endphp
                                     <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                                        {{ ucfirst($contact->category) }}
+                                        {{ $categoryLabel }}
                                     </span>
                                 @endif
                                 @if($contact->tags && $contact->tags->count() > 0)
@@ -185,28 +198,37 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateCounters() {
         // Mettre à jour les compteurs des colonnes
         const stages = ['prospect', 'confirmed', 'partner', 'closed'];
+        const stageLabels = {
+            'prospect': 'Prospect',
+            'confirmed': 'Confirmé',
+            'partner': 'Partenaire',
+            'closed': 'Clôturé'
+        };
+
         stages.forEach(stage => {
             const column = document.querySelector(`#stage-${stage}`);
             const count = column ? column.querySelectorAll('.contact-card').length : 0;
-            const badge = document.querySelector(`[data-stage="${stage}"]`).previousElementSibling.querySelector('span');
-            if (badge) {
-                badge.textContent = count;
-            }
-        });
-
-        // Mettre à jour les cartes de statistiques en haut
-        stages.forEach(stage => {
-            const statsCard = Array.from(document.querySelectorAll('.bg-white.rounded-lg.shadow-md')).find(card => {
-                return card.textContent.includes(getStageLabel(stage));
-            });
-            if (statsCard) {
-                const column = document.querySelector(`#stage-${stage}`);
-                const count = column ? column.querySelectorAll('.contact-card').length : 0;
-                const countElement = statsCard.querySelector('.text-3xl');
-                if (countElement) {
-                    countElement.textContent = count;
+            
+            // Mettre à jour le badge dans l'en-tête de la colonne
+            const columnHeader = column ? column.previousElementSibling : null;
+            if (columnHeader) {
+                const badge = columnHeader.querySelector('span');
+                if (badge) {
+                    badge.textContent = count;
                 }
             }
+
+            // Mettre à jour les cartes de statistiques en haut
+            const statsCards = document.querySelectorAll('.bg-white.rounded-lg.shadow-md');
+            statsCards.forEach(card => {
+                const label = card.querySelector('.text-sm');
+                if (label && label.textContent.trim() === stageLabels[stage]) {
+                    const countElement = card.querySelector('.text-3xl');
+                    if (countElement) {
+                        countElement.textContent = count;
+                    }
+                }
+            });
         });
     }
 
