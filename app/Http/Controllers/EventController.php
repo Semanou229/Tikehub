@@ -92,6 +92,21 @@ class EventController extends Controller
 
         $validated['organizer_id'] = auth()->id();
         $validated['slug'] = Str::slug($validated['title']);
+        $validated['is_published'] = false;
+        $validated['status'] = 'draft';
+        
+        // Gestion du sous-domaine
+        if ($request->has('subdomain_enabled') && $request->subdomain_enabled) {
+            $validated['subdomain_enabled'] = true;
+            if ($request->filled('subdomain')) {
+                $validated['subdomain'] = Str::slug($request->subdomain);
+            } else {
+                $validated['subdomain'] = Str::slug($validated['title']);
+            }
+        } else {
+            $validated['subdomain_enabled'] = false;
+            $validated['subdomain'] = null;
+        }
 
         if ($request->hasFile('cover_image')) {
             $validated['cover_image'] = $request->file('cover_image')->store('events', 'public');
@@ -125,7 +140,24 @@ class EventController extends Controller
             'cover_image' => 'nullable|image|max:2048',
         ]);
 
+        $validated['slug'] = Str::slug($validated['title']);
+        
+        // Gestion du sous-domaine
+        if ($request->has('subdomain_enabled') && $request->subdomain_enabled) {
+            $validated['subdomain_enabled'] = true;
+            if ($request->filled('subdomain')) {
+                $validated['subdomain'] = Str::slug($request->subdomain);
+            } elseif (empty($event->subdomain)) {
+                $validated['subdomain'] = Str::slug($validated['title']);
+            }
+        } else {
+            $validated['subdomain_enabled'] = false;
+        }
+
         if ($request->hasFile('cover_image')) {
+            if ($event->cover_image) {
+                Storage::disk('public')->delete($event->cover_image);
+            }
             $validated['cover_image'] = $request->file('cover_image')->store('events', 'public');
         }
 
