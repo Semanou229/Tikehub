@@ -35,7 +35,11 @@ Route::middleware('auth')->group(function () {
         
         // Gestion des événements
         Route::get('/events', [\App\Http\Controllers\Admin\EventController::class, 'index'])->name('events.index');
+        Route::get('/events/create', [\App\Http\Controllers\Admin\EventController::class, 'create'])->name('events.create');
+        Route::post('/events', [\App\Http\Controllers\Admin\EventController::class, 'store'])->name('events.store');
         Route::get('/events/{event}', [\App\Http\Controllers\Admin\EventController::class, 'show'])->name('events.show');
+        Route::get('/events/{event}/edit', [\App\Http\Controllers\Admin\EventController::class, 'edit'])->name('events.edit');
+        Route::put('/events/{event}', [\App\Http\Controllers\Admin\EventController::class, 'update'])->name('events.update');
         Route::post('/events/{event}/approve', [\App\Http\Controllers\Admin\EventController::class, 'approve'])->name('events.approve');
         Route::post('/events/{event}/reject', [\App\Http\Controllers\Admin\EventController::class, 'reject'])->name('events.reject');
         Route::post('/events/{event}/suspend', [\App\Http\Controllers\Admin\EventController::class, 'suspend'])->name('events.suspend');
@@ -59,11 +63,19 @@ Route::middleware('auth')->group(function () {
         
         // Gestion des concours
         Route::get('/contests', [\App\Http\Controllers\Admin\ContestController::class, 'index'])->name('contests.index');
+        Route::get('/contests/create', [\App\Http\Controllers\Admin\ContestController::class, 'create'])->name('contests.create');
+        Route::post('/contests', [\App\Http\Controllers\Admin\ContestController::class, 'store'])->name('contests.store');
         Route::get('/contests/{contest}', [\App\Http\Controllers\Admin\ContestController::class, 'show'])->name('contests.show');
+        Route::get('/contests/{contest}/edit', [\App\Http\Controllers\Admin\ContestController::class, 'edit'])->name('contests.edit');
+        Route::put('/contests/{contest}', [\App\Http\Controllers\Admin\ContestController::class, 'update'])->name('contests.update');
         
         // Gestion des collectes
         Route::get('/fundraisings', [\App\Http\Controllers\Admin\FundraisingController::class, 'index'])->name('fundraisings.index');
+        Route::get('/fundraisings/create', [\App\Http\Controllers\Admin\FundraisingController::class, 'create'])->name('fundraisings.create');
+        Route::post('/fundraisings', [\App\Http\Controllers\Admin\FundraisingController::class, 'store'])->name('fundraisings.store');
         Route::get('/fundraisings/{fundraising}', [\App\Http\Controllers\Admin\FundraisingController::class, 'show'])->name('fundraisings.show');
+        Route::get('/fundraisings/{fundraising}/edit', [\App\Http\Controllers\Admin\FundraisingController::class, 'edit'])->name('fundraisings.edit');
+        Route::put('/fundraisings/{fundraising}', [\App\Http\Controllers\Admin\FundraisingController::class, 'update'])->name('fundraisings.update');
         
         // Paramètres
         Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');

@@ -5,10 +5,17 @@
 @section('content')
 <div class="p-6">
     <div class="mb-6">
-        <a href="{{ route('admin.fundraisings.index') }}" class="text-red-600 hover:text-red-800 mb-4 inline-block">
-            <i class="fas fa-arrow-left mr-2"></i>Retour
-        </a>
-        <h1 class="text-3xl font-bold text-gray-800">{{ $fundraising->name }}</h1>
+        <div class="flex items-center justify-between">
+            <div>
+                <a href="{{ route('admin.fundraisings.index') }}" class="text-red-600 hover:text-red-800 mb-4 inline-block">
+                    <i class="fas fa-arrow-left mr-2"></i>Retour
+                </a>
+                <h1 class="text-3xl font-bold text-gray-800">{{ $fundraising->name }}</h1>
+            </div>
+            <a href="{{ route('admin.fundraisings.edit', $fundraising) }}" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition">
+                <i class="fas fa-edit mr-2"></i>Modifier
+            </a>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
