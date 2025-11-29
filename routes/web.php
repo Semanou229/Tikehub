@@ -37,7 +37,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
     Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
     Route::post('/events/{event}/publish', [EventController::class, 'publish'])->name('events.publish');
-});
 
     // Billets
     Route::get('/events/{event}/tickets', [TicketController::class, 'index'])->name('tickets.index');
