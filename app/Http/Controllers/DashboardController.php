@@ -55,6 +55,7 @@ class DashboardController extends Controller
         // Concours
         $contests = \App\Models\Contest::where('organizer_id', $organizerId)
             ->withCount('votes')
+            ->withCount('candidates')
             ->latest()
             ->take(5)
             ->get();

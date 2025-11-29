@@ -215,19 +215,62 @@
                 <div class="space-y-4">
                     @foreach($contests as $contest)
                         <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="font-semibold text-gray-900">{{ $contest->name }}</h3>
-                                @if($contest->is_active)
-                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Actif</span>
-                                @else
-                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Terminé</span>
-                                @endif
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-gray-900 mb-1">{{ $contest->name }}</h3>
+                                    @if($contest->description)
+                                        <p class="text-sm text-gray-600 line-clamp-2">{{ Str::limit($contest->description, 80) }}</p>
+                                    @endif
+                                </div>
+                                <div class="ml-4 flex flex-col items-end gap-2">
+                                    @if($contest->is_published)
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Publié</span>
+                                    @else
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Brouillon</span>
+                                    @endif
+                                    @if($contest->isActive())
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Actif</span>
+                                    @else
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Terminé</span>
+                                    @endif
+                                </div>
                             </div>
-                            <div class="flex items-center justify-between text-sm text-gray-600">
-                                <span><i class="fas fa-vote-yea mr-1"></i>{{ number_format($contest->votes_count, 0, ',', ' ') }} votes</span>
-                                <a href="{{ route('contests.show', $contest) }}" class="text-purple-600 hover:text-purple-800">
-                                    Voir <i class="fas fa-arrow-right ml-1"></i>
-                                </a>
+                            <div class="grid grid-cols-2 gap-4 mb-3 text-sm">
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-vote-yea text-purple-600 mr-2"></i>
+                                    <span><strong>{{ number_format($contest->votes_count, 0, ',', ' ') }}</strong> votes</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-users text-purple-600 mr-2"></i>
+                                    <span><strong>{{ $contest->candidates()->count() }}</strong> candidats</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-coins text-purple-600 mr-2"></i>
+                                    <span>{{ number_format($contest->price_per_vote, 0, ',', ' ') }} XOF/vote</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-calendar text-purple-600 mr-2"></i>
+                                    <span>{{ $contest->end_date->format('d/m/Y') }}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-3 border-t border-gray-200">
+                                <div class="text-xs text-gray-500">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    Créé le {{ $contest->created_at->format('d/m/Y') }}
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ route('contests.show', $contest) }}" class="text-purple-600 hover:text-purple-800 text-sm font-medium">
+                                        <i class="fas fa-eye mr-1"></i>Voir
+                                    </a>
+                                    @if(!$contest->is_published)
+                                        <form action="{{ route('contests.publish', $contest) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="text-green-600 hover:text-green-800 text-sm font-medium">
+                                                <i class="fas fa-check mr-1"></i>Publier
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     @endforeach
