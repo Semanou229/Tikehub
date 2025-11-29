@@ -164,14 +164,16 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php $__currentLoopData = $popularEvents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <a href="<?php echo e(route('events.show', $event)); ?>" class="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-yellow-200">
-                    <?php if($event->cover_image): ?>
-                        <img src="<?php echo e(asset('storage/' . $event->cover_image)); ?>" alt="<?php echo e($event->title); ?>" class="w-full h-48 object-cover">
-                    <?php else: ?>
-                        <div class="w-full h-48 bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
-                            <i class="fas fa-fire text-6xl text-white opacity-50"></i>
-                        </div>
-                    <?php endif; ?>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-yellow-200">
+                    <a href="<?php echo e(route('events.show', $event)); ?>" class="block">
+                        <?php if($event->cover_image): ?>
+                            <img src="<?php echo e(asset('storage/' . $event->cover_image)); ?>" alt="<?php echo e($event->title ?? 'Événement'); ?>" class="w-full h-48 object-cover">
+                        <?php else: ?>
+                            <div class="w-full h-48 bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+                                <i class="fas fa-fire text-6xl text-white opacity-50"></i>
+                            </div>
+                        <?php endif; ?>
+                    </a>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">
@@ -184,26 +186,32 @@
                                     </span>
                                 <?php endif; ?>
                                 <span class="text-sm text-gray-500">
-                                    <?php echo e($event->tickets_count); ?> billet(s) vendu(s)
+                                    <?php echo e($event->tickets_count ?? 0); ?> billet(s) vendu(s)
                                 </span>
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition"><?php echo e($event->title); ?></h3>
-                        <p class="text-gray-600 text-sm mb-2 line-clamp-2"><?php echo e(\Illuminate\Support\Str::limit($event->description, 100)); ?></p>
-                        <div class="flex items-center text-sm text-gray-500 mb-2">
-                            <i class="fas fa-calendar mr-2"></i>
-                            <span><?php echo e($event->start_date->translatedFormat('d/m/Y H:i')); ?></span>
-                            <?php if($event->venue_city): ?>
-                                <span class="mx-2">•</span>
-                                <i class="fas fa-map-marker-alt mr-2"></i>
-                                <span><?php echo e($event->venue_city); ?></span>
-                            <?php endif; ?>
-                        </div>
+                        <a href="<?php echo e(route('events.show', $event)); ?>" class="block">
+                            <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition"><?php echo e($event->title ?? 'Sans titre'); ?></h3>
+                        </a>
+                        <?php if($event->description): ?>
+                            <p class="text-gray-600 text-sm mb-2 line-clamp-2"><?php echo e(\Illuminate\Support\Str::limit($event->description, 100)); ?></p>
+                        <?php endif; ?>
+                        <?php if($event->start_date): ?>
+                            <div class="flex items-center text-sm text-gray-500 mb-2">
+                                <i class="fas fa-calendar mr-2"></i>
+                                <span><?php echo e($event->start_date->translatedFormat('d/m/Y H:i')); ?></span>
+                                <?php if($event->venue_city): ?>
+                                    <span class="mx-2">•</span>
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    <span><?php echo e($event->venue_city); ?></span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                         <?php if($event->organizer): ?>
                             <div class="flex items-center text-sm text-gray-600 mb-2">
                                 <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
                                 <span>Par</span>
-                                <a href="<?php echo e(route('organizer.profile.show', $event->organizer)); ?>" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline">
+                                <a href="<?php echo e(route('organizer.profile.show', $event->organizer)); ?>" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline" onclick="event.stopPropagation()">
                                     <?php echo e($event->organizer->name); ?>
 
                                 </a>
@@ -225,11 +233,11 @@
                                 </span>
                             </div>
                         <?php endif; ?>
-                        <span class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
+                        <a href="<?php echo e(route('events.show', $event)); ?>" class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
                             Voir l'événement
-                        </span>
+                        </a>
                     </div>
-                </a>
+                </div>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>

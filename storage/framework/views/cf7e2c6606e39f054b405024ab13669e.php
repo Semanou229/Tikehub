@@ -11,6 +11,24 @@
                     <img src="<?php echo e(asset('storage/' . $event->cover_image)); ?>" alt="<?php echo e($event->title); ?>" class="w-full h-48 object-cover">
                 <?php endif; ?>
                 <div class="p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-3 py-1 rounded-full">
+                            <?php echo e($event->category); ?>
+
+                        </span>
+                        <div class="flex gap-2">
+                            <?php if($event->is_virtual): ?>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                    <i class="fas fa-video mr-1"></i>Virtuel
+                                </span>
+                            <?php endif; ?>
+                            <?php if($event->is_free): ?>
+                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                    Gratuit
+                                </span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                     <h3 class="text-xl font-semibold mb-2 hover:text-indigo-600 transition"><?php echo e($event->title); ?></h3>
                     <p class="text-gray-600 text-sm mb-2"><?php echo e(\Illuminate\Support\Str::limit($event->description, 100)); ?></p>
                     <?php if($event->start_date): ?>
@@ -21,10 +39,36 @@
                         </div>
                     <?php endif; ?>
                     <?php if($event->venue_city): ?>
-                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
                             <i class="fas fa-map-marker-alt mr-2"></i>
                             <?php echo e($event->venue_city); ?>
 
+                        </div>
+                    <?php endif; ?>
+                    <?php if($event->organizer): ?>
+                        <div class="flex items-center text-sm text-gray-600 mb-2">
+                            <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
+                            <span>Par</span>
+                            <a href="<?php echo e(route('organizer.profile.show', $event->organizer)); ?>" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline">
+                                <?php echo e($event->organizer->name); ?>
+
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                    <?php
+                        $minPrice = $event->ticketTypes()->where('is_active', true)->min('price') ?? 0;
+                    ?>
+                    <?php if($minPrice > 0): ?>
+                        <div class="mb-3">
+                            <span class="text-lg font-bold text-indigo-600">
+                                À partir de <?php echo e(number_format($minPrice, 0, ',', ' ')); ?> XOF
+                            </span>
+                        </div>
+                    <?php elseif($event->is_free): ?>
+                        <div class="mb-3">
+                            <span class="text-lg font-bold text-green-600">
+                                Gratuit
+                            </span>
                         </div>
                     <?php endif; ?>
                     <span class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">

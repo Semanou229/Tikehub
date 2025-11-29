@@ -17,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Automation::class => \App\Policies\AutomationPolicy::class,
         \App\Models\Sponsor::class => \App\Policies\SponsorPolicy::class,
         \App\Models\CustomForm::class => \App\Policies\CustomFormPolicy::class,
+        \App\Models\PromoCode::class => \App\Policies\PromoCodePolicy::class,
     ];
 
     public function boot(): void

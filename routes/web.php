@@ -197,6 +197,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/fundraisings', [\App\Http\Controllers\Organizer\FundraisingManagementController::class, 'index'])->name('fundraisings.index');
         Route::delete('/fundraisings/{fundraising}', [\App\Http\Controllers\Organizer\FundraisingManagementController::class, 'destroy'])->name('fundraisings.destroy');
 
+        // Codes promo
+        Route::resource('promo-codes', \App\Http\Controllers\Organizer\PromoCodeController::class);
+
         // CRM Routes
         Route::prefix('crm')->name('crm.')->group(function () {
             // Contacts
