@@ -305,8 +305,8 @@
                         <h3 class="font-semibold text-gray-700 mb-2">Période</h3>
                         <p class="text-gray-600">
                             <i class="fas fa-calendar mr-2 text-purple-600"></i>
-                            Du {{ $contest->start_date->format('d/m/Y') }}<br>
-                            au {{ $contest->end_date->format('d/m/Y') }}
+                            Du {{ $contest->start_date->translatedFormat('d/m/Y') }}<br>
+                            au {{ $contest->end_date->translatedFormat('d/m/Y') }}
                         </p>
                     </div>
                 </div>

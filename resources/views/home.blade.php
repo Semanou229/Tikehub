@@ -128,7 +128,7 @@
                         <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
                         <div class="flex items-center text-sm text-gray-500 mb-4">
                             <i class="fas fa-calendar mr-2"></i>
-                            <span>{{ $event->start_date->format('d/m/Y H:i') }}</span>
+                            <span>{{ $event->start_date->translatedFormat('d/m/Y H:i') }}</span>
                             @if($event->venue_city)
                                 <span class="mx-2">•</span>
                                 <i class="fas fa-map-marker-alt mr-2"></i>
@@ -179,7 +179,7 @@
                         <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
                         <div class="flex items-center text-sm text-gray-500 mb-4">
                             <i class="fas fa-calendar mr-2"></i>
-                            <span>{{ $event->start_date->format('d/m/Y H:i') }}</span>
+                            <span>{{ $event->start_date->translatedFormat('d/m/Y H:i') }}</span>
                             @if($event->venue_city)
                                 <span class="mx-2">•</span>
                                 <i class="fas fa-map-marker-alt mr-2"></i>
