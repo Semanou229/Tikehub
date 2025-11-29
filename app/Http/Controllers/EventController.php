@@ -121,20 +121,21 @@ class EventController extends Controller
                 );
                 
                 $geocoded = $geocoding->geocode($fullAddress);
-            
-            if ($geocoded) {
-                $validated['venue_latitude'] = $geocoded['latitude'];
-                $validated['venue_longitude'] = $geocoded['longitude'];
                 
-                // Compléter les informations manquantes si disponibles
-                if (isset($geocoded['details'])) {
-                    if (empty($validated['venue_city']) && isset($geocoded['details']['city'])) {
-                        $validated['venue_city'] = $geocoded['details']['city'];
-                    } elseif (empty($validated['venue_city']) && isset($geocoded['details']['town'])) {
-                        $validated['venue_city'] = $geocoded['details']['town'];
-                    }
-                    if (empty($validated['venue_country']) && isset($geocoded['details']['country'])) {
-                        $validated['venue_country'] = $geocoded['details']['country'];
+                if ($geocoded) {
+                    $validated['venue_latitude'] = $geocoded['latitude'];
+                    $validated['venue_longitude'] = $geocoded['longitude'];
+                    
+                    // Compléter les informations manquantes si disponibles
+                    if (isset($geocoded['details'])) {
+                        if (empty($validated['venue_city']) && isset($geocoded['details']['city'])) {
+                            $validated['venue_city'] = $geocoded['details']['city'];
+                        } elseif (empty($validated['venue_city']) && isset($geocoded['details']['town'])) {
+                            $validated['venue_city'] = $geocoded['details']['town'];
+                        }
+                        if (empty($validated['venue_country']) && isset($geocoded['details']['country'])) {
+                            $validated['venue_country'] = $geocoded['details']['country'];
+                        }
                     }
                 }
             }
