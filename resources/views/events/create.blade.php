@@ -282,7 +282,7 @@
                         if (data && data.address) {
                             const address = data.address;
                             
-                            // Construire l'adresse complète
+                            // Construire l'adresse complète (REMPLACER au lieu de seulement remplir si vide)
                             let fullAddress = '';
                             if (address.house_number) {
                                 fullAddress += address.house_number + ' ';
@@ -293,43 +293,62 @@
                                 fullAddress += address.pedestrian;
                             } else if (address.path) {
                                 fullAddress += address.path;
+                            } else if (address.street) {
+                                fullAddress += address.street;
                             }
                             
-                            // Remplir l'adresse
-                            if (fullAddress.trim() && !document.getElementById('venue_address').value) {
-                                document.getElementById('venue_address').value = fullAddress.trim();
-                            } else if (address.road && !document.getElementById('venue_address').value) {
-                                document.getElementById('venue_address').value = address.road;
+                            // REMPLACER l'adresse (pas seulement si vide)
+                            const addressField = document.getElementById('venue_address');
+                            if (fullAddress.trim()) {
+                                addressField.value = fullAddress.trim();
+                                console.log('Adresse remplie:', fullAddress.trim());
+                            } else if (address.road) {
+                                addressField.value = address.road;
+                                console.log('Adresse remplie (road):', address.road);
+                            } else if (address.display_name) {
+                                // Utiliser le nom d'affichage complet comme fallback
+                                addressField.value = data.display_name.split(',')[0];
+                                console.log('Adresse remplie (display_name):', data.display_name.split(',')[0]);
                             }
                             
-                            // Remplir la ville (priorité: city > town > village > municipality)
-                            if (!document.getElementById('venue_city').value) {
-                                if (address.city) {
-                                    document.getElementById('venue_city').value = address.city;
-                                } else if (address.town) {
-                                    document.getElementById('venue_city').value = address.town;
-                                } else if (address.village) {
-                                    document.getElementById('venue_city').value = address.village;
-                                } else if (address.municipality) {
-                                    document.getElementById('venue_city').value = address.municipality;
-                                } else if (address.county) {
-                                    document.getElementById('venue_city').value = address.county;
-                                }
+                            // REMPLACER la ville (priorité: city > town > village > municipality)
+                            const cityField = document.getElementById('venue_city');
+                            if (address.city) {
+                                cityField.value = address.city;
+                                console.log('Ville remplie (city):', address.city);
+                            } else if (address.town) {
+                                cityField.value = address.town;
+                                console.log('Ville remplie (town):', address.town);
+                            } else if (address.village) {
+                                cityField.value = address.village;
+                                console.log('Ville remplie (village):', address.village);
+                            } else if (address.municipality) {
+                                cityField.value = address.municipality;
+                                console.log('Ville remplie (municipality):', address.municipality);
+                            } else if (address.county) {
+                                cityField.value = address.county;
+                                console.log('Ville remplie (county):', address.county);
                             }
                             
-                            // Remplir le pays
-                            if (!document.getElementById('venue_country').value && address.country) {
-                                document.getElementById('venue_country').value = address.country;
+                            // REMPLACER le pays
+                            const countryField = document.getElementById('venue_country');
+                            if (address.country) {
+                                countryField.value = address.country;
+                                console.log('Pays rempli:', address.country);
                             }
                             
-                            // Remplir le nom du lieu si disponible
-                            if (!document.getElementById('venue_name').value) {
+                            // REMPLACER le nom du lieu si disponible (mais seulement si vide pour ne pas écraser un nom personnalisé)
+                            const nameField = document.getElementById('venue_name');
+                            if (!nameField.value || nameField.value.trim() === '') {
                                 if (address.building) {
-                                    document.getElementById('venue_name').value = address.building;
+                                    nameField.value = address.building;
+                                    console.log('Nom du lieu rempli (building):', address.building);
                                 } else if (address.amenity) {
-                                    document.getElementById('venue_name').value = address.amenity;
+                                    nameField.value = address.amenity;
+                                    console.log('Nom du lieu rempli (amenity):', address.amenity);
                                 } else if (address.leisure) {
-                                    document.getElementById('venue_name').value = address.leisure;
+                                    nameField.value = address.leisure;
+                                    console.log('Nom du lieu rempli (leisure):', address.leisure);
                                 }
                             }
                             
@@ -337,7 +356,11 @@
                             const successMsg = document.createElement('div');
                             successMsg.className = 'mt-2 p-2 bg-green-100 text-green-800 rounded text-sm';
                             successMsg.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Localisation détectée et informations remplies automatiquement';
-                            btn.parentElement.parentElement.appendChild(successMsg);
+                            const mapContainer = btn.parentElement.parentElement;
+                            // Supprimer les anciens messages
+                            const oldMsgs = mapContainer.querySelectorAll('.bg-green-100, .bg-yellow-100, .bg-red-100');
+                            oldMsgs.forEach(msg => msg.remove());
+                            mapContainer.appendChild(successMsg);
                             setTimeout(() => successMsg.remove(), 5000);
                         } else {
                             console.warn('Aucune adresse trouvée dans les données de géocodage');
