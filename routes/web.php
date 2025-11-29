@@ -89,6 +89,40 @@ Route::middleware('auth')->group(function () {
         Route::get('/fundraisings', [\App\Http\Controllers\Organizer\FundraisingManagementController::class, 'index'])->name('fundraisings.index');
         Route::delete('/fundraisings/{fundraising}', [\App\Http\Controllers\Organizer\FundraisingManagementController::class, 'destroy'])->name('fundraisings.destroy');
 
+        // CRM Routes
+        Route::prefix('crm')->name('crm.')->group(function () {
+            // Contacts
+            Route::resource('contacts', \App\Http\Controllers\Organizer\Crm\ContactController::class);
+            Route::post('/contacts/import', [\App\Http\Controllers\Organizer\Crm\ContactController::class, 'import'])->name('contacts.import');
+            Route::post('/contacts/{contact}/assign', [\App\Http\Controllers\Organizer\Crm\ContactController::class, 'assign'])->name('contacts.assign');
+            
+            // Pipeline
+            Route::get('/pipeline', [\App\Http\Controllers\Organizer\Crm\PipelineController::class, 'index'])->name('pipeline.index');
+            Route::post('/pipeline/{contact}/stage', [\App\Http\Controllers\Organizer\Crm\PipelineController::class, 'updateStage'])->name('pipeline.updateStage');
+            
+            // Email Campaigns
+            Route::resource('campaigns', \App\Http\Controllers\Organizer\Crm\EmailCampaignController::class);
+            Route::post('/campaigns/{campaign}/send', [\App\Http\Controllers\Organizer\Crm\EmailCampaignController::class, 'send'])->name('campaigns.send');
+            
+            // Automations
+            Route::resource('automations', \App\Http\Controllers\Organizer\Crm\AutomationController::class);
+            Route::post('/automations/{automation}/toggle', [\App\Http\Controllers\Organizer\Crm\AutomationController::class, 'toggle'])->name('automations.toggle');
+            
+            // Sponsors
+            Route::resource('sponsors', \App\Http\Controllers\Organizer\Crm\SponsorController::class);
+            
+            // Teams (fusionné avec agents)
+            Route::resource('teams', \App\Http\Controllers\Organizer\Crm\TeamController::class);
+            Route::post('/teams/{team}/members', [\App\Http\Controllers\Organizer\Crm\TeamController::class, 'addMember'])->name('teams.addMember');
+            Route::delete('/teams/{team}/members/{user}', [\App\Http\Controllers\Organizer\Crm\TeamController::class, 'removeMember'])->name('teams.removeMember');
+            Route::resource('teams.tasks', \App\Http\Controllers\Organizer\Crm\TeamTaskController::class)->except(['show']);
+            
+            // Custom Forms
+            Route::resource('forms', \App\Http\Controllers\Organizer\Crm\CustomFormController::class);
+            Route::get('/forms/{form}/submissions', [\App\Http\Controllers\Organizer\Crm\CustomFormController::class, 'submissions'])->name('forms.submissions');
+            Route::post('/forms/{form}/submissions/{submission}/approve', [\App\Http\Controllers\Organizer\Crm\CustomFormController::class, 'approveSubmission'])->name('forms.submissions.approve');
+        });
+
         // Portefeuille
         Route::get('/wallet', [\App\Http\Controllers\Organizer\WalletController::class, 'index'])->name('wallet.index');
 

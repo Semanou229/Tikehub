@@ -59,10 +59,38 @@
                     <i class="fas fa-chart-bar w-5 mr-3"></i>
                     <span>Rapports</span>
                 </a>
-                <a href="{{ route('organizer.agents.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.agents.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
-                    <i class="fas fa-users w-5 mr-3"></i>
-                    <span>Agents</span>
-                </a>
+                <!-- CRM Section -->
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <p class="px-4 text-xs font-semibold text-gray-500 uppercase mb-2">CRM</p>
+                    <a href="{{ route('organizer.crm.contacts.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.crm.contacts.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <i class="fas fa-address-book w-5 mr-3"></i>
+                        <span>Contacts</span>
+                    </a>
+                    <a href="{{ route('organizer.crm.pipeline.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.crm.pipeline.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <i class="fas fa-project-diagram w-5 mr-3"></i>
+                        <span>Pipeline</span>
+                    </a>
+                    <a href="{{ route('organizer.crm.campaigns.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.crm.campaigns.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <i class="fas fa-envelope w-5 mr-3"></i>
+                        <span>Emails Marketing</span>
+                    </a>
+                    <a href="{{ route('organizer.crm.automations.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.crm.automations.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <i class="fas fa-cogs w-5 mr-3"></i>
+                        <span>Automations</span>
+                    </a>
+                    <a href="{{ route('organizer.crm.sponsors.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.crm.sponsors.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <i class="fas fa-handshake w-5 mr-3"></i>
+                        <span>Sponsors</span>
+                    </a>
+                    <a href="{{ route('organizer.crm.teams.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.crm.teams.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <i class="fas fa-users-cog w-5 mr-3"></i>
+                        <span>Équipe</span>
+                    </a>
+                    <a href="{{ route('organizer.crm.forms.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.crm.forms.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <i class="fas fa-file-alt w-5 mr-3"></i>
+                        <span>Formulaires</span>
+                    </a>
+                </div>
                 <a href="{{ route('organizer.notifications.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.notifications.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-bell w-5 mr-3"></i>
                     <span>Notifications</span>

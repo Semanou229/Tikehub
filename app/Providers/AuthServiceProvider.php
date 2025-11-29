@@ -11,6 +11,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Event::class => \App\Policies\EventPolicy::class,
         \App\Models\Contest::class => \App\Policies\ContestPolicy::class,
         \App\Models\Fundraising::class => \App\Policies\FundraisingPolicy::class,
+        \App\Models\Contact::class => \App\Policies\ContactPolicy::class,
     ];
 
     public function boot(): void

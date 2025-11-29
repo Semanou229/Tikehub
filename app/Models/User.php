@@ -86,4 +86,29 @@ class User extends Authenticatable
     {
         return $this->kyc_status === 'verified' && $this->kyc_verified_at !== null;
     }
+
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class, 'organizer_id');
+    }
+
+    public function assignedContacts()
+    {
+        return $this->hasMany(Contact::class, 'assigned_to');
+    }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    public function teamTasks()
+    {
+        return $this->hasMany(TeamTask::class, 'assigned_to');
+    }
+
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
 }
