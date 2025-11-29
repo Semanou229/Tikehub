@@ -150,6 +150,9 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+// Route publique pour afficher un événement (APRÈS les routes auth pour éviter les conflits)
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+
 // Routes publiques pour concours et collectes
 Route::get('/contests', [\App\Http\Controllers\ContestController::class, 'index'])->name('contests.index');
 Route::get('/contests/{contest}', [\App\Http\Controllers\ContestController::class, 'show'])->name('contests.show');
