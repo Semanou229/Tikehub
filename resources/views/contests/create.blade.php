@@ -101,6 +101,22 @@
                         <p class="text-sm text-gray-500 mt-1">Vous pouvez associer ce concours à un événement existant</p>
                     </div>
                 </div>
+
+                <!-- Candidats -->
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Candidats</h2>
+                        <button type="button" id="addCandidateBtn" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm">
+                            <i class="fas fa-plus mr-2"></i>Ajouter un candidat
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Vous pouvez ajouter des candidats maintenant ou plus tard. Au moins un candidat est nécessaire pour publier le concours.</p>
+                    <div id="candidatesContainer" class="space-y-4">
+                        <!-- Les candidats seront ajoutés ici dynamiquement -->
+                    </div>
+                    @error('candidates')<p class="text-red-500 text-sm mt-2">{{ $message }}</p>@enderror
+                    @error('candidates.*')<p class="text-red-500 text-sm mt-2">{{ $message }}</p>@enderror
+                </div>
             </div>
 
             <div class="mt-8 flex items-center gap-4">
