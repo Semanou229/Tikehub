@@ -68,7 +68,16 @@ class EventController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Event::class);
+        // Vérifier l'authentification
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'Vous devez être connecté pour créer un événement.');
+        }
+        
+        // Vérifier l'autorisation
+        if (!auth()->user()->hasRole('organizer') && !auth()->user()->hasRole('admin')) {
+            abort(403, 'Accès réservé aux organisateurs.');
+        }
+        
         return view('events.create');
     }
 
