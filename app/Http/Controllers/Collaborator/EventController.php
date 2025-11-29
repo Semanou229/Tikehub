@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Collaborator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\TicketScan;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
