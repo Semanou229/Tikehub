@@ -80,7 +80,8 @@ class ContestController extends Controller
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
-        $validated['vote_price'] = $validated['price_per_vote'];
+        $validated['price_per_vote'] = $validated['price_per_vote'];
+        $validated['points_per_vote'] = $validated['points_per_vote'];
         $validated['is_published'] = $request->has('is_published') ? true : false;
         $validated['is_active'] = $request->has('is_active') ? true : true;
         
