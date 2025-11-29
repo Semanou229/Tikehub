@@ -119,20 +119,37 @@ class DashboardController extends Controller
             $monthStart = $month->copy()->startOfMonth();
             $monthEnd = $month->copy()->endOfMonth();
 
-            $revenue = Payment::where(function ($q) use ($organizerId) {
-                $q->whereHas('event', function ($query) use ($organizerId) {
-                    $query->where('organizer_id', $organizerId);
-                })->orWhereHas('paymentable', function ($query) use ($organizerId) {
-                    $query->where('organizer_id', $organizerId);
-                });
+            // Revenus des billets d'événements
+            $eventRevenue = Ticket::whereHas('event', function ($query) use ($organizerId) {
+                $query->where('organizer_id', $organizerId);
             })
-            ->where('status', 'completed')
+            ->where('status', 'paid')
             ->whereBetween('created_at', [$monthStart, $monthEnd])
-            ->sum('organizer_amount');
+            ->sum('price');
+
+            // Revenus des votes (concours)
+            $contestRevenue = Payment::where('paymentable_type', \App\Models\Contest::class)
+                ->whereHas('paymentable', function ($query) use ($organizerId) {
+                    $query->where('organizer_id', $organizerId);
+                })
+                ->where('status', 'completed')
+                ->whereBetween('created_at', [$monthStart, $monthEnd])
+                ->sum('organizer_amount');
+
+            // Revenus des dons (collectes)
+            $fundraisingRevenue = Payment::where('paymentable_type', \App\Models\Fundraising::class)
+                ->whereHas('paymentable', function ($query) use ($organizerId) {
+                    $query->where('organizer_id', $organizerId);
+                })
+                ->where('status', 'completed')
+                ->whereBetween('created_at', [$monthStart, $monthEnd])
+                ->sum('organizer_amount');
+
+            $totalMonthRevenue = $eventRevenue + $contestRevenue + $fundraisingRevenue;
 
             $monthlyRevenue[] = [
                 'month' => $month->format('M Y'),
-                'revenue' => $revenue,
+                'revenue' => (float) $totalMonthRevenue,
             ];
         }
 

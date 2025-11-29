@@ -292,83 +292,125 @@
 
 @push('scripts')
 <script>
-    // Graphique des revenus
-    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-    new Chart(revenueCtx, {
-        type: 'line',
-        data: {
-            labels: {!! json_encode(array_column($stats['monthly_revenue'], 'month')) !!},
-            datasets: [{
-                label: 'Revenus (XOF)',
-                data: {!! json_encode(array_column($stats['monthly_revenue'], 'revenue')) !!},
-                borderColor: 'rgb(99, 102, 241)',
-                backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return new Intl.NumberFormat('fr-FR').format(value) + ' XOF';
-                        }
-                    }
-                }
-            }
-        }
-    });
+    // Données pour les graphiques
+    const monthlyRevenueData = {!! json_encode($stats['monthly_revenue']) !!};
+    const revenueLabels = monthlyRevenueData.map(item => item.month);
+    const revenueValues = monthlyRevenueData.map(item => parseFloat(item.revenue) || 0);
 
-    // Graphique de répartition
-    const distributionCtx = document.getElementById('distributionChart').getContext('2d');
-    new Chart(distributionCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Événements', 'Concours', 'Collectes'],
-            datasets: [{
-                data: [
-                    {{ $stats['revenue_distribution']['events'] }},
-                    {{ $stats['revenue_distribution']['contests'] }},
-                    {{ $stats['revenue_distribution']['fundraisings'] }}
-                ],
-                backgroundColor: [
-                    'rgb(99, 102, 241)',
-                    'rgb(147, 51, 234)',
-                    'rgb(34, 197, 94)'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.label || '';
-                            if (label) {
-                                label += ': ';
+    const distributionData = {
+        events: {{ $stats['revenue_distribution']['events'] ?? 0 }},
+        contests: {{ $stats['revenue_distribution']['contests'] ?? 0 }},
+        fundraisings: {{ $stats['revenue_distribution']['fundraisings'] ?? 0 }}
+    };
+
+    // Graphique des revenus (6 derniers mois)
+    const revenueCtx = document.getElementById('revenueChart');
+    if (revenueCtx) {
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: revenueLabels,
+                datasets: [{
+                    label: 'Revenus (XOF)',
+                    data: revenueValues,
+                    borderColor: 'rgb(99, 102, 241)',
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: 'rgb(99, 102, 241)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Revenus: ' + new Intl.NumberFormat('fr-FR').format(context.parsed.y) + ' XOF';
                             }
-                            label += new Intl.NumberFormat('fr-FR').format(context.parsed) + ' XOF';
-                            return label;
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return new Intl.NumberFormat('fr-FR').format(value) + ' XOF';
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    }
+
+    // Graphique de répartition des revenus
+    const distributionCtx = document.getElementById('distributionChart');
+    if (distributionCtx) {
+        const totalDistribution = distributionData.events + distributionData.contests + distributionData.fundraisings;
+        
+        new Chart(distributionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Événements', 'Concours', 'Collectes'],
+                datasets: [{
+                    data: [
+                        distributionData.events,
+                        distributionData.contests,
+                        distributionData.fundraisings
+                    ],
+                    backgroundColor: [
+                        'rgb(99, 102, 241)',
+                        'rgb(147, 51, 234)',
+                        'rgb(34, 197, 94)'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const percentage = totalDistribution > 0 ? ((value / totalDistribution) * 100).toFixed(1) : 0;
+                                return label + ': ' + new Intl.NumberFormat('fr-FR').format(value) + ' XOF (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 </script>
 @endpush
 @endsection
