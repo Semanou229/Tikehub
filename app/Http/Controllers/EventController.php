@@ -16,6 +16,15 @@ class EventController extends Controller
             $query = Event::where('is_published', true)
                 ->where('status', 'published');
 
+            // Filtre par recherche
+            if ($request->filled('search')) {
+                $search = $request->input('search');
+                $query->where(function($q) use ($search) {
+                    $q->where('title', 'like', '%' . $search . '%')
+                      ->orWhere('description', 'like', '%' . $search . '%');
+                });
+            }
+
             // Filtres
             if ($request->filled('category')) {
                 $query->where('category', $request->input('category'));
