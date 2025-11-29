@@ -6784,3 +6784,25 @@ Did you mean one of these?
 #57 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('C:\\\\Users\\\\adoun\\\\...')
 #58 {main}
 "} 
+[2025-11-29 21:32:21] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:\\Users\\adoun\\Music\\Tikehub\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php:212)
+[stacktrace]
+#0 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(137): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(124): Illuminate\\Log\\LogManager->get(NULL)
+#2 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(681): Illuminate\\Log\\LogManager->driver()
+#3 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Exceptions\\Handler.php(317): Illuminate\\Log\\LogManager->error('There are no co...', Array)
+#4 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Exceptions\\Handler.php(278): Illuminate\\Foundation\\Exceptions\\Handler->reportThrowable(Object(Symfony\\Component\\Console\\Exception\\NamespaceNotFoundException))
+#5 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\nunomaduro\\collision\\src\\Adapters\\Laravel\\ExceptionHandler.php(46): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\Console\\Exception\\NamespaceNotFoundException))
+#6 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(523): NunoMaduro\\Collision\\Adapters\\Laravel\\ExceptionHandler->report(Object(Symfony\\Component\\Console\\Exception\\NamespaceNotFoundException))
+#7 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(203): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(Symfony\\Component\\Console\\Exception\\NamespaceNotFoundException))
+#8 C:\\Users\\adoun\\Music\\Tikehub\\artisan(12): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#9 {main}
+"} 
+[2025-11-29 21:32:21] laravel.ERROR: There are no commands defined in the "moneroo" namespace. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\NamespaceNotFoundException(code: 0): There are no commands defined in the \"moneroo\" namespace. at C:\\Users\\adoun\\Music\\Tikehub\\vendor\\symfony\\console\\Application.php:669)
+[stacktrace]
+#0 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\symfony\\console\\Application.php(720): Symfony\\Component\\Console\\Application->findNamespace('moneroo')
+#1 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\symfony\\console\\Application.php(266): Symfony\\Component\\Console\\Application->find('moneroo:install')
+#2 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\symfony\\console\\Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#3 C:\\Users\\adoun\\Music\\Tikehub\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(201): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#4 C:\\Users\\adoun\\Music\\Tikehub\\artisan(12): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#5 {main}
+"} 

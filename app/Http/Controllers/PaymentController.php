@@ -26,9 +26,34 @@ class PaymentController extends Controller
 
         // Vérifier le statut avec Moneroo
         if ($payment->moneroo_transaction_id) {
-            $status = $this->monerooService->getPaymentStatus($payment->moneroo_transaction_id);
-            if (isset($status['status'])) {
-                $payment->update(['status' => $status['status']]);
+            try {
+                $monerooPayment = $this->monerooService->verifyPayment($payment->moneroo_transaction_id);
+                
+                // Mapper les statuts Moneroo vers nos statuts
+                $status = match($monerooPayment->status ?? '') {
+                    'success', 'completed', 'paid' => 'completed',
+                    'failed', 'declined' => 'failed',
+                    'cancelled', 'canceled' => 'cancelled',
+                    'pending', 'processing' => 'processing',
+                    default => $payment->status,
+                };
+
+                if ($status !== $payment->status) {
+                    $payment->update(['status' => $status]);
+                    
+                    // Si le paiement est complété, mettre à jour les tickets
+                    if ($status === 'completed') {
+                        $this->paymentService->handlePaymentCallback([
+                            'transaction_id' => $monerooPayment->transaction_id ?? $monerooPayment->id,
+                            'status' => $monerooPayment->status,
+                        ]);
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::error('Error verifying payment with Moneroo', [
+                    'payment_id' => $payment->id,
+                    'error' => $e->getMessage(),
+                ]);
             }
         }
 

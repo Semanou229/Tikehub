@@ -94,8 +94,9 @@ class PaymentService
             $monerooPayment = $this->moneroo->createPayment([
                 'amount' => $totalAmount,
                 'currency' => 'XOF',
-                'reference' => 'TKT-' . $payment->id,
                 'description' => "Achat de {$ticketData['quantity']} billet(s) pour {$event->title}" . ($discountAmount > 0 ? " (Réduction: -" . number_format($discountAmount, 0, ',', ' ') . " XOF)" : ''),
+                'payment_id' => $payment->id,
+                'event_id' => $event->id,
                 'customer' => [
                     'name' => $user->name,
                     'email' => $user->email,
@@ -104,9 +105,10 @@ class PaymentService
                 'return_url' => route('payments.return', ['payment' => $payment->id]),
             ]);
 
+            // Le SDK Moneroo retourne un objet avec checkout_url et transaction_id
             $payment->update([
-                'moneroo_transaction_id' => $monerooPayment['transaction_id'] ?? null,
-                'moneroo_reference' => $monerooPayment['reference'] ?? null,
+                'moneroo_transaction_id' => $monerooPayment->transaction_id ?? $monerooPayment->id ?? null,
+                'moneroo_reference' => $monerooPayment->reference ?? $monerooPayment->transaction_id ?? null,
             ]);
 
             return $payment;
@@ -226,8 +228,9 @@ class PaymentService
             $monerooPayment = $this->moneroo->createPayment([
                 'amount' => $totalAmount,
                 'currency' => 'XOF',
-                'reference' => 'TKT-' . $payment->id,
                 'description' => $description,
+                'payment_id' => $payment->id,
+                'event_id' => $event->id,
                 'customer' => [
                     'name' => $user->name,
                     'email' => $user->email,
@@ -236,9 +239,10 @@ class PaymentService
                 'return_url' => route('payments.return', ['payment' => $payment->id]),
             ]);
 
+            // Le SDK Moneroo retourne un objet avec checkout_url et transaction_id
             $payment->update([
-                'moneroo_transaction_id' => $monerooPayment['transaction_id'] ?? null,
-                'moneroo_reference' => $monerooPayment['reference'] ?? null,
+                'moneroo_transaction_id' => $monerooPayment->transaction_id ?? $monerooPayment->id ?? null,
+                'moneroo_reference' => $monerooPayment->reference ?? $monerooPayment->transaction_id ?? null,
             ]);
 
             return $payment;
