@@ -54,6 +54,18 @@
       0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
   ),
+  'moneroo/moneroo-laravel' => 
+  array (
+    'aliases' => 
+    array (
+      'MonerooPayout' => 'Moneroo\\Laravel\\Facades\\PayoutFacade',
+      'MonerooPayment' => 'Moneroo\\Laravel\\Facades\\PaymentFacade',
+    ),
+    'providers' => 
+    array (
+      0 => 'Moneroo\\Laravel\\Providers\\MonerooServiceProvider',
+    ),
+  ),
   'nesbot/carbon' => 
   array (
     'providers' => 

@@ -2,19 +2,25 @@
 
 namespace App\Services;
 
-use Moneroo\Payment;
-use Moneroo\Payout;
+use Moneroo\Laravel\Payment;
+use Moneroo\Laravel\Payout;
 use Illuminate\Support\Facades\Log;
 
 class MonerooService
 {
-    protected Payment $payment;
-    protected Payout $payout;
+    protected ?Payment $payment = null;
+    protected ?Payout $payout = null;
 
     public function __construct()
     {
-        $this->payment = new Payment();
-        $this->payout = new Payout();
+        // Initialiser le SDK Moneroo avec les clés de configuration
+        // Le SDK utilise automatiquement les variables d'environnement MONEROO_PUBLIC_KEY et MONEROO_SECRET_KEY
+        try {
+            $this->payment = new Payment();
+            $this->payout = new Payout();
+        } catch (\Exception $e) {
+            Log::error('Failed to initialize Moneroo SDK', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -27,8 +33,10 @@ class MonerooService
     {
         try {
             // Préparer les données selon le format Moneroo
+            // Note: Selon la doc Moneroo, amount est un integer (montant en unité de base)
+            // Pour XOF, c'est en francs, pas en centimes
             $paymentData = [
-                'amount' => (int) ($data['amount'] * 100), // Convertir en centimes
+                'amount' => (int) round($data['amount']), // Montant en XOF (francs)
                 'currency' => $data['currency'] ?? 'XOF',
                 'description' => $data['description'] ?? '',
                 'return_url' => $data['return_url'] ?? route('payments.return', ['payment' => $data['payment_id'] ?? '']),
@@ -66,7 +74,7 @@ class MonerooService
                 $paymentData['methods'] = $data['methods'];
             }
 
-            // Initialiser le paiement
+            // Initialiser le paiement avec la méthode init() du SDK
             $payment = $this->payment->init($paymentData);
 
             return $payment;
@@ -129,7 +137,7 @@ class MonerooService
     public function markPaymentAsProcessed(string $transactionId): object
     {
         try {
-            return $this->payment->makeAsProcessed($transactionId);
+            return $this->payment->markAsProcessed($transactionId);
         } catch (\Exception $e) {
             Log::error('Moneroo mark payment as processed failed', [
                 'transaction_id' => $transactionId,
@@ -150,7 +158,7 @@ class MonerooService
     {
         try {
             $payoutData = [
-                'amount' => (int) ($data['amount'] * 100), // Convertir en centimes
+                'amount' => (int) round($data['amount']), // Montant en XOF (francs)
                 'currency' => $data['currency'] ?? 'XOF',
                 'description' => $data['description'] ?? '',
                 'method' => $data['method'], // Requis: mtn_bj, moov_bj, bank_transfer, etc.

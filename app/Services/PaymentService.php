@@ -111,6 +111,11 @@ class PaymentService
                 'moneroo_reference' => $monerooPayment->reference ?? $monerooPayment->transaction_id ?? null,
             ]);
 
+            // Stocker l'URL de checkout dans la session pour redirection
+            if (isset($monerooPayment->checkout_url)) {
+                session(['moneroo_checkout_url_' . $payment->id => $monerooPayment->checkout_url]);
+            }
+
             return $payment;
         });
     }
@@ -245,8 +250,24 @@ class PaymentService
                 'moneroo_reference' => $monerooPayment->reference ?? $monerooPayment->transaction_id ?? null,
             ]);
 
+            // Stocker l'URL de checkout dans la session pour redirection
+            if (isset($monerooPayment->checkout_url)) {
+                session(['moneroo_checkout_url_' . $payment->id => $monerooPayment->checkout_url]);
+            }
+
             return $payment;
         });
+    }
+
+    /**
+     * Récupérer les détails d'un paiement Moneroo
+     * 
+     * @param string $transactionId
+     * @return object
+     */
+    public function getMonerooPayment(string $transactionId): object
+    {
+        return $this->moneroo->getPayment($transactionId);
     }
 
     public function handlePaymentCallback(array $data): void

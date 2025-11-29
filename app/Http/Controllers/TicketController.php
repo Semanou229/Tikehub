@@ -103,8 +103,9 @@ class TicketController extends Controller
         if ($payment->moneroo_transaction_id) {
             try {
                 $monerooPayment = $this->paymentService->getMonerooPayment($payment->moneroo_transaction_id);
-                if (isset($monerooPayment->checkout_url)) {
-                    return redirect($monerooPayment->checkout_url);
+                $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? null;
+                if ($checkoutUrl) {
+                    return redirect($checkoutUrl);
                 }
             } catch (\Exception $e) {
                 \Log::error('Error getting checkout URL', ['error' => $e->getMessage()]);
