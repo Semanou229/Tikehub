@@ -17,10 +17,16 @@ class DashboardController extends Controller
         $user = auth()->user();
         $userId = $user->id;
 
-        // Événements assignés (via agentEvents ou via team)
+        // Événements assignés (via event_agents, agentEvents ou via team)
         $assignedEvents = collect();
         
-        // Événements assignés directement (agents)
+        // Événements assignés directement via event_agents (collaborateurs assignés)
+        $directlyAssignedEvents = Event::whereHas('agents', function ($q) use ($userId) {
+            $q->where('users.id', $userId);
+        })->with('organizer')->get();
+        $assignedEvents = $assignedEvents->merge($directlyAssignedEvents);
+        
+        // Événements assignés via agentEvents (agents)
         if ($user->hasRole('agent')) {
             $assignedEvents = $assignedEvents->merge($user->agentEvents()->with('organizer')->get());
         }

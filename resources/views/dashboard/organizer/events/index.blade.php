@@ -47,6 +47,9 @@
 
                         <div class="flex items-center justify-between pt-4 border-t border-gray-200">
                             <div class="flex items-center gap-2">
+                                <a href="{{ route('organizer.events.collaborators', $event) }}" class="text-green-600 hover:text-green-900 p-2 rounded-lg hover:bg-green-50" title="Gérer les collaborateurs">
+                                    <i class="fas fa-users"></i>
+                                </a>
                                 <a href="{{ route('events.show', $event) }}" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50" title="Voir">
                                     <i class="fas fa-eye"></i>
                                 </a>

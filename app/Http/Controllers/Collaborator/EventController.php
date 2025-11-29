@@ -13,7 +13,13 @@ class EventController extends Controller
         $user = auth()->user();
         $assignedEvents = collect();
         
-        // Événements assignés directement (agents)
+        // Événements assignés directement via event_agents (collaborateurs assignés)
+        $directlyAssignedEvents = Event::whereHas('agents', function ($q) use ($user) {
+            $q->where('users.id', $user->id);
+        })->with('organizer')->get();
+        $assignedEvents = $assignedEvents->merge($directlyAssignedEvents);
+        
+        // Événements assignés via agentEvents (agents)
         if ($user->hasRole('agent')) {
             $assignedEvents = $assignedEvents->merge($user->agentEvents()->with('organizer')->get());
         }
@@ -41,10 +47,17 @@ class EventController extends Controller
         // Vérifier que l'utilisateur a accès à cet événement
         $hasAccess = false;
         
+        // Vérifier si l'utilisateur est assigné directement à l'événement (via event_agents)
+        if ($event->agents->contains('id', $user->id)) {
+            $hasAccess = true;
+        }
+        
+        // Vérifier si l'utilisateur est un agent assigné à l'événement
         if ($user->hasRole('agent') && $user->agentEvents->contains($event->id)) {
             $hasAccess = true;
         }
         
+        // Vérifier si l'utilisateur est membre d'une équipe de l'organisateur
         if ($user->team_id) {
             $team = \App\Models\Team::find($user->team_id);
             if ($team && $team->organizer_id === $event->organizer_id) {

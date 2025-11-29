@@ -188,10 +188,17 @@ class ScanController extends Controller
 
     protected function checkEventAccess($user, Event $event): bool
     {
+        // Vérifier si l'utilisateur est assigné directement à l'événement (via event_agents)
+        if ($event->agents->contains('id', $user->id)) {
+            return true;
+        }
+        
+        // Vérifier si l'utilisateur est un agent assigné à l'événement
         if ($user->hasRole('agent') && $user->agentEvents->contains($event->id)) {
             return true;
         }
         
+        // Vérifier si l'utilisateur est membre d'une équipe de l'organisateur
         if ($user->team_id) {
             $team = \App\Models\Team::find($user->team_id);
             if ($team && $team->organizer_id === $event->organizer_id) {

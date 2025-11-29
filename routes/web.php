@@ -63,6 +63,11 @@ Route::middleware('auth')->group(function () {
         // Gestion des événements
         Route::get('/events', [\App\Http\Controllers\Organizer\EventManagementController::class, 'index'])->name('events.index');
         Route::delete('/events/{event}', [\App\Http\Controllers\Organizer\EventManagementController::class, 'destroy'])->name('events.destroy');
+        
+        // Gestion des collaborateurs pour les événements
+        Route::get('/events/{event}/collaborators', [\App\Http\Controllers\Organizer\CollaboratorController::class, 'index'])->name('events.collaborators');
+        Route::post('/events/{event}/collaborators', [\App\Http\Controllers\Organizer\CollaboratorController::class, 'store'])->name('events.collaborators.store');
+        Route::delete('/events/{event}/collaborators/{collaborator}', [\App\Http\Controllers\Organizer\CollaboratorController::class, 'destroy'])->name('events.collaborators.destroy');
 
         // Gestion des types de billets
         Route::get('/events/{event}/ticket-types', [\App\Http\Controllers\Organizer\TicketTypeController::class, 'index'])->name('ticket-types.index');
