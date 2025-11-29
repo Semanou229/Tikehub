@@ -165,14 +165,16 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($popularEvents as $event)
-                <a href="{{ route('events.show', $event) }}" class="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-yellow-200">
-                    @if($event->cover_image)
-                        <img src="{{ asset('storage/' . $event->cover_image) }}" alt="{{ $event->title }}" class="w-full h-48 object-cover">
-                    @else
-                        <div class="w-full h-48 bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
-                            <i class="fas fa-fire text-6xl text-white opacity-50"></i>
-                        </div>
-                    @endif
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-yellow-200">
+                    <a href="{{ route('events.show', $event) }}" class="block">
+                        @if($event->cover_image)
+                            <img src="{{ asset('storage/' . $event->cover_image) }}" alt="{{ $event->title ?? 'Événement' }}" class="w-full h-48 object-cover">
+                        @else
+                            <div class="w-full h-48 bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+                                <i class="fas fa-fire text-6xl text-white opacity-50"></i>
+                            </div>
+                        @endif
+                    </a>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">
@@ -185,26 +187,32 @@
                                     </span>
                                 @endif
                                 <span class="text-sm text-gray-500">
-                                    {{ $event->tickets_count }} billet(s) vendu(s)
+                                    {{ $event->tickets_count ?? 0 }} billet(s) vendu(s)
                                 </span>
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition">{{ $event->title }}</h3>
-                        <p class="text-gray-600 text-sm mb-2 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
-                        <div class="flex items-center text-sm text-gray-500 mb-2">
-                            <i class="fas fa-calendar mr-2"></i>
-                            <span>{{ $event->start_date->translatedFormat('d/m/Y H:i') }}</span>
-                            @if($event->venue_city)
-                                <span class="mx-2">•</span>
-                                <i class="fas fa-map-marker-alt mr-2"></i>
-                                <span>{{ $event->venue_city }}</span>
-                            @endif
-                        </div>
+                        <a href="{{ route('events.show', $event) }}" class="block">
+                            <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition">{{ $event->title ?? 'Sans titre' }}</h3>
+                        </a>
+                        @if($event->description)
+                            <p class="text-gray-600 text-sm mb-2 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
+                        @endif
+                        @if($event->start_date)
+                            <div class="flex items-center text-sm text-gray-500 mb-2">
+                                <i class="fas fa-calendar mr-2"></i>
+                                <span>{{ $event->start_date->translatedFormat('d/m/Y H:i') }}</span>
+                                @if($event->venue_city)
+                                    <span class="mx-2">•</span>
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    <span>{{ $event->venue_city }}</span>
+                                @endif
+                            </div>
+                        @endif
                         @if($event->organizer)
                             <div class="flex items-center text-sm text-gray-600 mb-2">
                                 <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
                                 <span>Par</span>
-                                <a href="{{ route('organizer.profile.show', $event->organizer) }}" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline">
+                                <a href="{{ route('organizer.profile.show', $event->organizer) }}" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline" onclick="event.stopPropagation()">
                                     {{ $event->organizer->name }}
                                 </a>
                             </div>
@@ -225,11 +233,11 @@
                                 </span>
                             </div>
                         @endif
-                        <span class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
+                        <a href="{{ route('events.show', $event) }}" class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
                             Voir l'événement
-                        </span>
+                        </a>
                     </div>
-                </a>
+                </div>
             @endforeach
         </div>
     </div>
