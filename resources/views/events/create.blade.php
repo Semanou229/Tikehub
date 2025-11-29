@@ -92,7 +92,13 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-                            <input type="text" name="venue_address" id="venue_address" value="{{ old('venue_address') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Rue 123, Quartier...">
+                            <div class="flex gap-2">
+                                <input type="text" name="venue_address" id="venue_address" value="{{ old('venue_address') }}" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Rue 123, Quartier...">
+                                <button type="button" id="geocodeBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                                    <i class="fas fa-search-location"></i> Localiser
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">Saisissez l'adresse et cliquez sur "Localiser" pour afficher sur la carte</p>
                             @error('venue_address')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
@@ -112,11 +118,11 @@
 
                         <!-- Carte OpenStreetMap -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Localisation sur la carte *</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Localisation sur la carte</label>
                             <div id="map" class="w-full h-64 rounded-lg border border-gray-300"></div>
-                            <p class="text-sm text-gray-500 mt-2">Cliquez sur la carte pour définir l'emplacement exact</p>
-                            <input type="hidden" name="venue_latitude" id="venue_latitude" value="{{ old('venue_latitude') }}" required>
-                            <input type="hidden" name="venue_longitude" id="venue_longitude" value="{{ old('venue_longitude') }}" required>
+                            <p class="text-sm text-gray-500 mt-2">Saisissez une adresse et cliquez sur "Localiser", ou cliquez directement sur la carte</p>
+                            <input type="hidden" name="venue_latitude" id="venue_latitude" value="{{ old('venue_latitude') }}">
+                            <input type="hidden" name="venue_longitude" id="venue_longitude" value="{{ old('venue_longitude') }}">
                             @error('venue_latitude')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                             @error('venue_longitude')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
@@ -213,6 +219,77 @@
         map.setView([existingLat, existingLng], 13);
         marker = L.marker([existingLat, existingLng]).addTo(map);
     }
+
+    // Géocodage automatique de l'adresse
+    document.getElementById('geocodeBtn').addEventListener('click', function() {
+        const address = document.getElementById('venue_address').value;
+        const city = document.getElementById('venue_city').value;
+        const country = document.getElementById('venue_country').value;
+        
+        if (!address) {
+            alert('Veuillez saisir une adresse');
+            return;
+        }
+        
+        // Construire l'adresse complète
+        let fullAddress = address;
+        if (city) fullAddress += ', ' + city;
+        if (country) fullAddress += ', ' + country;
+        
+        // Afficher un indicateur de chargement
+        const btn = this;
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Recherche...';
+        
+        // Appel à l'API Nominatim
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&limit=1`)
+            .then(response => response.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                
+                if (data && data.length > 0) {
+                    const lat = parseFloat(data[0].lat);
+                    const lng = parseFloat(data[0].lon);
+                    
+                    // Mettre à jour les champs cachés
+                    document.getElementById('venue_latitude').value = lat;
+                    document.getElementById('venue_longitude').value = lng;
+                    
+                    // Centrer la carte sur la nouvelle position
+                    map.setView([lat, lng], 15);
+                    
+                    // Supprimer l'ancien marqueur
+                    if (marker) {
+                        map.removeLayer(marker);
+                    }
+                    
+                    // Ajouter un nouveau marqueur
+                    marker = L.marker([lat, lng]).addTo(map);
+                    
+                    // Compléter les champs manquants si disponibles
+                    if (data[0].address) {
+                        if (!city && data[0].address.city) {
+                            document.getElementById('venue_city').value = data[0].address.city;
+                        } else if (!city && data[0].address.town) {
+                            document.getElementById('venue_city').value = data[0].address.town;
+                        }
+                        if (!country && data[0].address.country) {
+                            document.getElementById('venue_country').value = data[0].address.country;
+                        }
+                    }
+                } else {
+                    alert('Adresse non trouvée. Veuillez cliquer directement sur la carte pour définir l\'emplacement.');
+                }
+            })
+            .catch(error => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                console.error('Erreur de géocodage:', error);
+                alert('Erreur lors de la recherche de l\'adresse. Veuillez cliquer directement sur la carte.');
+            });
+    });
 </script>
 @endpush
 @endsection

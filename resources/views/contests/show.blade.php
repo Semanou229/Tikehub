@@ -159,7 +159,7 @@
             <!-- Lieu sur carte -->
             @php
                 $event = $contest->event;
-                $hasLocation = $event && $event->venue_latitude && $event->venue_longitude;
+                $hasLocation = $event && ($event->venue_latitude && $event->venue_longitude || $event->venue_address);
             @endphp
             @if($hasLocation)
                 <div class="bg-white rounded-lg shadow-md p-6">
@@ -421,17 +421,55 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const map = L.map('contestMap').setView([{{ $event->venue_latitude }}, {{ $event->venue_longitude }}], 15);
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 19
-        }).addTo(map);
-        
-        L.marker([{{ $event->venue_latitude }}, {{ $event->venue_longitude }}])
-            .addTo(map)
-            .bindPopup('{{ $event->venue_name ?? $event->venue_city ?? "Lieu du concours" }}')
-            .openPopup();
+        @if($event->venue_latitude && $event->venue_longitude)
+            // Si les coordonnées existent, les utiliser directement
+            const lat = {{ $event->venue_latitude }};
+            const lng = {{ $event->venue_longitude }};
+            const map = L.map('contestMap').setView([lat, lng], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+            
+            L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup('{{ $event->venue_name ?? $event->venue_city ?? "Lieu du concours" }}')
+                .openPopup();
+        @elseif($event->venue_address)
+            // Si seulement l'adresse existe, géocoder l'adresse
+            const map = L.map('contestMap').setView([6.4969, 2.6283], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+            
+            let fullAddress = '{{ $event->venue_address }}';
+            @if($event->venue_city)
+                fullAddress += ', {{ $event->venue_city }}';
+            @endif
+            @if($event->venue_country)
+                fullAddress += ', {{ $event->venue_country }}';
+            @endif
+            
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&limit=1`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const lat = parseFloat(data[0].lat);
+                        const lng = parseFloat(data[0].lon);
+                        
+                        map.setView([lat, lng], 15);
+                        
+                        L.marker([lat, lng])
+                            .addTo(map)
+                            .bindPopup('{{ $event->venue_name ?? $event->venue_address ?? "Lieu du concours" }}')
+                            .openPopup();
+                    }
+                })
+                .catch(error => console.error('Erreur de géocodage:', error));
+        @endif
     });
 </script>
 @endif

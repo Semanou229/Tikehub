@@ -194,7 +194,7 @@
             </div>
 
             <!-- Lieu sur carte -->
-            @if($event->venue_latitude && $event->venue_longitude)
+            @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-red-600">Lieu sur carte</h2>
                     <div id="eventMap" class="w-full h-96 rounded-lg border border-gray-300 mb-4"></div>
@@ -368,7 +368,7 @@
     </div>
 </div>
 
-@if($event->venue_latitude && $event->venue_longitude)
+@if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 @endpush
@@ -445,21 +445,63 @@
         alert('Fonctionnalité de contact à venir');
     }
 </script>
-@if($event->venue_latitude && $event->venue_longitude)
+@if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const map = L.map('eventMap').setView([{{ $event->venue_latitude }}, {{ $event->venue_longitude }}], 15);
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 19
-        }).addTo(map);
-        
-        L.marker([{{ $event->venue_latitude }}, {{ $event->venue_longitude }}])
-            .addTo(map)
-            .bindPopup('{{ $event->venue_name ?? $event->venue_city ?? "Lieu de l\'événement" }}')
-            .openPopup();
+        @if($event->venue_latitude && $event->venue_longitude)
+            // Si les coordonnées existent, les utiliser directement
+            const lat = {{ $event->venue_latitude }};
+            const lng = {{ $event->venue_longitude }};
+            const map = L.map('eventMap').setView([lat, lng], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+            
+            L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup('{{ $event->venue_name ?? $event->venue_city ?? "Lieu de l\'événement" }}')
+                .openPopup();
+        @elseif($event->venue_address)
+            // Si seulement l'adresse existe, géocoder l'adresse
+            const map = L.map('eventMap').setView([6.4969, 2.6283], 13); // Position par défaut
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+            
+            // Construire l'adresse complète
+            let fullAddress = '{{ $event->venue_address }}';
+            @if($event->venue_city)
+                fullAddress += ', {{ $event->venue_city }}';
+            @endif
+            @if($event->venue_country)
+                fullAddress += ', {{ $event->venue_country }}';
+            @endif
+            
+            // Géocoder l'adresse
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&limit=1`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const lat = parseFloat(data[0].lat);
+                        const lng = parseFloat(data[0].lon);
+                        
+                        map.setView([lat, lng], 15);
+                        
+                        L.marker([lat, lng])
+                            .addTo(map)
+                            .bindPopup('{{ $event->venue_name ?? $event->venue_address ?? "Lieu de l\'événement" }}')
+                            .openPopup();
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur de géocodage:', error);
+                });
+        @endif
     });
 </script>
 @endif

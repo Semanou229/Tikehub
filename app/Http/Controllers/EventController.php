@@ -81,7 +81,7 @@ class EventController extends Controller
         return view('events.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, GeocodingService $geocoding)
     {
         $this->authorize('create', Event::class);
 
@@ -95,10 +95,44 @@ class EventController extends Controller
             'venue_address' => 'nullable|string',
             'venue_city' => 'nullable|string|max:255',
             'venue_country' => 'nullable|string|max:255',
-            'venue_latitude' => 'required|numeric|between:-90,90',
-            'venue_longitude' => 'required|numeric|between:-180,180',
+            'venue_latitude' => 'nullable|numeric|between:-90,90',
+            'venue_longitude' => 'nullable|numeric|between:-180,180',
             'cover_image' => 'nullable|image|max:2048',
         ]);
+
+        // Si les coordonnées ne sont pas fournies mais qu'une adresse l'est, géocoder l'adresse
+        if (empty($validated['venue_latitude']) && empty($validated['venue_longitude']) && !empty($validated['venue_address'])) {
+            $fullAddress = $geocoding->buildAddress(
+                $validated['venue_address'],
+                $validated['venue_city'] ?? null,
+                $validated['venue_country'] ?? null
+            );
+            
+            $geocoded = $geocoding->geocode($fullAddress);
+            
+            if ($geocoded) {
+                $validated['venue_latitude'] = $geocoded['latitude'];
+                $validated['venue_longitude'] = $geocoded['longitude'];
+                
+                // Compléter les informations manquantes si disponibles
+                if (isset($geocoded['details'])) {
+                    if (empty($validated['venue_city']) && isset($geocoded['details']['city'])) {
+                        $validated['venue_city'] = $geocoded['details']['city'];
+                    } elseif (empty($validated['venue_city']) && isset($geocoded['details']['town'])) {
+                        $validated['venue_city'] = $geocoded['details']['town'];
+                    }
+                    if (empty($validated['venue_country']) && isset($geocoded['details']['country'])) {
+                        $validated['venue_country'] = $geocoded['details']['country'];
+                    }
+                }
+            }
+        }
+
+        // Si toujours pas de coordonnées, utiliser des valeurs par défaut (Cotonou)
+        if (empty($validated['venue_latitude']) || empty($validated['venue_longitude'])) {
+            $validated['venue_latitude'] = 6.4969;
+            $validated['venue_longitude'] = 2.6283;
+        }
 
         $validated['organizer_id'] = auth()->id();
         $validated['slug'] = Str::slug($validated['title']);
@@ -134,7 +168,7 @@ class EventController extends Controller
         return view('events.edit', compact('event'));
     }
 
-    public function update(Request $request, Event $event)
+    public function update(Request $request, Event $event, GeocodingService $geocoding)
     {
         $this->authorize('update', $event);
 
@@ -148,8 +182,8 @@ class EventController extends Controller
             'venue_address' => 'nullable|string',
             'venue_city' => 'nullable|string|max:255',
             'venue_country' => 'nullable|string|max:255',
-            'venue_latitude' => 'required|numeric|between:-90,90',
-            'venue_longitude' => 'required|numeric|between:-180,180',
+            'venue_latitude' => 'nullable|numeric|between:-90,90',
+            'venue_longitude' => 'nullable|numeric|between:-180,180',
             'cover_image' => 'nullable|image|max:2048',
         ]);
 
