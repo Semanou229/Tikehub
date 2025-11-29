@@ -39,6 +39,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'kyc_verified_at' => 'datetime',
+        'kyc_submitted_at' => 'datetime',
         'password' => 'hashed',
         'is_active' => 'boolean',
     ];
