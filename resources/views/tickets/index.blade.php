@@ -131,7 +131,7 @@
 
 @push('scripts')
 <script>
-let originalTotal = {{ $total ?? 0 }};
+let originalTotal = parseFloat(document.getElementById('original_total')?.value || {{ $total ?? 0 }});
 let currentDiscount = 0;
 let promoCodeId = null;
 
@@ -183,7 +183,7 @@ function updateTotal() {
     const newTotal = Math.max(0, originalTotal - currentDiscount);
     const totalElement = document.getElementById('total_amount');
     if (totalElement) {
-        totalElement.textContent = newTotal.toLocaleString('fr-FR') + ' XOF';
+        totalElement.textContent = newTotal.toLocaleString('fr-FR', {minimumFractionDigits: 0, maximumFractionDigits: 0}) + ' XOF';
     }
 }
 
@@ -198,7 +198,7 @@ function showMessage(elementId, message, type) {
 function showDiscount(elementId, discount) {
     const element = document.getElementById(elementId);
     if (element) {
-        element.textContent = 'Réduction: -' + discount.toLocaleString('fr-FR') + ' XOF';
+        element.textContent = 'Réduction: -' + discount.toLocaleString('fr-FR', {minimumFractionDigits: 0, maximumFractionDigits: 0}) + ' XOF';
         element.classList.remove('hidden');
     }
 }
