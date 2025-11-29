@@ -231,6 +231,7 @@ class FundraisingController extends Controller
             $checkoutUrl = session('moneroo_checkout_url_' . $payment->id);
             if ($checkoutUrl) {
                 session()->forget('moneroo_checkout_url_' . $payment->id);
+                \Log::info('Redirecting to Moneroo checkout for donation', ['payment_id' => $payment->id, 'url' => $checkoutUrl]);
                 return redirect($checkoutUrl);
             }
 
@@ -239,17 +240,40 @@ class FundraisingController extends Controller
                 try {
                     $monerooService = app(\App\Services\MonerooService::class);
                     $monerooPayment = $monerooService->getPayment($payment->moneroo_transaction_id);
-                    $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? null;
+                    
+                    // Essayer différentes propriétés
+                    $checkoutUrl = null;
+                    if (is_object($monerooPayment)) {
+                        $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? $monerooPayment->data->checkout_url ?? $monerooPayment->data->checkoutUrl ?? $monerooPayment->url ?? $monerooPayment->data->url ?? null;
+                    } elseif (is_array($monerooPayment)) {
+                        $checkoutUrl = $monerooPayment['checkout_url'] ?? $monerooPayment['checkoutUrl'] ?? $monerooPayment['data']['checkout_url'] ?? $monerooPayment['data']['checkoutUrl'] ?? $monerooPayment['url'] ?? $monerooPayment['data']['url'] ?? null;
+                    }
+                    
                     if ($checkoutUrl) {
+                        \Log::info('Redirecting to Moneroo checkout for donation (from getPayment)', ['payment_id' => $payment->id, 'url' => $checkoutUrl]);
                         return redirect($checkoutUrl);
                     }
                 } catch (\Exception $e) {
-                    \Log::error('Error getting checkout URL for donation', ['error' => $e->getMessage()]);
+                    \Log::error('Error getting checkout URL for donation', [
+                        'payment_id' => $payment->id,
+                        'transaction_id' => $payment->moneroo_transaction_id,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
                 }
             }
 
-            return redirect()->route('fundraisings.show', $fundraising)->with('error', 'Erreur lors de la création du paiement');
+            \Log::error('No checkout URL available for donation payment', [
+                'payment_id' => $payment->id,
+                'transaction_id' => $payment->moneroo_transaction_id,
+            ]);
+            
+            return redirect()->route('fundraisings.show', $fundraising)->with('error', 'Erreur lors de la création du paiement. Veuillez réessayer.');
         } catch (\Exception $e) {
+            \Log::error('Error in donate controller', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             return back()->with('error', $e->getMessage());
         }
     }

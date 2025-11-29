@@ -125,6 +125,7 @@ class ContestController extends Controller
             $checkoutUrl = session('moneroo_checkout_url_' . $payment->id);
             if ($checkoutUrl) {
                 session()->forget('moneroo_checkout_url_' . $payment->id);
+                \Log::info('Redirecting to Moneroo checkout for vote', ['payment_id' => $payment->id, 'url' => $checkoutUrl]);
                 return redirect($checkoutUrl);
             }
 
@@ -133,17 +134,40 @@ class ContestController extends Controller
                 try {
                     $monerooService = app(\App\Services\MonerooService::class);
                     $monerooPayment = $monerooService->getPayment($payment->moneroo_transaction_id);
-                    $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? null;
+                    
+                    // Essayer différentes propriétés
+                    $checkoutUrl = null;
+                    if (is_object($monerooPayment)) {
+                        $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? $monerooPayment->data->checkout_url ?? $monerooPayment->data->checkoutUrl ?? $monerooPayment->url ?? $monerooPayment->data->url ?? null;
+                    } elseif (is_array($monerooPayment)) {
+                        $checkoutUrl = $monerooPayment['checkout_url'] ?? $monerooPayment['checkoutUrl'] ?? $monerooPayment['data']['checkout_url'] ?? $monerooPayment['data']['checkoutUrl'] ?? $monerooPayment['url'] ?? $monerooPayment['data']['url'] ?? null;
+                    }
+                    
                     if ($checkoutUrl) {
+                        \Log::info('Redirecting to Moneroo checkout for vote (from getPayment)', ['payment_id' => $payment->id, 'url' => $checkoutUrl]);
                         return redirect($checkoutUrl);
                     }
                 } catch (\Exception $e) {
-                    \Log::error('Error getting checkout URL for vote', ['error' => $e->getMessage()]);
+                    \Log::error('Error getting checkout URL for vote', [
+                        'payment_id' => $payment->id,
+                        'transaction_id' => $payment->moneroo_transaction_id,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
                 }
             }
 
-            return redirect()->route('contests.show', $contest)->with('error', 'Erreur lors de la création du paiement');
+            \Log::error('No checkout URL available for vote payment', [
+                'payment_id' => $payment->id,
+                'transaction_id' => $payment->moneroo_transaction_id,
+            ]);
+            
+            return redirect()->route('contests.show', $contest)->with('error', 'Erreur lors de la création du paiement. Veuillez réessayer.');
         } catch (\Exception $e) {
+            \Log::error('Error in vote controller', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             return back()->with('error', $e->getMessage());
         }
     }

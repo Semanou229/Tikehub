@@ -77,6 +77,16 @@ class MonerooService
             // Initialiser le paiement avec la méthode init() du SDK
             $payment = $this->payment->init($paymentData);
 
+            // Log pour déboguer la structure de la réponse
+            Log::info('Moneroo payment init response', [
+                'type' => gettype($payment),
+                'is_object' => is_object($payment),
+                'is_array' => is_array($payment),
+                'class' => is_object($payment) ? get_class($payment) : null,
+                'properties' => is_object($payment) ? get_object_vars($payment) : null,
+                'array' => is_array($payment) ? $payment : null,
+            ]);
+
             return $payment;
         } catch (\Exception $e) {
             Log::error('Moneroo payment creation failed', [

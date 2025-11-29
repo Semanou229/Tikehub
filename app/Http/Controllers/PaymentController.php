@@ -42,12 +42,27 @@ class PaymentController extends Controller
                 if ($status !== $payment->status) {
                     $payment->update(['status' => $status]);
                     
-                    // Si le paiement est complété, mettre à jour les tickets
+                    // Si le paiement est complété, traiter selon le type
                     if ($status === 'completed') {
                         $this->paymentService->handlePaymentCallback([
                             'transaction_id' => $monerooPayment->transaction_id ?? $monerooPayment->id ?? $payment->moneroo_transaction_id,
                             'status' => $monerooStatus,
                         ]);
+                        
+                        // Rediriger selon le type de paiement
+                        if ($payment->paymentable_type === \App\Models\Contest::class) {
+                            $contest = \App\Models\Contest::find($payment->paymentable_id);
+                            if ($contest) {
+                                return redirect()->route('contests.show', $contest)
+                                    ->with('success', 'Votre vote a été enregistré avec succès !');
+                            }
+                        } elseif ($payment->paymentable_type === \App\Models\Fundraising::class) {
+                            $fundraising = \App\Models\Fundraising::find($payment->paymentable_id);
+                            if ($fundraising) {
+                                return redirect()->route('fundraisings.show', $fundraising)
+                                    ->with('success', 'Merci pour votre contribution !');
+                            }
+                        }
                     }
                 }
             } catch (\Exception $e) {

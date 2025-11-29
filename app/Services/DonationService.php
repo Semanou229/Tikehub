@@ -53,21 +53,43 @@ class DonationService
                     'email' => $user->email,
                     'phone' => $user->phone,
                 ],
-                'return_url' => route('fundraisings.donate.return', ['payment' => $payment->id]),
+                'return_url' => route('payments.return', ['payment' => $payment->id]),
+            ]);
+
+            // Log pour déboguer la structure de la réponse
+            \Log::info('Moneroo payment response for donation', [
+                'payment_id' => $payment->id,
+                'response_type' => gettype($monerooPayment),
+                'response' => is_object($monerooPayment) ? (array) $monerooPayment : $monerooPayment,
             ]);
 
             // Le SDK Moneroo retourne un objet (data de la réponse)
-            $transactionId = $monerooPayment->transaction_id ?? $monerooPayment->id ?? null;
-            $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? null;
+            // Essayer différentes propriétés possibles
+            $transactionId = null;
+            $checkoutUrl = null;
+            
+            if (is_object($monerooPayment)) {
+                $transactionId = $monerooPayment->transaction_id ?? $monerooPayment->id ?? $monerooPayment->data->transaction_id ?? $monerooPayment->data->id ?? null;
+                $checkoutUrl = $monerooPayment->checkout_url ?? $monerooPayment->checkoutUrl ?? $monerooPayment->data->checkout_url ?? $monerooPayment->data->checkoutUrl ?? $monerooPayment->url ?? $monerooPayment->data->url ?? null;
+            } elseif (is_array($monerooPayment)) {
+                $transactionId = $monerooPayment['transaction_id'] ?? $monerooPayment['id'] ?? $monerooPayment['data']['transaction_id'] ?? $monerooPayment['data']['id'] ?? null;
+                $checkoutUrl = $monerooPayment['checkout_url'] ?? $monerooPayment['checkoutUrl'] ?? $monerooPayment['data']['checkout_url'] ?? $monerooPayment['data']['checkoutUrl'] ?? $monerooPayment['url'] ?? $monerooPayment['data']['url'] ?? null;
+            }
             
             $payment->update([
                 'moneroo_transaction_id' => $transactionId,
-                'moneroo_reference' => $monerooPayment->reference ?? $transactionId,
+                'moneroo_reference' => (is_object($monerooPayment) ? ($monerooPayment->reference ?? null) : ($monerooPayment['reference'] ?? null)) ?? $transactionId,
             ]);
 
             // Stocker l'URL de checkout dans la session pour redirection
             if ($checkoutUrl) {
                 session(['moneroo_checkout_url_' . $payment->id => $checkoutUrl]);
+                \Log::info('Checkout URL stored for donation payment', ['payment_id' => $payment->id, 'checkout_url' => $checkoutUrl]);
+            } else {
+                \Log::warning('No checkout URL found in Moneroo response for donation', [
+                    'payment_id' => $payment->id,
+                    'response' => is_object($monerooPayment) ? (array) $monerooPayment : $monerooPayment,
+                ]);
             }
 
             // Créer le don (en attente de paiement)

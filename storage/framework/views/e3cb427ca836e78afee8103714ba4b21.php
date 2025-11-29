@@ -320,12 +320,26 @@
                             <?php echo csrf_field(); ?>
                             <div>
                                 <label for="amount" class="block text-sm font-medium text-gray-700 mb-2">Montant (XOF)</label>
-                                <input type="number" name="amount" id="amount" min="100" step="100" value="1000" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                <div class="flex items-center gap-2">
+                                    <button type="button" onclick="decrementAmount()" class="w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-lg flex items-center justify-center transition">
+                                        <i class="fas fa-minus text-gray-600"></i>
+                                    </button>
+                                    <input type="number" name="amount" id="amount" min="100" step="100" value="1000" required class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-center font-semibold" oninput="updateDonationTotal()">
+                                    <button type="button" onclick="incrementAmount()" class="w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-lg flex items-center justify-center transition">
+                                        <i class="fas fa-plus text-gray-600"></i>
+                                    </button>
+                                </div>
                                 <div class="flex gap-2 mt-2">
-                                    <button type="button" onclick="setAmount(500)" class="flex-1 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">500</button>
-                                    <button type="button" onclick="setAmount(1000)" class="flex-1 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">1000</button>
-                                    <button type="button" onclick="setAmount(5000)" class="flex-1 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">5000</button>
-                                    <button type="button" onclick="setAmount(10000)" class="flex-1 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">10000</button>
+                                    <button type="button" onclick="setAmount(500)" class="flex-1 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 transition">500</button>
+                                    <button type="button" onclick="setAmount(1000)" class="flex-1 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 transition">1000</button>
+                                    <button type="button" onclick="setAmount(5000)" class="flex-1 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 transition">5000</button>
+                                    <button type="button" onclick="setAmount(10000)" class="flex-1 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 transition">10000</button>
+                                </div>
+                            </div>
+                            <div class="bg-green-50 border-2 border-green-200 rounded-lg p-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-700">Montant total:</span>
+                                    <span class="text-xl font-bold text-green-600" id="donation_total">1 000 XOF</span>
                                 </div>
                             </div>
                             <div>
@@ -502,8 +516,62 @@
 
 <?php $__env->startPush('scripts'); ?>
 <script>
+    function updateDonationTotal() {
+        const amountInput = document.getElementById('amount');
+        if (!amountInput) return;
+        
+        let amount = parseFloat(amountInput.value) || 1000;
+        if (amount < 100) amount = 100;
+        amountInput.value = amount;
+        
+        const totalElement = document.getElementById('donation_total');
+        if (totalElement) {
+            totalElement.textContent = amount.toLocaleString('fr-FR') + ' XOF';
+        }
+    }
+    
     function setAmount(amount) {
-        document.getElementById('amount').value = amount;
+        const amountInput = document.getElementById('amount');
+        if (amountInput) {
+            amountInput.value = amount;
+            updateDonationTotal();
+        }
+    }
+    
+    function incrementAmount() {
+        const amountInput = document.getElementById('amount');
+        if (amountInput) {
+            let value = parseFloat(amountInput.value) || 1000;
+            amountInput.value = value + 100;
+            updateDonationTotal();
+        }
+    }
+    
+    function decrementAmount() {
+        const amountInput = document.getElementById('amount');
+        if (amountInput) {
+            let value = parseFloat(amountInput.value) || 1000;
+            if (value > 100) {
+                amountInput.value = value - 100;
+                updateDonationTotal();
+            }
+        }
+    }
+    
+    // Initialiser le total au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        updateDonationTotal();
+        
+        const amountInput = document.getElementById('amount');
+        if (amountInput) {
+            amountInput.addEventListener('input', updateDonationTotal);
+            amountInput.addEventListener('change', updateDonationTotal);
+        }
+    });
+    
+    // Fonction legacy pour compatibilité
+    function setAmountLegacy(amount) {
+        setAmount(amount);
     }
     
     function shareFundraising() {
