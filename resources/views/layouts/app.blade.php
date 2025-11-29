@@ -44,42 +44,117 @@
     @stack('styles')
 </head>
 <body class="bg-gray-50">
-    <nav class="bg-white shadow-lg" style="position: relative !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 1000 !important; order: 1 !important; flex-shrink: 0 !important;">
+    <nav class="bg-white shadow-lg border-b border-gray-200" style="position: relative !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 1000 !important; order: 1 !important; flex-shrink: 0 !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <a href="{{ route('home') }}" class="flex items-center">
-                        <span class="text-2xl font-bold text-indigo-600">
-                            <i class="fas fa-ticket-alt mr-2"></i>Tikehub
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="{{ route('home') }}" class="flex items-center space-x-2 group">
+                        <div class="bg-gradient-to-br from-indigo-600 to-purple-600 p-2 rounded-lg group-hover:shadow-lg transition">
+                            <i class="fas fa-ticket-alt text-white text-xl"></i>
+                        </div>
+                        <span class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            Tikehub
                         </span>
                     </a>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('events.index') }}" class="text-gray-700 hover:text-indigo-600 hidden md:block">
-                        <i class="fas fa-calendar-alt mr-1"></i>Événements
+
+                <!-- Menu Desktop -->
+                <div class="hidden lg:flex items-center space-x-1">
+                    <a href="{{ route('home') }}" class="px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-medium {{ request()->routeIs('home') ? 'text-indigo-600 bg-indigo-50' : '' }}">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="{{ route('events.index') }}" class="px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-medium {{ request()->routeIs('events.*') ? 'text-indigo-600 bg-indigo-50' : '' }}">
+                        <i class="fas fa-calendar-alt mr-2"></i>Événements
+                    </a>
+                    <a href="{{ route('contests.index') }}" class="px-4 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition font-medium {{ request()->routeIs('contests.*') ? 'text-purple-600 bg-purple-50' : '' }}">
+                        <i class="fas fa-trophy mr-2"></i>Concours
+                    </a>
+                    <a href="{{ route('fundraisings.index') }}" class="px-4 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition font-medium {{ request()->routeIs('fundraisings.*') ? 'text-green-600 bg-green-50' : '' }}">
+                        <i class="fas fa-heart mr-2"></i>Collectes
+                    </a>
+                </div>
+
+                <!-- Actions utilisateur -->
+                <div class="flex items-center space-x-3">
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-medium hidden md:block">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                        </a>
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                                <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=indigo&color=fff' }}" 
+                                     alt="{{ auth()->user()->name }}" 
+                                     class="w-8 h-8 rounded-full border-2 border-indigo-200">
+                                <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <div class="py-2">
+                                    <div class="px-4 py-2 border-b border-gray-100">
+                                        <p class="text-sm font-semibold text-gray-800">{{ auth()->user()->name }}</p>
+                                        <p class="text-xs text-gray-500">{{ auth()->user()->email }}</p>
+                                    </div>
+                                    <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                    </a>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600">
+                                            <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <a href="{{ route('login') }}" class="px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-medium">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Connexion
+                        </a>
+                        <a href="{{ route('register') }}" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition shadow-md hover:shadow-lg font-medium">
+                            <i class="fas fa-user-plus mr-2"></i>Inscription
+                        </a>
+                    @endauth
+
+                    <!-- Menu Mobile -->
+                    <button id="mobile-menu-button" class="lg:hidden p-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Menu Mobile Dropdown -->
+            <div id="mobile-menu" class="hidden lg:hidden pb-4 border-t border-gray-200">
+                <div class="flex flex-col space-y-1 mt-2">
+                    <a href="{{ route('home') }}" class="px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition {{ request()->routeIs('home') ? 'text-indigo-600 bg-indigo-50' : '' }}">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="{{ route('events.index') }}" class="px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition {{ request()->routeIs('events.*') ? 'text-indigo-600 bg-indigo-50' : '' }}">
+                        <i class="fas fa-calendar-alt mr-2"></i>Événements
+                    </a>
+                    <a href="{{ route('contests.index') }}" class="px-4 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition {{ request()->routeIs('contests.*') ? 'text-purple-600 bg-purple-50' : '' }}">
+                        <i class="fas fa-trophy mr-2"></i>Concours
+                    </a>
+                    <a href="{{ route('fundraisings.index') }}" class="px-4 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition {{ request()->routeIs('fundraisings.*') ? 'text-green-600 bg-green-50' : '' }}">
+                        <i class="fas fa-heart mr-2"></i>Collectes
                     </a>
                     @auth
-                        <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-indigo-600">
-                            <i class="fas fa-tachometer-alt mr-1"></i>Dashboard
-                        </a>
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="text-gray-700 hover:text-indigo-600">
-                                <i class="fas fa-sign-out-alt mr-1"></i>Déconnexion
-                            </button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-indigo-600">
-                            <i class="fas fa-sign-in-alt mr-1"></i>Connexion
-                        </a>
-                        <a href="{{ route('register') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
-                            <i class="fas fa-user-plus mr-1"></i>Inscription
+                        <a href="{{ route('dashboard') }}" class="px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
                         </a>
                     @endauth
                 </div>
             </div>
         </div>
     </nav>
+
+    @push('scripts')
+    <script>
+        document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+    @endpush
 
     <main class="py-4" style="order: 2 !important; flex: 1 !important; position: relative !important;">
         @if(session('success'))

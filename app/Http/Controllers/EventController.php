@@ -37,7 +37,73 @@ class EventController extends Controller
                 $query->where('is_free', $request->input('free') === 'true');
             }
 
-            $events = $query->with('organizer')->orderBy('start_date', 'desc')->paginate(12);
+            if ($request->filled('virtual')) {
+                $query->where('is_virtual', $request->input('virtual') === 'true');
+            }
+
+            // Filtre par prix minimum
+            if ($request->filled('price_min')) {
+                $query->whereHas('ticketTypes', function($q) use ($request) {
+                    $q->where('is_active', true)
+                      ->where('price', '>=', $request->input('price_min'));
+                });
+            }
+
+            if ($request->filled('price_max')) {
+                $query->whereHas('ticketTypes', function($q) use ($request) {
+                    $q->where('is_active', true)
+                      ->where('price', '<=', $request->input('price_max'));
+                });
+            }
+
+            // Filtre par organisateur
+            if ($request->filled('organizer')) {
+                $query->where('organizer_id', $request->input('organizer'));
+            }
+
+            // Tri
+            $sortBy = $request->input('sort', 'date_desc');
+            switch ($sortBy) {
+                case 'date_asc':
+                    $query->orderBy('start_date', 'asc');
+                    break;
+                case 'price_asc':
+                    $query->join('ticket_types', 'events.id', '=', 'ticket_types.event_id')
+                          ->where('ticket_types.is_active', true)
+                          ->select('events.*')
+                          ->groupBy('events.id')
+                          ->orderByRaw('MIN(ticket_types.price) ASC');
+                    break;
+                case 'price_desc':
+                    $query->join('ticket_types', 'events.id', '=', 'ticket_types.event_id')
+                          ->where('ticket_types.is_active', true)
+                          ->select('events.*')
+                          ->groupBy('events.id')
+                          ->orderByRaw('MIN(ticket_types.price) DESC');
+                    break;
+                case 'popular':
+                    $query->withCount('tickets')->orderBy('tickets_count', 'desc');
+                    break;
+                case 'date_desc':
+                default:
+                    $query->orderBy('start_date', 'desc');
+                    break;
+            }
+
+            $events = $query->with('organizer')->with('ticketTypes')->paginate(12)->withQueryString();
+
+            // Récupérer les organisateurs et catégories pour les filtres
+            $organizers = \App\Models\User::whereHas('events', function($q) {
+                $q->where('is_published', true)->where('status', 'published');
+            })->get();
+
+            $categories = Event::where('is_published', true)
+                ->where('status', 'published')
+                ->distinct()
+                ->pluck('category')
+                ->filter()
+                ->sort()
+                ->values();
 
             return view('events.index', compact('events'));
         } catch (\Exception $e) {
@@ -46,9 +112,23 @@ class EventController extends Controller
             $events = Event::where('is_published', true)
                 ->where('status', 'published')
                 ->with('organizer')
+                ->with('ticketTypes')
                 ->orderBy('start_date', 'desc')
                 ->paginate(12);
-            return view('events.index', compact('events'));
+
+            $organizers = \App\Models\User::whereHas('events', function($q) {
+                $q->where('is_published', true)->where('status', 'published');
+            })->get();
+
+            $categories = Event::where('is_published', true)
+                ->where('status', 'published')
+                ->distinct()
+                ->pluck('category')
+                ->filter()
+                ->sort()
+                ->values();
+
+            return view('events.index', compact('events', 'organizers', 'categories'));
         }
     }
 

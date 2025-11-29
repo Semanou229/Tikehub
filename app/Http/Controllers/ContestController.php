@@ -16,11 +16,58 @@ class ContestController extends Controller
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now());
 
-        $contests = $query->withCount('votes')
-            ->orderBy('votes_count', 'desc')
-            ->paginate(12);
+        // Filtre par prix par vote
+        if ($request->filled('price_min')) {
+            $query->where('price_per_vote', '>=', $request->input('price_min'));
+        }
+        if ($request->filled('price_max')) {
+            $query->where('price_per_vote', '<=', $request->input('price_max'));
+        }
 
-        return view('contests.index', compact('contests'));
+        // Filtre par date de fin
+        if ($request->filled('end_date_from')) {
+            $query->where('end_date', '>=', $request->input('end_date_from'));
+        }
+        if ($request->filled('end_date_to')) {
+            $query->where('end_date', '<=', $request->input('end_date_to'));
+        }
+
+        // Filtre par nombre de votes (popularité)
+        if ($request->filled('min_votes')) {
+            $query->has('votes', '>=', $request->input('min_votes'));
+        }
+
+        // Filtre par organisateur
+        if ($request->filled('organizer')) {
+            $query->where('organizer_id', $request->input('organizer'));
+        }
+
+        // Tri
+        $sortBy = $request->input('sort', 'popular');
+        switch ($sortBy) {
+            case 'price_asc':
+                $query->orderBy('price_per_vote', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('price_per_vote', 'desc');
+                break;
+            case 'end_date':
+                $query->orderBy('end_date', 'asc');
+                break;
+            case 'popular':
+            default:
+                $query->withCount('votes')->orderBy('votes_count', 'desc');
+                break;
+        }
+
+        $contests = $query->with('organizer')->paginate(12)->withQueryString();
+
+        // Récupérer les organisateurs pour le filtre
+        $organizers = \App\Models\User::whereHas('contests', function($q) {
+            $q->where('is_published', true)->where('is_active', true);
+        })->get();
+
+        return view('contests.index', compact('contests', 'organizers'));
     }
 
     public function show(Contest $contest)

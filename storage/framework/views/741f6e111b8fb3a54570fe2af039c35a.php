@@ -60,6 +60,10 @@
                     <i class="fas fa-chart-bar w-5 mr-3"></i>
                     <span>Rapports</span>
                 </a>
+                <a href="<?php echo e(route('organizer.promo-codes.index')); ?>" class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo e(request()->routeIs('organizer.promo-codes.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100'); ?>">
+                    <i class="fas fa-tag w-5 mr-3"></i>
+                    <span>Codes Promo</span>
+                </a>
                 <!-- CRM Section -->
                 <div class="mt-4 pt-4 border-t border-gray-200">
                     <p class="px-4 text-xs font-semibold text-gray-500 uppercase mb-2">CRM</p>

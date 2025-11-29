@@ -15,10 +15,67 @@ class FundraisingController extends Controller
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now());
 
-        $fundraisings = $query->orderBy('current_amount', 'desc')
-            ->paginate(12);
+        // Filtre par montant objectif
+        if ($request->filled('goal_min')) {
+            $query->where('goal_amount', '>=', $request->input('goal_min'));
+        }
+        if ($request->filled('goal_max')) {
+            $query->where('goal_amount', '<=', $request->input('goal_max'));
+        }
 
-        return view('fundraisings.index', compact('fundraisings'));
+        // Filtre par progression
+        if ($request->filled('progress_min')) {
+            $query->whereRaw('(current_amount / goal_amount * 100) >= ?', [$request->input('progress_min')]);
+        }
+        if ($request->filled('progress_max')) {
+            $query->whereRaw('(current_amount / goal_amount * 100) <= ?', [$request->input('progress_max')]);
+        }
+
+        // Filtre par date de fin
+        if ($request->filled('end_date_from')) {
+            $query->where('end_date', '>=', $request->input('end_date_from'));
+        }
+        if ($request->filled('end_date_to')) {
+            $query->where('end_date', '<=', $request->input('end_date_to'));
+        }
+
+        // Filtre par organisateur
+        if ($request->filled('organizer')) {
+            $query->where('organizer_id', $request->input('organizer'));
+        }
+
+        // Tri
+        $sortBy = $request->input('sort', 'progress');
+        switch ($sortBy) {
+            case 'goal_asc':
+                $query->orderBy('goal_amount', 'asc');
+                break;
+            case 'goal_desc':
+                $query->orderBy('goal_amount', 'desc');
+                break;
+            case 'amount_asc':
+                $query->orderBy('current_amount', 'asc');
+                break;
+            case 'amount_desc':
+                $query->orderBy('current_amount', 'desc');
+                break;
+            case 'end_date':
+                $query->orderBy('end_date', 'asc');
+                break;
+            case 'progress':
+            default:
+                $query->orderByRaw('(current_amount / goal_amount * 100) DESC');
+                break;
+        }
+
+        $fundraisings = $query->with('organizer')->paginate(12)->withQueryString();
+
+        // Récupérer les organisateurs pour le filtre
+        $organizers = \App\Models\User::whereHas('fundraisings', function($q) {
+            $q->where('is_published', true)->where('is_active', true);
+        })->get();
+
+        return view('fundraisings.index', compact('fundraisings', 'organizers'));
     }
 
     public function show(Fundraising $fundraising)
