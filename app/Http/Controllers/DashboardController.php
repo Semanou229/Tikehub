@@ -21,8 +21,9 @@ class DashboardController extends Controller
             return $this->organizerDashboard();
         }
 
-        if ($user->isAgent()) {
-            return $this->agentDashboard();
+        // Rediriger les collaborateurs (agents ou membres d'équipe) vers leur dashboard
+        if ($user->isAgent() || $user->team_id !== null) {
+            return redirect()->route('collaborator.dashboard');
         }
 
         return $this->buyerDashboard();
