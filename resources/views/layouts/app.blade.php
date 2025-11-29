@@ -44,7 +44,7 @@
     @stack('styles')
 </head>
 <body class="bg-gray-50">
-    <nav class="bg-white shadow-lg">
+    <nav class="bg-white shadow-lg" style="position: relative !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 1000 !important; order: 1 !important; flex-shrink: 0 !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
@@ -81,7 +81,7 @@
         </div>
     </nav>
 
-    <main class="py-4">
+    <main class="py-4" style="order: 2 !important; flex: 1 !important; position: relative !important;">
         @if(session('success'))
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
@@ -105,7 +105,7 @@
         @yield('content')
     </main>
 
-    <footer class="bg-gray-800 text-white mt-12">
+    <footer class="bg-gray-800 text-white mt-12" style="order: 3 !important; flex-shrink: 0 !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <p class="text-center">&copy; {{ date('Y') }} Tikehub. Tous droits réservés.</p>
         </div>
