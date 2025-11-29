@@ -39,9 +39,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/events/{event}/publish', [EventController::class, 'publish'])->name('events.publish');
 });
 
-// Route publique pour afficher un événement (APRÈS les routes auth pour éviter les conflits)
-Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
-
     // Billets
     Route::get('/events/{event}/tickets', [TicketController::class, 'index'])->name('tickets.index');
     Route::post('/tickets/purchase', [TicketController::class, 'purchase'])->name('tickets.purchase');
