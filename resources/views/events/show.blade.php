@@ -565,7 +565,9 @@
                         maxZoom: 19,
                         minZoom: 1,
                         errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-                        crossOrigin: true
+                        crossOrigin: true,
+                        tileSize: 256,
+                        zoomOffset: 0
                     });
                     
                     tileLayer.on('tileerror', function(error, tile) {
@@ -576,11 +578,29 @@
                         console.log('Tuile chargée:', e.tile.src);
                     });
                     
+                    tileLayer.on('load', function() {
+                        console.log('Toutes les tuiles chargées');
+                        map.invalidateSize();
+                    });
+                    
                     tileLayer.addTo(map);
                     console.log('Tuiles ajoutées');
                     
-                    // Forcer le redimensionnement immédiatement
-                    map.invalidateSize();
+                    // Forcer le redimensionnement plusieurs fois avec délais
+                    setTimeout(function() {
+                        map.invalidateSize();
+                        console.log('Redimensionnement immédiat');
+                    }, 100);
+                    
+                    setTimeout(function() {
+                        map.invalidateSize();
+                        console.log('Redimensionnement après 300ms');
+                    }, 300);
+                    
+                    setTimeout(function() {
+                        map.invalidateSize();
+                        console.log('Redimensionnement après 600ms');
+                    }, 600);
                     
                     // Ajouter le marqueur
                     const marker = L.marker([lat, lng]).addTo(map);
@@ -635,7 +655,9 @@
                         maxZoom: 19,
                         minZoom: 1,
                         errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-                        crossOrigin: true
+                        crossOrigin: true,
+                        tileSize: 256,
+                        zoomOffset: 0
                     });
                     
                     tileLayer.on('tileerror', function(error, tile) {
@@ -646,11 +668,29 @@
                         console.log('Tuile chargée:', e.tile.src);
                     });
                     
+                    tileLayer.on('load', function() {
+                        console.log('Toutes les tuiles chargées');
+                        map.invalidateSize();
+                    });
+                    
                     tileLayer.addTo(map);
                     console.log('Tuiles ajoutées');
                     
-                    // Forcer le redimensionnement immédiatement
-                    map.invalidateSize();
+                    // Forcer le redimensionnement plusieurs fois avec délais
+                    setTimeout(function() {
+                        map.invalidateSize();
+                        console.log('Redimensionnement immédiat');
+                    }, 100);
+                    
+                    setTimeout(function() {
+                        map.invalidateSize();
+                        console.log('Redimensionnement après 300ms');
+                    }, 300);
+                    
+                    setTimeout(function() {
+                        map.invalidateSize();
+                        console.log('Redimensionnement après 600ms');
+                    }, 600);
                     
                     // Construire l'adresse complète
                     let fullAddress = '{{ addslashes($event->venue_address) }}';
