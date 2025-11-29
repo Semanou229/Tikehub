@@ -360,32 +360,38 @@
                     });
             },
             function(error) {
-                console.error('Erreur de géolocalisation:', error);
+                console.error('Erreur de géolocalisation complète:', error);
                 btn.disabled = false;
                 btn.innerHTML = originalText;
                 
-                let errorMessage = 'Erreur de géolocalisation: ';
-                let errorCode = error.code || 'UNKNOWN';
+                let errorMessage = '';
+                let errorCode = error ? error.code : 'UNKNOWN';
                 
-                switch(errorCode) {
-                    case error.PERMISSION_DENIED || 1:
-                        errorMessage = 'Permission refusée. Veuillez autoriser l\'accès à votre localisation dans les paramètres de votre navigateur.';
-                        break;
-                    case error.POSITION_UNAVAILABLE || 2:
-                        errorMessage = 'Position indisponible. Vérifiez que votre GPS est activé et que vous avez une connexion Internet.';
-                        break;
-                    case error.TIMEOUT || 3:
-                        errorMessage = 'Délai d\'attente dépassé. Veuillez réessayer.';
-                        break;
-                    default:
-                        errorMessage = 'Erreur lors de la géolocalisation. Code d\'erreur: ' + errorCode + '. Veuillez vérifier les paramètres de votre navigateur ou utiliser le bouton "Localiser" avec une adresse.';
-                        break;
+                // Gérer les différents codes d'erreur
+                if (errorCode === 1 || errorCode === error.PERMISSION_DENIED) {
+                    errorMessage = 'Permission refusée. Veuillez autoriser l\'accès à votre localisation dans les paramètres de votre navigateur.\n\nPour autoriser :\n1. Cliquez sur l\'icône de cadenas dans la barre d\'adresse\n2. Activez l\'autorisation pour la localisation\n3. Rechargez la page et réessayez';
+                } else if (errorCode === 2 || errorCode === error.POSITION_UNAVAILABLE) {
+                    errorMessage = 'Position indisponible. Vérifiez que votre GPS est activé et que vous avez une connexion Internet.';
+                } else if (errorCode === 3 || errorCode === error.TIMEOUT) {
+                    errorMessage = 'Délai d\'attente dépassé. Veuillez réessayer.';
+                } else {
+                    // Si l'erreur est un objet, essayer d'extraire le message
+                    let errorDetails = '';
+                    if (error && error.message) {
+                        errorDetails = error.message;
+                    } else if (error && typeof error === 'object') {
+                        errorDetails = JSON.stringify(error);
+                    } else {
+                        errorDetails = String(error);
+                    }
+                    errorMessage = 'Erreur lors de la géolocalisation.\n\nDétails: ' + errorDetails + '\n\nVous pouvez utiliser le bouton "Localiser" avec une adresse à la place.';
                 }
                 
                 alert(errorMessage);
             },
             options
-        );
+            );
+        }
     });
 
     // Géocodage automatique de l'adresse
