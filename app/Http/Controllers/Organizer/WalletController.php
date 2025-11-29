@@ -41,7 +41,7 @@ class WalletController extends Controller
         $netEarnings = $totalEarnings - $platformCommission;
 
         // Revenus des 6 derniers mois
-        $monthlyRevenue = Payment::whereHas('ticket.event', function ($q) use ($organizerId) {
+        $monthlyRevenue = Payment::whereHas('tickets.event', function ($q) use ($organizerId) {
             $q->where('organizer_id', $organizerId);
         })
         ->where('status', 'completed')

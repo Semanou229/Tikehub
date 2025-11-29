@@ -7,9 +7,9 @@
         <div class="flex flex-col md:flex-row">
             <!-- Date Box (Rouge) -->
             <div class="bg-red-600 text-white p-6 text-center min-w-[120px] flex flex-col justify-center items-center">
-                <div class="text-2xl font-bold uppercase"><?php echo e($event->start_date->format('M')); ?></div>
+                <div class="text-2xl font-bold uppercase"><?php echo e($event->start_date->translatedFormat('M')); ?></div>
                 <div class="text-5xl font-bold"><?php echo e($event->start_date->format('d')); ?></div>
-                <div class="text-lg mt-2"><?php echo e($event->start_date->format('l')); ?></div>
+                <div class="text-lg mt-2"><?php echo e($event->start_date->translatedFormat('l')); ?></div>
             </div>
 
             <!-- Contenu principal du header -->
@@ -23,9 +23,9 @@
                             <div class="flex items-center">
                                 <i class="fas fa-calendar-alt text-red-600 mr-3 w-5"></i>
                                 <span>
-                                    <?php echo e($event->start_date->format('D, d M Y')); ?> 
+                                    <?php echo e($event->start_date->translatedFormat('D, d M Y')); ?> 
                                     <?php if($event->end_date && $event->end_date->format('Y-m-d') !== $event->start_date->format('Y-m-d')): ?>
-                                        - <?php echo e($event->end_date->format('D, d M Y')); ?>
+                                        - <?php echo e($event->end_date->translatedFormat('D, d M Y')); ?>
 
                                     <?php endif; ?>
                                     (<?php echo e($event->start_date->format('H:i')); ?> - <?php echo e($event->end_date ? $event->end_date->format('H:i') : '23:59'); ?>)
@@ -202,10 +202,10 @@
                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div>
                             <p class="font-semibold">
-                                <?php echo e($event->start_date->format('l, d F Y')); ?>
+                                <?php echo e($event->start_date->translatedFormat('l, d F Y')); ?>
 
                                 <?php if($event->end_date && $event->end_date->format('Y-m-d') !== $event->start_date->format('Y-m-d')): ?>
-                                    - <?php echo e($event->end_date->format('l, d F Y')); ?>
+                                    - <?php echo e($event->end_date->translatedFormat('l, d F Y')); ?>
 
                                 <?php endif; ?>
                             </p>
