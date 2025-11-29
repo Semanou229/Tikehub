@@ -156,7 +156,7 @@
                                                 id="checkout-btn"
                                                 class="bg-red-600 text-white px-8 py-3 rounded-lg hover:bg-red-700 transition font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                                 disabled>
-                                            <i class="fas fa-shopping-cart mr-2"></i>Commander
+                                            <i class="fas fa-ticket-alt mr-2"></i>Réserver
                                         </button>
                                     </form>
                                 </div>
@@ -194,25 +194,25 @@
                                 $urgencyBadges = $ticketType->getUrgencyBadges();
                             @endphp
                             <div class="border border-gray-200 rounded-lg p-4 hover:border-red-500 transition relative">
-                                <!-- Badges d'urgence -->
-                                @if(count($urgencyBadges) > 0)
-                                    <div class="absolute top-2 right-2 flex flex-wrap gap-2">
-                                        @foreach($urgencyBadges as $badge)
-                                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold 
-                                                @if($badge['color'] === 'red') bg-red-100 text-red-700 border border-red-300
-                                                @elseif($badge['color'] === 'orange') bg-orange-100 text-orange-700 border border-orange-300
-                                                @else bg-yellow-100 text-yellow-700 border border-yellow-300
-                                                @endif
-                                                animate-pulse">
-                                                <i class="fas fa-{{ $badge['icon'] }}"></i>
-                                                {{ $badge['text'] }}
-                                            </span>
-                                        @endforeach
-                                    </div>
-                                @endif
-                                
                                 <div class="flex justify-between items-start">
-                                    <div class="flex-1 pr-24">
+                                    <div class="flex-1">
+                                        <!-- Badges d'urgence en haut à gauche -->
+                                        @if(count($urgencyBadges) > 0)
+                                            <div class="flex flex-wrap gap-2 mb-2">
+                                                @foreach($urgencyBadges as $badge)
+                                                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold 
+                                                        @if($badge['color'] === 'red') bg-red-100 text-red-700 border border-red-300
+                                                        @elseif($badge['color'] === 'orange') bg-orange-100 text-orange-700 border border-orange-300
+                                                        @else bg-yellow-100 text-yellow-700 border border-yellow-300
+                                                        @endif
+                                                        animate-pulse">
+                                                        <i class="fas fa-{{ $badge['icon'] }}"></i>
+                                                        {{ $badge['text'] }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                        
                                         <h3 class="font-semibold text-lg mb-1">{{ $ticketType->name }}</h3>
                                         @if($ticketType->description)
                                             <p class="text-gray-600 text-sm mb-2">{{ $ticketType->description }}</p>
