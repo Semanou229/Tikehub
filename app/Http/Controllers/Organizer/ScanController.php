@@ -67,8 +67,17 @@ class ScanController extends Controller
         }
 
         $request->validate([
-            'qr_token' => 'required|string',
+            'qr_token' => 'nullable|string',
+            'code' => 'nullable|string',
         ]);
+
+        // Vérifier qu'au moins un des deux est fourni
+        if (!$request->filled('qr_token') && !$request->filled('code')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Veuillez fournir un token QR ou un code de billet.',
+            ], 400);
+        }
 
         $ipAddress = $request->ip();
         $userAgent = $request->userAgent();
@@ -86,8 +95,35 @@ class ScanController extends Controller
         }
         Cache::put($rateLimitKey, $attempts + 1, 60);
 
-        // Validation du token QR
-        $ticket = $this->qrCodeService->validateToken($request->qr_token);
+        // Trouver le billet soit par token QR soit par code
+        $ticket = null;
+        
+        if ($request->filled('qr_token')) {
+            // Validation du token QR
+            $ticket = $this->qrCodeService->validateToken($request->qr_token);
+            if (!$ticket) {
+                $this->logFailedScan(null, $event->id, 'Token QR invalide ou expiré', $ipAddress, $userAgent);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Token QR invalide ou expiré.',
+                    'fraud_detected' => true,
+                ], 400);
+            }
+        } elseif ($request->filled('code')) {
+            // Recherche par code unique
+            $ticket = Ticket::where('code', strtoupper(trim($request->code)))
+                ->where('event_id', $event->id)
+                ->first();
+            
+            if (!$ticket) {
+                $this->logFailedScan(null, $event->id, 'Code billet invalide', $ipAddress, $userAgent);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Code de billet invalide ou introuvable.',
+                    'fraud_detected' => true,
+                ], 404);
+            }
+        }
 
         if (!$ticket) {
             $this->logFailedScan(null, $event->id, 'Token invalide ou expiré', $ipAddress, $userAgent);
@@ -207,13 +243,13 @@ class ScanController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Billet scanné avec succès.',
+            'message' => 'Billet validé avec succès.',
             'ticket' => [
                 'id' => $ticket->id,
                 'code' => $ticket->code,
                 'buyer' => $ticket->buyer->name ?? $ticket->buyer_name ?? 'N/A',
                 'type' => $ticket->ticketType->name ?? 'N/A',
-                'price' => $ticket->price,
+                'price' => number_format($ticket->price, 0, ',', ' '),
             ],
             'scan' => [
                 'id' => $scan->id,

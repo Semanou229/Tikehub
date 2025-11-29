@@ -72,13 +72,28 @@
 
         <!-- Saisie manuelle -->
         <div id="manualSection" class="mb-4">
+            <div class="mb-4">
+                <div class="flex gap-2 mb-2">
+                    <button type="button" onclick="switchInputMode('code')" id="codeModeBtn" class="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm">
+                        <i class="fas fa-barcode mr-1"></i>Code billet
+                    </button>
+                    <button type="button" onclick="switchInputMode('token')" id="tokenModeBtn" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm">
+                        <i class="fas fa-key mr-1"></i>Token QR
+                    </button>
+                </div>
+            </div>
             <form id="scanForm" class="flex gap-4">
                 @csrf
-                <input type="text" id="qrToken" placeholder="Collez le token QR code ici" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono text-sm">
+                <input type="text" id="codeInput" placeholder="Entrez le code du billet (ex: ABC123XYZ456)" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono text-sm uppercase" style="text-transform: uppercase;">
+                <input type="text" id="qrTokenInput" placeholder="Collez le token QR code ici" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono text-sm hidden">
                 <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
-                    <i class="fas fa-qrcode mr-2"></i>Valider
+                    <i class="fas fa-check mr-2"></i>Valider
                 </button>
             </form>
+            <p class="text-xs text-gray-500 mt-2">
+                <i class="fas fa-info-circle mr-1"></i>
+                <span id="inputHint">Entrez le code unique du billet (12 caractères alphanumériques)</span>
+            </p>
         </div>
 
         <!-- Résultat du scan -->
@@ -233,12 +248,17 @@ function stopCamera() {
     }
 }
 
-// Gestion du scan
+// Gestion du scan depuis la caméra
 async function handleScan(qrToken) {
     if (!qrToken) return;
     
     stopCamera();
     
+    await handleScanManual({ qr_token: qrToken });
+}
+
+// Gestion du scan manuel (code ou token)
+async function handleScanManual(scanData) {
     const resultDiv = document.getElementById('scanResult');
     resultDiv.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin text-2xl text-indigo-600"></i><p class="mt-2">Validation en cours...</p></div>';
     
@@ -249,7 +269,7 @@ async function handleScan(qrToken) {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({ qr_token: qrToken })
+            body: JSON.stringify(scanData)
         });
         
         const data = await response.json();
@@ -261,7 +281,7 @@ async function handleScan(qrToken) {
             showResult('error', data.message, data.ticket, null, data.fraud_detected);
         }
     } catch (error) {
-        showResult('error', 'Erreur lors du scan. Veuillez réessayer.');
+        showResult('error', 'Erreur lors de la validation. Veuillez réessayer.');
     }
 }
 
@@ -282,10 +302,10 @@ function showResult(type, message, ticket = null, scan = null, fraudDetected = f
                 ${ticket ? `
                     <div class="bg-white rounded p-3 mt-3">
                         <div class="grid grid-cols-2 gap-2 text-sm">
-                            <div><strong>Code:</strong> #${ticket.code}</div>
-                            <div><strong>Type:</strong> ${ticket.type}</div>
-                            <div><strong>Acheteur:</strong> ${ticket.buyer}</div>
-                            <div><strong>Prix:</strong> ${ticket.price} XOF</div>
+                            <div><strong>Code:</strong> <span class="font-mono">${ticket.code || 'N/A'}</span></div>
+                            <div><strong>Type:</strong> ${ticket.type || 'N/A'}</div>
+                            <div><strong>Acheteur:</strong> ${ticket.buyer || 'N/A'}</div>
+                            <div><strong>Prix:</strong> ${ticket.price ? ticket.price + ' XOF' : 'N/A'}</div>
                         </div>
                         ${scan ? `<div class="mt-2 text-xs text-gray-600">Scanné le ${scan.scanned_at}</div>` : ''}
                     </div>
@@ -305,8 +325,8 @@ function showResult(type, message, ticket = null, scan = null, fraudDetected = f
                 ${ticket ? `
                     <div class="bg-white rounded p-3 mt-3">
                         <div class="text-sm">
-                            <div><strong>Billet:</strong> #${ticket.code || ticket.id}</div>
-                            ${ticket.scanned_at ? `<div class="mt-1 text-xs text-gray-600">Déjà scanné le ${ticket.scanned_at} par ${ticket.scanned_by || 'N/A'}</div>` : ''}
+                            <div><strong>Billet:</strong> <span class="font-mono">${ticket.code || ticket.id}</span></div>
+                            ${ticket.scanned_at ? `<div class="mt-1 text-xs text-gray-600">Déjà scanné le ${ticket.scanned_at}${ticket.scanned_by ? ' par ' + ticket.scanned_by : ''}</div>` : ''}
                         </div>
                     </div>
                 ` : ''}
@@ -317,16 +337,62 @@ function showResult(type, message, ticket = null, scan = null, fraudDetected = f
     resultDiv.innerHTML = html;
 }
 
+// Mode de saisie (code ou token)
+let inputMode = 'code';
+
+function switchInputMode(mode) {
+    inputMode = mode;
+    const codeInput = document.getElementById('codeInput');
+    const tokenInput = document.getElementById('qrTokenInput');
+    const codeBtn = document.getElementById('codeModeBtn');
+    const tokenBtn = document.getElementById('tokenModeBtn');
+    const hint = document.getElementById('inputHint');
+    
+    if (mode === 'code') {
+        codeInput.classList.remove('hidden');
+        tokenInput.classList.add('hidden');
+        codeBtn.classList.add('bg-indigo-600', 'text-white');
+        codeBtn.classList.remove('bg-gray-200', 'text-gray-700');
+        tokenBtn.classList.remove('bg-indigo-600', 'text-white');
+        tokenBtn.classList.add('bg-gray-200', 'text-gray-700');
+        hint.textContent = 'Entrez le code unique du billet (12 caractères alphanumériques)';
+        codeInput.focus();
+    } else {
+        codeInput.classList.add('hidden');
+        tokenInput.classList.remove('hidden');
+        tokenBtn.classList.add('bg-indigo-600', 'text-white');
+        tokenBtn.classList.remove('bg-gray-200', 'text-gray-700');
+        codeBtn.classList.remove('bg-indigo-600', 'text-white');
+        codeBtn.classList.add('bg-gray-200', 'text-gray-700');
+        hint.textContent = 'Collez le token QR code complet ici';
+        tokenInput.focus();
+    }
+}
+
 // Formulaire de saisie manuelle
 document.getElementById('scanForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const qrToken = document.getElementById('qrToken').value.trim();
-    if (!qrToken) {
-        showResult('error', 'Veuillez entrer un token QR code.');
-        return;
+    let data = {};
+    
+    if (inputMode === 'code') {
+        const code = document.getElementById('codeInput').value.trim().toUpperCase();
+        if (!code) {
+            showResult('error', 'Veuillez entrer un code de billet.');
+            return;
+        }
+        data.code = code;
+        document.getElementById('codeInput').value = '';
+    } else {
+        const qrToken = document.getElementById('qrTokenInput').value.trim();
+        if (!qrToken) {
+            showResult('error', 'Veuillez entrer un token QR code.');
+            return;
+        }
+        data.qr_token = qrToken;
+        document.getElementById('qrTokenInput').value = '';
     }
-    await handleScan(qrToken);
-    document.getElementById('qrToken').value = '';
+    
+    await handleScanManual(data);
 });
 
 // Filtrage des scans
