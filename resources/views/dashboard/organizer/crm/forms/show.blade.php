@@ -74,7 +74,7 @@
                 <div>
                     <span class="text-sm text-gray-600">Lien public:</span>
                     <div class="mt-1 flex items-center gap-2">
-                        <input type="text" readonly value="{{ route('forms.show', $form->slug) }}" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm">
+                        <input type="text" readonly value="{{ url('/form/' . $form->slug) }}" id="formLink" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm">
                         <button onclick="copyLink()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition text-sm">
                             <i class="fas fa-copy"></i>
                         </button>
@@ -107,8 +107,9 @@
 @push('scripts')
 <script>
 function copyLink() {
-    const input = document.querySelector('input[readonly]');
+    const input = document.getElementById('formLink');
     input.select();
+    input.setSelectionRange(0, 99999); // Pour mobile
     document.execCommand('copy');
     alert('Lien copié dans le presse-papiers !');
 }
