@@ -23,7 +23,35 @@ class TicketController extends Controller
     public function index(Event $event)
     {
         $ticketTypes = $event->ticketTypes()->where('is_active', true)->get();
-        return view('tickets.index', compact('event', 'ticketTypes'));
+        
+        // Récupérer les tickets sélectionnés depuis la session si disponibles
+        $selectedTickets = session('checkout_tickets', []);
+        $checkoutEventId = session('checkout_event_id');
+        
+        // Nettoyer la session après récupération
+        if ($checkoutEventId == $event->id) {
+            session()->forget(['checkout_tickets', 'checkout_event_id']);
+        }
+        
+        return view('tickets.index', compact('event', 'ticketTypes', 'selectedTickets'));
+    }
+
+    public function checkout(Request $request, Event $event)
+    {
+        $request->validate([
+            'tickets' => 'required|string',
+        ]);
+
+        $ticketsData = json_decode($request->tickets, true);
+        
+        if (!is_array($ticketsData) || empty($ticketsData)) {
+            return redirect()->back()->with('error', 'Veuillez sélectionner au moins un billet.');
+        }
+
+        // Stocker les données dans la session pour le checkout
+        session(['checkout_tickets' => $ticketsData, 'checkout_event_id' => $event->id]);
+
+        return redirect()->route('tickets.index', $event);
     }
 
     public function purchase(Request $request)

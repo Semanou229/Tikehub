@@ -129,29 +129,62 @@
             <!-- Informations sur le billet -->
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-red-600">Informations sur le billet</h2>
-                <div class="flex items-center justify-between">
-                    <span class="font-semibold text-gray-700">Billets</span>
-                    @if($event->ticketTypes->count() > 0)
-                        @php
-                            $hasAvailableTickets = $event->ticketTypes->filter(function($type) {
-                                return $type->isOnSale();
-                            })->count() > 0;
-                        @endphp
-                        @if($hasAvailableTickets)
-                            <a href="{{ route('tickets.index', $event) }}" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition font-semibold">
+                
+                @if($event->ticketTypes->count() > 0)
+                    @php
+                        $hasAvailableTickets = $event->ticketTypes->filter(function($type) {
+                            return $type->isOnSale();
+                        })->count() > 0;
+                    @endphp
+                    @if($hasAvailableTickets && auth()->check())
+                        <!-- Panier flottant -->
+                        <div id="ticket-cart" class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-red-600 shadow-2xl z-50 transform translate-y-full transition-transform duration-300">
+                            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <div class="text-sm text-gray-600 mb-1">
+                                            <span id="cart-total-items">0</span> billet(s) sélectionné(s)
+                                        </div>
+                                        <div class="text-2xl font-bold text-red-600">
+                                            <span id="cart-total-price">0</span> XOF
+                                        </div>
+                                    </div>
+                                    <form id="checkout-form" method="POST" action="{{ route('tickets.checkout', $event) }}" class="ml-4">
+                                        @csrf
+                                        <input type="hidden" name="tickets" id="tickets-data">
+                                        <button type="submit" 
+                                                id="checkout-btn"
+                                                class="bg-red-600 text-white px-8 py-3 rounded-lg hover:bg-red-700 transition font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                                disabled>
+                                            <i class="fas fa-shopping-cart mr-2"></i>Commander
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @elseif($hasAvailableTickets && !auth()->check())
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-semibold text-gray-700">Billets</span>
+                            <a href="{{ route('login') }}" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition font-semibold">
                                 <i class="fas fa-ticket-alt mr-2"></i>Réserver maintenant
                             </a>
-                        @else
+                        </div>
+                    @else
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-semibold text-gray-700">Billets</span>
                             <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm">
                                 Réservation en ligne fermée
                             </span>
-                        @endif
-                    @else
+                        </div>
+                    @endif
+                @else
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-semibold text-gray-700">Billets</span>
                         <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm">
                             Aucun billet disponible
                         </span>
-                    @endif
-                </div>
+                    </div>
+                @endif
 
                 <!-- Liste des types de billets -->
                 @if($event->ticketTypes->count() > 0)
@@ -206,13 +239,41 @@
                                         </div>
                                     </div>
                                     <div class="text-right ml-4">
-                                        <div class="text-2xl font-bold text-red-600">
+                                        <div class="text-2xl font-bold text-red-600 mb-3">
                                             {{ number_format($ticketType->price, 0, ',', ' ') }} XOF
                                         </div>
-                                        @if($ticketType->isOnSale() && auth()->check())
-                                            <a href="{{ route('tickets.index', $event) }}" class="mt-2 inline-block bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
-                                                <i class="fas fa-shopping-cart mr-1"></i>Acheter
-                                            </a>
+                                        @if($ticketType->isOnSale())
+                                            @if(auth()->check())
+                                                <!-- Sélecteur de quantité -->
+                                                <div class="flex items-center justify-end gap-2 mb-2">
+                                                    <button type="button" 
+                                                            class="ticket-decrease bg-gray-200 hover:bg-gray-300 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed" 
+                                                            data-ticket-type-id="{{ $ticketType->id }}"
+                                                            data-price="{{ $ticketType->price }}"
+                                                            data-max="{{ $ticketType->available_quantity }}">
+                                                        <i class="fas fa-minus text-xs"></i>
+                                                    </button>
+                                                    <input type="number" 
+                                                           class="ticket-quantity w-12 text-center border border-gray-300 rounded py-1 text-sm font-semibold" 
+                                                           data-ticket-type-id="{{ $ticketType->id }}"
+                                                           data-price="{{ $ticketType->price }}"
+                                                           value="0" 
+                                                           min="0" 
+                                                           max="{{ $ticketType->available_quantity }}"
+                                                           readonly>
+                                                    <button type="button" 
+                                                            class="ticket-increase bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed" 
+                                                            data-ticket-type-id="{{ $ticketType->id }}"
+                                                            data-price="{{ $ticketType->price }}"
+                                                            data-max="{{ $ticketType->available_quantity }}">
+                                                        <i class="fas fa-plus text-xs"></i>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                <a href="{{ route('login') }}" class="mt-2 inline-block bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
+                                                    <i class="fas fa-shopping-cart mr-1"></i>Acheter
+                                                </a>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -459,6 +520,101 @@
 
 @push('scripts')
 <script>
+    // Gestion du panier de tickets
+    (function() {
+        let cart = {};
+        
+        function updateCart() {
+            let totalItems = 0;
+            let totalPrice = 0;
+            
+            Object.keys(cart).forEach(ticketTypeId => {
+                const quantity = parseInt(cart[ticketTypeId]) || 0;
+                if (quantity > 0) {
+                    totalItems += quantity;
+                    const input = document.querySelector(`[data-ticket-type-id="${ticketTypeId}"].ticket-quantity`);
+                    if (input) {
+                        const price = parseFloat(input.dataset.price);
+                        totalPrice += price * quantity;
+                    }
+                }
+            });
+            
+            // Mettre à jour l'affichage
+            const cartTotalItems = document.getElementById('cart-total-items');
+            const cartTotalPrice = document.getElementById('cart-total-price');
+            
+            if (cartTotalItems && cartTotalPrice) {
+                cartTotalItems.textContent = totalItems;
+                cartTotalPrice.textContent = totalPrice.toLocaleString('fr-FR');
+                
+                // Afficher/masquer le panier
+                const cartElement = document.getElementById('ticket-cart');
+                const checkoutBtn = document.getElementById('checkout-btn');
+                
+                if (totalItems > 0) {
+                    cartElement.classList.remove('translate-y-full');
+                    checkoutBtn.disabled = false;
+                    
+                    // Préparer les données pour le formulaire
+                    const ticketsData = Object.keys(cart).map(ticketTypeId => ({
+                        ticket_type_id: ticketTypeId,
+                        quantity: cart[ticketTypeId]
+                    })).filter(item => item.quantity > 0);
+                    
+                    document.getElementById('tickets-data').value = JSON.stringify(ticketsData);
+                } else {
+                    cartElement.classList.add('translate-y-full');
+                    checkoutBtn.disabled = true;
+                }
+            }
+        }
+        
+        function updateQuantity(ticketTypeId, change) {
+            const input = document.querySelector(`[data-ticket-type-id="${ticketTypeId}"].ticket-quantity`);
+            if (!input) return;
+            
+            const max = parseInt(input.getAttribute('max')) || 0;
+            const current = parseInt(cart[ticketTypeId] || 0);
+            const newQuantity = Math.max(0, Math.min(max, current + change));
+            
+            cart[ticketTypeId] = newQuantity;
+            input.value = newQuantity;
+            
+            // Mettre à jour l'état des boutons
+            const decreaseBtn = document.querySelector(`[data-ticket-type-id="${ticketTypeId}"].ticket-decrease`);
+            const increaseBtn = document.querySelector(`[data-ticket-type-id="${ticketTypeId}"].ticket-increase`);
+            
+            if (decreaseBtn) decreaseBtn.disabled = newQuantity === 0;
+            if (increaseBtn) increaseBtn.disabled = newQuantity >= max;
+            
+            updateCart();
+        }
+        
+        // Écouter les clics sur les boutons + et -
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.ticket-increase')) {
+                const btn = e.target.closest('.ticket-increase');
+                const ticketTypeId = btn.dataset.ticketTypeId;
+                updateQuantity(ticketTypeId, 1);
+            } else if (e.target.closest('.ticket-decrease')) {
+                const btn = e.target.closest('.ticket-decrease');
+                const ticketTypeId = btn.dataset.ticketTypeId;
+                updateQuantity(ticketTypeId, -1);
+            }
+        });
+        
+        // Initialiser l'état des boutons au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.ticket-quantity').forEach(input => {
+                const ticketTypeId = input.dataset.ticketTypeId;
+                cart[ticketTypeId] = 0;
+                const decreaseBtn = document.querySelector(`[data-ticket-type-id="${ticketTypeId}"].ticket-decrease`);
+                if (decreaseBtn) decreaseBtn.disabled = true;
+            });
+        });
+    })();
+    
     // Système de notation avec étoiles
     const stars = document.querySelectorAll('#rating-stars button');
     const ratingInput = document.getElementById('rating-value');
