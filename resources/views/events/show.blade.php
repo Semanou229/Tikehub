@@ -400,26 +400,87 @@
                             <p class="text-sm text-gray-500">ORGANISATEUR</p>
                         </div>
                     </div>
-                    @if($event->organizer->phone || $event->organizer->email)
-                        <div class="space-y-2 mb-4">
-                            @if($event->organizer->phone)
-                                <div class="flex items-center text-sm text-gray-700">
-                                    <i class="fas fa-phone text-red-600 mr-2 w-5"></i>
-                                    <span>{{ $event->organizer->phone }}</span>
-                                </div>
-                            @endif
-                            @if($event->organizer->email)
-                                <div class="flex items-center text-sm text-gray-700">
-                                    <i class="fas fa-envelope text-red-600 mr-2 w-5"></i>
-                                    <span>{{ $event->organizer->email }}</span>
-                                </div>
-                            @endif
+                    
+                    <!-- Réseaux sociaux -->
+                    @php
+                        $socialNetworks = [
+                            'facebook' => ['url' => $event->organizer->facebook_url, 'icon' => 'fab fa-facebook-f', 'color' => 'text-blue-600'],
+                            'twitter' => ['url' => $event->organizer->twitter_url, 'icon' => 'fab fa-twitter', 'color' => 'text-blue-400'],
+                            'instagram' => ['url' => $event->organizer->instagram_url, 'icon' => 'fab fa-instagram', 'color' => 'text-pink-600'],
+                            'linkedin' => ['url' => $event->organizer->linkedin_url, 'icon' => 'fab fa-linkedin-in', 'color' => 'text-blue-700'],
+                            'youtube' => ['url' => $event->organizer->youtube_url, 'icon' => 'fab fa-youtube', 'color' => 'text-red-600'],
+                            'website' => ['url' => $event->organizer->website_url, 'icon' => 'fas fa-globe', 'color' => 'text-gray-600'],
+                        ];
+                        $hasSocialNetworks = collect($socialNetworks)->filter(fn($network) => !empty($network['url']))->isNotEmpty();
+                    @endphp
+                    
+                    @if($hasSocialNetworks)
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            @foreach($socialNetworks as $name => $network)
+                                @if(!empty($network['url']))
+                                    <a href="{{ $network['url'] }}" target="_blank" rel="noopener noreferrer" 
+                                       class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition {{ $network['color'] }}"
+                                       title="{{ ucfirst($name) }}">
+                                        <i class="{{ $network['icon'] }}"></i>
+                                    </a>
+                                @endif
+                            @endforeach
                         </div>
                     @endif
-                    <button onclick="contactOrganizer()" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-2">
+                    
+                    @if($event->organizer->phone)
+                        <div class="mb-4">
+                            <div class="flex items-center text-sm text-gray-700">
+                                <i class="fas fa-phone text-red-600 mr-2 w-5"></i>
+                                <span>{{ $event->organizer->phone }}</span>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <button onclick="contactOrganizer('{{ $event->organizer->email }}')" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-2">
                         <i class="fas fa-envelope"></i>
                         <span>Envoyer un message</span>
                     </button>
+                    
+                    <!-- Modal pour afficher l'email -->
+                    <div id="contactModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold">Contacter l'organisateur</h3>
+                                <button onclick="closeContactModal()" class="text-gray-500 hover:text-gray-700">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Email de l'organisateur</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="email" id="organizer-email" readonly 
+                                               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                                        <button onclick="copyEmail()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Votre message</label>
+                                    <textarea id="contact-message" rows="4" 
+                                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                              placeholder="Écrivez votre message ici..."></textarea>
+                                </div>
+                                <div class="flex gap-2">
+                                    <a id="mailto-link" href="#" 
+                                       class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-center">
+                                        <i class="fas fa-envelope mr-2"></i>Ouvrir dans votre client email
+                                    </a>
+                                    <button onclick="closeContactModal()" 
+                                            class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                        Annuler
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

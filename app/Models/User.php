@@ -29,6 +29,12 @@ class User extends Authenticatable
         'team_role',
         'team_permissions',
         'is_active',
+        'facebook_url',
+        'twitter_url',
+        'instagram_url',
+        'linkedin_url',
+        'youtube_url',
+        'website_url',
     ];
 
     protected $hidden = [
