@@ -83,19 +83,17 @@
         <form action="{{ route('organizer.events.collaborators.store', $event) }}" method="POST">
             @csrf
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                 <!-- Membres d'équipe -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Membres d'équipe</label>
                     @if($teamMembers->count() > 0)
-                        <select name="collaborator_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <select id="team_member_select" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                             <option value="">Sélectionner un membre d'équipe</option>
                             @foreach($teamMembers as $member)
-                                @if(!$assignedCollaborators->contains('id', $member->id))
-                                    <option value="{{ $member->id }}" data-type="team_member">
-                                        {{ $member->name }} ({{ $member->email }}) - {{ $member->team->name ?? 'N/A' }}
-                                    </option>
-                                @endif
+                                <option value="{{ $member->id }}" data-type="team_member">
+                                    {{ $member->name }} ({{ $member->email }}) - {{ $member->team->name ?? 'N/A' }}
+                                </option>
                             @endforeach
                         </select>
                     @else
@@ -107,7 +105,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Agents</label>
                     @if($availableAgents->count() > 0)
-                        <select name="collaborator_id_agent" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <select id="agent_select" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                             <option value="">Sélectionner un agent</option>
                             @foreach($availableAgents as $agent)
                                 <option value="{{ $agent->id }}" data-type="agent">
@@ -122,7 +120,7 @@
             </div>
 
             <input type="hidden" name="type" id="collaborator_type" value="team_member">
-            <input type="hidden" name="collaborator_id" id="collaborator_id_input">
+            <input type="hidden" name="collaborator_id" id="collaborator_id_input" required>
 
             <div class="mt-6">
                 <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
@@ -136,8 +134,8 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const teamMemberSelect = document.querySelector('select[name="collaborator_id"]');
-    const agentSelect = document.querySelector('select[name="collaborator_id_agent"]');
+    const teamMemberSelect = document.getElementById('team_member_select');
+    const agentSelect = document.getElementById('agent_select');
     const typeInput = document.getElementById('collaborator_type');
     const collaboratorIdInput = document.getElementById('collaborator_id_input');
 
@@ -150,6 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
             collaboratorIdInput.value = agentSelect.value;
             typeInput.value = 'agent';
             if (teamMemberSelect) teamMemberSelect.value = '';
+        } else {
+            collaboratorIdInput.value = '';
         }
     }
 
@@ -159,6 +159,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (agentSelect) {
         agentSelect.addEventListener('change', updateForm);
     }
+
+    // Validation du formulaire
+    document.querySelector('form').addEventListener('submit', function(e) {
+        if (!collaboratorIdInput.value) {
+            e.preventDefault();
+            alert('Veuillez sélectionner un collaborateur.');
+            return false;
+        }
+    });
 });
 </script>
 @endpush
