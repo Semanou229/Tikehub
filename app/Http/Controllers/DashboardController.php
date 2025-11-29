@@ -31,14 +31,7 @@ class DashboardController extends Controller
 
     protected function adminDashboard()
     {
-        $stats = [
-            'total_events' => Event::count(),
-            'total_users' => \App\Models\User::count(),
-            'total_revenue' => Payment::where('status', 'completed')->sum('platform_commission'),
-            'pending_kyc' => \App\Models\User::where('kyc_status', 'pending')->count(),
-        ];
-
-        return view('dashboard.admin', compact('stats'));
+        return redirect()->route('admin.dashboard');
     }
 
     protected function organizerDashboard()

@@ -29,6 +29,47 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Routes Admin
+    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+        
+        // Gestion des événements
+        Route::get('/events', [\App\Http\Controllers\Admin\EventController::class, 'index'])->name('events.index');
+        Route::get('/events/{event}', [\App\Http\Controllers\Admin\EventController::class, 'show'])->name('events.show');
+        Route::post('/events/{event}/approve', [\App\Http\Controllers\Admin\EventController::class, 'approve'])->name('events.approve');
+        Route::post('/events/{event}/reject', [\App\Http\Controllers\Admin\EventController::class, 'reject'])->name('events.reject');
+        Route::post('/events/{event}/suspend', [\App\Http\Controllers\Admin\EventController::class, 'suspend'])->name('events.suspend');
+        
+        // Gestion des utilisateurs
+        Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+        Route::get('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('users.show');
+        Route::put('/users/{user}/role', [\App\Http\Controllers\Admin\UserController::class, 'updateRole'])->name('users.updateRole');
+        Route::post('/users/{user}/toggle-status', [\App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggleStatus');
+        Route::put('/users/{user}/reset-password', [\App\Http\Controllers\Admin\UserController::class, 'resetPassword'])->name('users.resetPassword');
+        
+        // Gestion KYC
+        Route::get('/kyc', [\App\Http\Controllers\Admin\KycController::class, 'index'])->name('kyc.index');
+        Route::get('/kyc/{user}', [\App\Http\Controllers\Admin\KycController::class, 'show'])->name('kyc.show');
+        Route::post('/kyc/{user}/approve', [\App\Http\Controllers\Admin\KycController::class, 'approve'])->name('kyc.approve');
+        Route::post('/kyc/{user}/reject', [\App\Http\Controllers\Admin\KycController::class, 'reject'])->name('kyc.reject');
+        
+        // Gestion des paiements
+        Route::get('/payments', [\App\Http\Controllers\Admin\PaymentController::class, 'index'])->name('payments.index');
+        Route::get('/payments/{payment}', [\App\Http\Controllers\Admin\PaymentController::class, 'show'])->name('payments.show');
+        
+        // Gestion des concours
+        Route::get('/contests', [\App\Http\Controllers\Admin\ContestController::class, 'index'])->name('contests.index');
+        Route::get('/contests/{contest}', [\App\Http\Controllers\Admin\ContestController::class, 'show'])->name('contests.show');
+        
+        // Gestion des collectes
+        Route::get('/fundraisings', [\App\Http\Controllers\Admin\FundraisingController::class, 'index'])->name('fundraisings.index');
+        Route::get('/fundraisings/{fundraising}', [\App\Http\Controllers\Admin\FundraisingController::class, 'show'])->name('fundraisings.show');
+        
+        // Paramètres
+        Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');
+        Route::put('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
+    });
+
     // Événements (création, édition, publication - nécessitent auth)
     // Route explicite pour create AVANT les routes avec paramètres pour éviter les conflits
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
