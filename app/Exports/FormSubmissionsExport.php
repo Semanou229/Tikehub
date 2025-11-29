@@ -90,12 +90,15 @@ class FormSubmissionsExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             1 => [
-                'font' => ['bold' => true, 'size' => 12],
+                'font' => [
+                    'bold' => true,
+                    'size' => 12,
+                    'color' => ['rgb' => 'FFFFFF']
+                ],
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => ['rgb' => '4472C4']
                 ],
-                'font' => ['color' => ['rgb' => 'FFFFFF']],
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
                     'vertical' => Alignment::VERTICAL_CENTER,
