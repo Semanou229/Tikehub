@@ -37,7 +37,7 @@ class EventController extends Controller
                 $query->where('is_free', $request->input('free') === 'true');
             }
 
-            $events = $query->orderBy('start_date', 'desc')->paginate(12);
+            $events = $query->with('organizer')->orderBy('start_date', 'desc')->paginate(12);
 
             return view('events.index', compact('events'));
         } catch (\Exception $e) {
@@ -45,6 +45,7 @@ class EventController extends Controller
             \Log::error($e->getTraceAsString());
             $events = Event::where('is_published', true)
                 ->where('status', 'published')
+                ->with('organizer')
                 ->orderBy('start_date', 'desc')
                 ->paginate(12);
             return view('events.index', compact('events'));

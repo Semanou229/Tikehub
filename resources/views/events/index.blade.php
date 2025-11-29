@@ -44,6 +44,15 @@
                             {{ $event->venue_city }}
                         </div>
                     @endif
+                    @if($event->organizer)
+                        <div class="flex items-center text-sm text-gray-600 mb-2">
+                            <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
+                            <span>Par</span>
+                            <a href="{{ route('organizer.profile.show', $event->organizer) }}" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline">
+                                {{ $event->organizer->name }}
+                            </a>
+                        </div>
+                    @endif
                     @php
                         $minPrice = $event->ticketTypes()->where('is_active', true)->min('price') ?? 0;
                     @endphp

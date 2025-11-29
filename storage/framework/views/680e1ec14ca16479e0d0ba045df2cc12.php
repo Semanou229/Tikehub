@@ -117,11 +117,18 @@
                                 <?php echo e($event->category); ?>
 
                             </span>
-                            <?php if($event->is_free): ?>
-                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
-                                    Gratuit
-                                </span>
-                            <?php endif; ?>
+                            <div class="flex gap-2">
+                                <?php if($event->is_virtual): ?>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                        <i class="fas fa-video mr-1"></i>Virtuel
+                                    </span>
+                                <?php endif; ?>
+                                <?php if($event->is_free): ?>
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                        Gratuit
+                                    </span>
+                                <?php endif; ?>
+                            </div>
                         </div>
                         <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition"><?php echo e($event->title); ?></h3>
                         <p class="text-gray-600 text-sm mb-4 line-clamp-2"><?php echo e(\Illuminate\Support\Str::limit($event->description, 100)); ?></p>
@@ -170,9 +177,16 @@
                             <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">
                                 <i class="fas fa-fire mr-1"></i> Populaire
                             </span>
-                            <span class="text-sm text-gray-500">
-                                <?php echo e($event->tickets_count); ?> billet(s) vendu(s)
-                            </span>
+                            <div class="flex items-center gap-2">
+                                <?php if($event->is_virtual): ?>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                        <i class="fas fa-video mr-1"></i>Virtuel
+                                    </span>
+                                <?php endif; ?>
+                                <span class="text-sm text-gray-500">
+                                    <?php echo e($event->tickets_count); ?> billet(s) vendu(s)
+                                </span>
+                            </div>
                         </div>
                         <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition"><?php echo e($event->title); ?></h3>
                         <p class="text-gray-600 text-sm mb-2 line-clamp-2"><?php echo e(\Illuminate\Support\Str::limit($event->description, 100)); ?></p>
@@ -185,6 +199,16 @@
                                 <span><?php echo e($event->venue_city); ?></span>
                             <?php endif; ?>
                         </div>
+                        <?php if($event->organizer): ?>
+                            <div class="flex items-center text-sm text-gray-600 mb-2">
+                                <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
+                                <span>Par</span>
+                                <a href="<?php echo e(route('organizer.profile.show', $event->organizer)); ?>" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline">
+                                    <?php echo e($event->organizer->name); ?>
+
+                                </a>
+                            </div>
+                        <?php endif; ?>
                         <?php
                             $minPrice = $event->ticketTypes()->where('is_active', true)->min('price') ?? 0;
                         ?>

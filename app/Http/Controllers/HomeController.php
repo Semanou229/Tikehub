@@ -15,6 +15,7 @@ class HomeController extends Controller
         $upcomingEvents = Event::where('is_published', true)
             ->where('status', 'published')
             ->where('start_date', '>=', now())
+            ->with('organizer')
             ->orderBy('start_date', 'asc')
             ->take(6)
             ->get();
@@ -23,6 +24,7 @@ class HomeController extends Controller
         // Si pas assez d'événements à venir, afficher tous les événements publiés
         $popularEvents = Event::where('is_published', true)
             ->where('status', 'published')
+            ->with('organizer')
             ->withCount('tickets')
             ->orderBy('tickets_count', 'desc')
             ->orderBy('start_date', 'desc')
