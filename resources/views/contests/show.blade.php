@@ -9,9 +9,9 @@
         <div class="flex flex-col md:flex-row">
             <!-- Date Box (Rouge) -->
             <div class="bg-purple-600 text-white p-6 text-center min-w-[120px] flex flex-col justify-center items-center">
-                <div class="text-2xl font-bold uppercase">{{ $contest->start_date->format('M') }}</div>
+                <div class="text-2xl font-bold uppercase">{{ $contest->start_date->translatedFormat('M') }}</div>
                 <div class="text-5xl font-bold">{{ $contest->start_date->format('d') }}</div>
-                <div class="text-lg mt-2">{{ $contest->start_date->format('l') }}</div>
+                <div class="text-lg mt-2">{{ $contest->start_date->translatedFormat('l') }}</div>
             </div>
 
             <!-- Contenu principal du header -->
@@ -35,8 +35,8 @@
                             <div class="flex items-center">
                                 <i class="fas fa-calendar-alt text-purple-600 mr-3 w-5"></i>
                                 <span>
-                                    Du {{ $contest->start_date->format('D, d M Y') }} 
-                                    au {{ $contest->end_date->format('D, d M Y') }}
+                                    Du {{ $contest->start_date->translatedFormat('D, d M Y') }} 
+                                    au {{ $contest->end_date->translatedFormat('D, d M Y') }}
                                 </span>
                             </div>
                             <div class="flex items-center">
@@ -233,8 +233,8 @@
                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div>
                             <p class="font-semibold">
-                                Du {{ $contest->start_date->format('l, d F Y') }} 
-                                au {{ $contest->end_date->format('l, d F Y') }}
+                                Du {{ $contest->start_date->translatedFormat('l, d F Y') }} 
+                                au {{ $contest->end_date->translatedFormat('l, d F Y') }}
                             </p>
                             <p class="text-sm text-gray-600 mt-1">
                                 Période de vote active

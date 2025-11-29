@@ -46,11 +46,25 @@ endif;
 unset($__errorArgs, $__bag); ?>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie *</label>
-                                <input type="text" name="category" value="<?php echo e(old('category')); ?>" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Musique, Sport, Culture">
-                                <?php $__errorArgs = ['category'];
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie *</label>
+                            <select name="category" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">Sélectionner une catégorie</option>
+                                <option value="Musique" <?php echo e(old('category') == 'Musique' ? 'selected' : ''); ?>>Musique</option>
+                                <option value="Sport" <?php echo e(old('category') == 'Sport' ? 'selected' : ''); ?>>Sport</option>
+                                <option value="Culture" <?php echo e(old('category') == 'Culture' ? 'selected' : ''); ?>>Culture</option>
+                                <option value="Art" <?php echo e(old('category') == 'Art' ? 'selected' : ''); ?>>Art</option>
+                                <option value="Business" <?php echo e(old('category') == 'Business' ? 'selected' : ''); ?>>Business</option>
+                                <option value="Éducation" <?php echo e(old('category') == 'Éducation' ? 'selected' : ''); ?>>Éducation</option>
+                                <option value="Santé" <?php echo e(old('category') == 'Santé' ? 'selected' : ''); ?>>Santé</option>
+                                <option value="Technologie" <?php echo e(old('category') == 'Technologie' ? 'selected' : ''); ?>>Technologie</option>
+                                <option value="Gastronomie" <?php echo e(old('category') == 'Gastronomie' ? 'selected' : ''); ?>>Gastronomie</option>
+                                <option value="Divertissement" <?php echo e(old('category') == 'Divertissement' ? 'selected' : ''); ?>>Divertissement</option>
+                                <option value="Famille" <?php echo e(old('category') == 'Famille' ? 'selected' : ''); ?>>Famille</option>
+                                <option value="Mode" <?php echo e(old('category') == 'Mode' ? 'selected' : ''); ?>>Mode</option>
+                                <option value="Autre" <?php echo e(old('category') == 'Autre' ? 'selected' : ''); ?>>Autre</option>
+                            </select>
+                            <?php $__errorArgs = ['category'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -58,27 +72,6 @@ $message = $__bag->first($__errorArgs[0]); ?><p class="text-red-500 text-sm mt-1
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Type d'événement *</label>
-                                <select name="type" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option value="">Sélectionner un type</option>
-                                    <option value="concert" <?php echo e(old('type') == 'concert' ? 'selected' : ''); ?>>Concert</option>
-                                    <option value="competition" <?php echo e(old('type') == 'competition' ? 'selected' : ''); ?>>Compétition</option>
-                                    <option value="fundraising" <?php echo e(old('type') == 'fundraising' ? 'selected' : ''); ?>>Collecte de fonds</option>
-                                    <option value="contest" <?php echo e(old('type') == 'contest' ? 'selected' : ''); ?>>Concours</option>
-                                    <option value="other" <?php echo e(old('type') == 'other' ? 'selected' : ''); ?>>Autre</option>
-                                </select>
-                                <?php $__errorArgs = ['type'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p><?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                            </div>
                         </div>
 
                         <div>
@@ -135,7 +128,7 @@ unset($__errorArgs, $__bag); ?>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nom du lieu</label>
-                            <input type="text" name="venue_name" value="<?php echo e(old('venue_name')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Stade de l'Amitié">
+                            <input type="text" name="venue_name" id="venue_name" value="<?php echo e(old('venue_name')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Stade de l'Amitié">
                             <?php $__errorArgs = ['venue_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -148,7 +141,7 @@ unset($__errorArgs, $__bag); ?>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-                            <input type="text" name="venue_address" value="<?php echo e(old('venue_address')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Rue 123, Quartier...">
+                            <input type="text" name="venue_address" id="venue_address" value="<?php echo e(old('venue_address')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Rue 123, Quartier...">
                             <?php $__errorArgs = ['venue_address'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -162,7 +155,7 @@ unset($__errorArgs, $__bag); ?>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Ville</label>
-                                <input type="text" name="venue_city" value="<?php echo e(old('venue_city')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Cotonou">
+                                <input type="text" name="venue_city" id="venue_city" value="<?php echo e(old('venue_city')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Cotonou">
                                 <?php $__errorArgs = ['venue_city'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -175,7 +168,7 @@ unset($__errorArgs, $__bag); ?>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Pays</label>
-                                <input type="text" name="venue_country" value="<?php echo e(old('venue_country')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Bénin">
+                                <input type="text" name="venue_country" id="venue_country" value="<?php echo e(old('venue_country')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Bénin">
                                 <?php $__errorArgs = ['venue_country'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -185,6 +178,31 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                             </div>
+                        </div>
+
+                        <!-- Carte OpenStreetMap -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Localisation sur la carte *</label>
+                            <div id="map" class="w-full h-64 rounded-lg border border-gray-300"></div>
+                            <p class="text-sm text-gray-500 mt-2">Cliquez sur la carte pour définir l'emplacement exact</p>
+                            <input type="hidden" name="venue_latitude" id="venue_latitude" value="<?php echo e(old('venue_latitude')); ?>" required>
+                            <input type="hidden" name="venue_longitude" id="venue_longitude" value="<?php echo e(old('venue_longitude')); ?>" required>
+                            <?php $__errorArgs = ['venue_latitude'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                            <?php $__errorArgs = ['venue_longitude'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </div>
@@ -212,6 +230,75 @@ unset($__errorArgs, $__bag); ?>
         </div>
     </div>
 </div>
+
+<?php $__env->startPush('styles'); ?>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    #map { z-index: 0; }
+</style>
+<?php $__env->stopPush(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // Initialiser la carte OpenStreetMap
+    let map = L.map('map').setView([6.4969, 2.6283], 13); // Cotonou par défaut
+    
+    // Ajouter la couche de tuiles OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
+    
+    let marker = null;
+    
+    // Gérer le clic sur la carte
+    map.on('click', function(e) {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+        
+        // Mettre à jour les champs cachés
+        document.getElementById('venue_latitude').value = lat;
+        document.getElementById('venue_longitude').value = lng;
+        
+        // Supprimer l'ancien marqueur s'il existe
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        
+        // Ajouter un nouveau marqueur
+        marker = L.marker([lat, lng]).addTo(map);
+        
+        // Faire un reverse geocoding pour remplir l'adresse
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.address) {
+                    if (data.address.road && !document.getElementById('venue_address').value) {
+                        document.getElementById('venue_address').value = data.address.road;
+                    }
+                    if (data.address.city && !document.getElementById('venue_city').value) {
+                        document.getElementById('venue_city').value = data.address.city;
+                    } else if (data.address.town && !document.getElementById('venue_city').value) {
+                        document.getElementById('venue_city').value = data.address.town;
+                    }
+                    if (data.address.country && !document.getElementById('venue_country').value) {
+                        document.getElementById('venue_country').value = data.address.country;
+                    }
+                }
+            })
+            .catch(err => console.error('Erreur de géocodage:', err));
+    });
+    
+    // Si des coordonnées existent déjà (en cas d'erreur de validation)
+    const existingLat = document.getElementById('venue_latitude').value;
+    const existingLng = document.getElementById('venue_longitude').value;
+    if (existingLat && existingLng) {
+        map.setView([existingLat, existingLng], 13);
+        marker = L.marker([existingLat, existingLng]).addTo(map);
+    }
+</script>
+<?php $__env->stopPush(); ?>
 <?php $__env->stopSection(); ?>
 
 
