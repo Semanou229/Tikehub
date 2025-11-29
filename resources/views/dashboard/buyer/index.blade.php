@@ -178,7 +178,7 @@
             <div class="text-center py-12">
                 <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
                 <p class="text-gray-500 mb-4">Aucun événement à venir</p>
-                <a href="{{ route('events.index') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
+                <a href="{{ route('home') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
                     <i class="fas fa-search mr-2"></i>Découvrir des événements
                 </a>
             </div>
