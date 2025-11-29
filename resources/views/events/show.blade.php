@@ -369,7 +369,6 @@
 </div>
 
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
-@push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
     #eventMap {
@@ -390,8 +389,11 @@
         max-width: none !important;
         max-height: none !important;
     }
+    .leaflet-tile {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
 </style>
-@endpush
 @endif
 
 @push('scripts')
@@ -466,43 +468,32 @@
     }
 </script>
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
+@push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    window.addEventListener('load', function() {
-        setTimeout(function() {
-            initEventMap();
-        }, 500);
-    });
-    
-    function initEventMap() {
-        const mapContainer = document.getElementById('eventMap');
-        if (!mapContainer) {
-            console.error('Conteneur de carte non trouvé');
-            return;
-        }
-        
-        // Vérifier que Leaflet est chargé
+(function() {
+    function initMap() {
         if (typeof L === 'undefined') {
-            console.error('Leaflet n\'est pas chargé');
-            setTimeout(initEventMap, 200);
+            console.log('Attente de Leaflet...');
+            setTimeout(initMap, 200);
             return;
         }
         
-        // Vérifier que le conteneur est visible
-        const rect = mapContainer.getBoundingClientRect();
+        const mapDiv = document.getElementById('eventMap');
+        if (!mapDiv) {
+            console.log('Attente du conteneur...');
+            setTimeout(initMap, 200);
+            return;
+        }
+        
+        const rect = mapDiv.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) {
-            console.warn('Conteneur de carte non visible, dimensions:', rect.width, 'x', rect.height);
-            setTimeout(initEventMap, 200);
+            console.log('Conteneur non visible, attente...');
+            setTimeout(initMap, 200);
             return;
         }
         
         console.log('Initialisation de la carte...', 'Dimensions:', rect.width, 'x', rect.height);
-        
-        // S'assurer que le conteneur a les bonnes dimensions
-        mapContainer.style.width = '100%';
-        mapContainer.style.height = '384px';
-        mapContainer.style.minHeight = '384px';
-        mapContainer.style.display = 'block';
             
             @if($event->venue_latitude && $event->venue_longitude)
                 // Si les coordonnées existent, les utiliser directement
@@ -678,9 +669,17 @@
                     console.error('Erreur lors de l\'initialisation de la carte:', error);
                 }
             @endif
-        }
-    });
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initMap, 1000);
+        });
+    } else {
+        setTimeout(initMap, 1000);
+    }
+})();
 </script>
-@endif
 @endpush
+@endif
 @endsection
