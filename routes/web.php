@@ -121,6 +121,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/fundraisings/{fundraising}/publish', [\App\Http\Controllers\FundraisingController::class, 'publish'])->name('fundraisings.publish');
     Route::post('/fundraisings/{fundraising}/donate', [\App\Http\Controllers\FundraisingController::class, 'donate'])->name('fundraisings.donate');
 
+    // Actions sur les contenus (partage, signalement, calendrier)
+    Route::get('/events/{event}/calendar', [\App\Http\Controllers\ContentActionController::class, 'eventCalendar'])->name('events.calendar');
+    Route::post('/events/{event}/report', [\App\Http\Controllers\ContentActionController::class, 'reportEvent'])->name('events.report');
+    Route::get('/contests/{contest}/calendar', [\App\Http\Controllers\ContentActionController::class, 'contestCalendar'])->name('contests.calendar');
+    Route::post('/contests/{contest}/report', [\App\Http\Controllers\ContentActionController::class, 'reportContest'])->name('contests.report');
+    Route::get('/fundraisings/{fundraising}/calendar', [\App\Http\Controllers\ContentActionController::class, 'fundraisingCalendar'])->name('fundraisings.calendar');
+    Route::post('/fundraisings/{fundraising}/report', [\App\Http\Controllers\ContentActionController::class, 'reportFundraising'])->name('fundraisings.report');
+
     // Routes organisateur
     Route::middleware(\App\Http\Middleware\EnsureUserIsOrganizer::class)->prefix('organizer')->name('organizer.')->group(function () {
         // Gestion des événements

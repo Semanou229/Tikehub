@@ -60,6 +60,10 @@
                             <i class="fas fa-flag"></i>
                             <span>SIGNALER</span>
                         </button>
+                        <button onclick="addToCalendar()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>CALENDRIER</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -464,22 +468,71 @@
     });
     
     function shareContest() {
-        if (navigator.share) {
-            navigator.share({
-                title: '{{ $contest->name }}',
-                text: '{{ Str::limit($contest->description, 100) }}',
-                url: window.location.href
+        const shareData = {
+            title: '{{ addslashes($contest->name) }}',
+            text: '{{ addslashes(Str::limit(strip_tags($contest->description), 100)) }}',
+            url: window.location.href
+        };
+        
+        if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+            navigator.share(shareData).catch(err => {
+                console.log('Erreur de partage:', err);
+                fallbackShare();
             });
         } else {
-            navigator.clipboard.writeText(window.location.href);
-            alert('Lien copié dans le presse-papiers !');
+            fallbackShare();
+        }
+        
+        function fallbackShare() {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Lien copié dans le presse-papiers !');
+                }).catch(() => {
+                    promptShare();
+                });
+            } else {
+                promptShare();
+            }
+        }
+        
+        function promptShare() {
+            const url = window.location.href;
+            prompt('Copiez ce lien pour partager:', url);
         }
     }
     
     function reportContest() {
-        if (confirm('Voulez-vous signaler ce concours ?')) {
-            alert('Fonctionnalité de signalement à venir');
+        const reason = prompt('Pourquoi souhaitez-vous signaler ce concours ?\n\nRaisons possibles :\n- Contenu inapproprié\n- Informations erronées\n- Spam\n- Autre');
+        
+        if (!reason || reason.trim() === '') {
+            return;
         }
+        
+        const details = prompt('Détails supplémentaires (optionnel) :');
+        
+        fetch('{{ route("contests.report", $contest) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                reason: reason.trim(),
+                details: details ? details.trim() : null
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message || 'Votre signalement a été enregistré. Merci !');
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue. Veuillez réessayer.');
+        });
+    }
+    
+    function addToCalendar() {
+        window.location.href = '{{ route("contests.calendar", $contest) }}';
     }
     
     function contactOrganizer(email) {

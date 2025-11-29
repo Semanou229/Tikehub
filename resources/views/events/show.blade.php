@@ -715,29 +715,71 @@
     }
     
     function shareEvent() {
-        if (navigator.share) {
-            navigator.share({
-                title: '{{ $event->title }}',
-                text: '{{ Str::limit($event->description, 100) }}',
-                url: window.location.href
+        const shareData = {
+            title: '{{ addslashes($event->title) }}',
+            text: '{{ addslashes(Str::limit(strip_tags($event->description), 100)) }}',
+            url: window.location.href
+        };
+        
+        if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+            navigator.share(shareData).catch(err => {
+                console.log('Erreur de partage:', err);
+                fallbackShare();
             });
         } else {
-            // Fallback: copier le lien
-            navigator.clipboard.writeText(window.location.href);
-            alert('Lien copié dans le presse-papiers !');
+            fallbackShare();
+        }
+        
+        function fallbackShare() {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Lien copié dans le presse-papiers !');
+                }).catch(() => {
+                    promptShare();
+                });
+            } else {
+                promptShare();
+            }
+        }
+        
+        function promptShare() {
+            const url = window.location.href;
+            prompt('Copiez ce lien pour partager:', url);
         }
     }
     
     function reportEvent() {
-        if (confirm('Voulez-vous signaler cet événement ?')) {
-            // TODO: Implémenter la fonctionnalité de signalement
-            alert('Fonctionnalité de signalement à venir');
+        const reason = prompt('Pourquoi souhaitez-vous signaler cet événement ?\n\nRaisons possibles :\n- Contenu inapproprié\n- Informations erronées\n- Spam\n- Autre');
+        
+        if (!reason || reason.trim() === '') {
+            return;
         }
+        
+        const details = prompt('Détails supplémentaires (optionnel) :');
+        
+        fetch('{{ route("events.report", $event) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                reason: reason.trim(),
+                details: details ? details.trim() : null
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message || 'Votre signalement a été enregistré. Merci !');
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue. Veuillez réessayer.');
+        });
     }
     
     function addToCalendar() {
-        // TODO: Générer un fichier .ics pour ajouter au calendrier
-        alert('Fonctionnalité d\'ajout au calendrier à venir');
+        window.location.href = '{{ route("events.calendar", $event) }}';
     }
     
     function contactOrganizer(email) {
