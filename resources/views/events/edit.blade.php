@@ -410,33 +410,93 @@
             },
             function(error) {
                 console.error('Erreur de géolocalisation complète:', error);
+                console.error('Type d\'erreur:', typeof error);
+                console.error('Code d\'erreur:', error ? error.code : 'undefined');
+                console.error('Message d\'erreur:', error ? error.message : 'undefined');
+                
                 btn.disabled = false;
                 btn.innerHTML = originalText;
                 
                 let errorMessage = '';
-                let errorCode = error ? error.code : 'UNKNOWN';
+                let errorCode = null;
                 
-                // Gérer les différents codes d'erreur
-                if (errorCode === 1 || errorCode === error.PERMISSION_DENIED) {
-                    errorMessage = 'Permission refusée. Veuillez autoriser l\'accès à votre localisation dans les paramètres de votre navigateur.\n\nPour autoriser :\n1. Cliquez sur l\'icône de cadenas dans la barre d\'adresse\n2. Activez l\'autorisation pour la localisation\n3. Rechargez la page et réessayez';
-                } else if (errorCode === 2 || errorCode === error.POSITION_UNAVAILABLE) {
-                    errorMessage = 'Position indisponible. Vérifiez que votre GPS est activé et que vous avez une connexion Internet.';
-                } else if (errorCode === 3 || errorCode === error.TIMEOUT) {
-                    errorMessage = 'Délai d\'attente dépassé. Veuillez réessayer.';
-                } else {
-                    // Si l'erreur est un objet, essayer d'extraire le message
-                    let errorDetails = '';
-                    if (error && error.message) {
-                        errorDetails = error.message;
-                    } else if (error && typeof error === 'object') {
-                        errorDetails = JSON.stringify(error);
-                    } else {
-                        errorDetails = String(error);
+                // Extraire le code d'erreur de différentes façons
+                if (error) {
+                    if (typeof error.code !== 'undefined') {
+                        errorCode = error.code;
+                    } else if (typeof error === 'number') {
+                        errorCode = error;
+                    } else if (error.PERMISSION_DENIED !== undefined && error.code === error.PERMISSION_DENIED) {
+                        errorCode = 1;
+                    } else if (error.POSITION_UNAVAILABLE !== undefined && error.code === error.POSITION_UNAVAILABLE) {
+                        errorCode = 2;
+                    } else if (error.TIMEOUT !== undefined && error.code === error.TIMEOUT) {
+                        errorCode = 3;
                     }
-                    errorMessage = 'Erreur lors de la géolocalisation.\n\nDétails: ' + errorDetails + '\n\nVous pouvez utiliser le bouton "Localiser" avec une adresse à la place.';
                 }
                 
+                // Gérer les différents codes d'erreur
+                if (errorCode === 1 || (error && error.PERMISSION_DENIED && error.code === error.PERMISSION_DENIED)) {
+                    errorMessage = 'Permission refusée pour la géolocalisation.\n\n' +
+                        'Pour autoriser :\n' +
+                        '1. Cliquez sur l\'icône de cadenas (🔒) dans la barre d\'adresse\n' +
+                        '2. Trouvez "Localisation" dans la liste\n' +
+                        '3. Sélectionnez "Autoriser" ou "Demander"\n' +
+                        '4. Rechargez la page et réessayez\n\n' +
+                        'Alternative : Utilisez le bouton "Localiser" avec une adresse.';
+                } else if (errorCode === 2 || (error && error.POSITION_UNAVAILABLE && error.code === error.POSITION_UNAVAILABLE)) {
+                    errorMessage = 'Position indisponible.\n\n' +
+                        'Vérifiez que :\n' +
+                        '- Votre GPS est activé\n' +
+                        '- Vous avez une connexion Internet\n' +
+                        '- Vous n\'êtes pas dans un endroit sans signal\n\n' +
+                        'Alternative : Utilisez le bouton "Localiser" avec une adresse.';
+                } else if (errorCode === 3 || (error && error.TIMEOUT && error.code === error.TIMEOUT)) {
+                    errorMessage = 'Délai d\'attente dépassé.\n\n' +
+                        'La géolocalisation prend trop de temps. Veuillez réessayer ou utiliser le bouton "Localiser" avec une adresse.';
+                } else {
+                    // Erreur inconnue - extraire le maximum d'informations
+                    let errorDetails = 'Erreur inconnue';
+                    
+                    if (error) {
+                        if (error.message) {
+                            errorDetails = error.message;
+                        } else if (error.toString && error.toString() !== '[object Object]') {
+                            errorDetails = error.toString();
+                        } else {
+                            // Essayer d'extraire des propriétés utiles
+                            const props = [];
+                            for (let key in error) {
+                                if (error.hasOwnProperty(key)) {
+                                    props.push(key + ': ' + error[key]);
+                                }
+                            }
+                            if (props.length > 0) {
+                                errorDetails = props.join(', ');
+                            }
+                        }
+                    }
+                    
+                    errorMessage = 'Erreur lors de la géolocalisation.\n\n' +
+                        'Détails : ' + errorDetails + '\n\n' +
+                        'Causes possibles :\n' +
+                        '- Extension de navigateur qui bloque la géolocalisation\n' +
+                        '- Paramètres de sécurité du navigateur\n' +
+                        '- Problème de connexion\n\n' +
+                        'Solution : Utilisez le bouton "Localiser" avec une adresse à la place.';
+                }
+                
+                // Afficher l'erreur dans une alerte et dans la console
                 alert(errorMessage);
+                
+                // Afficher aussi un message visuel sur la page
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'mt-2 p-3 bg-red-100 text-red-800 rounded text-sm border border-red-300';
+                errorMsg.innerHTML = '<i class="fas fa-exclamation-circle mr-2"></i><strong>Géolocalisation échouée :</strong> ' + 
+                    errorMessage.replace(/\n/g, '<br>').substring(0, 200) + 
+                    '<br><span class="text-xs mt-1 block">Vous pouvez utiliser le bouton "Localiser" avec une adresse.</span>';
+                btn.parentElement.parentElement.appendChild(errorMsg);
+                setTimeout(() => errorMsg.remove(), 10000);
             },
             options
             );
