@@ -510,9 +510,9 @@
                 
                 try {
                     // S'assurer que le conteneur a les bonnes dimensions
-                    mapContainer.style.width = '100%';
-                    mapContainer.style.height = '384px';
-                    mapContainer.style.minHeight = '384px';
+                    mapDiv.style.width = '100%';
+                    mapDiv.style.height = '384px';
+                    mapDiv.style.minHeight = '384px';
                     
                     // Initialiser la carte
                     const map = L.map('eventMap', {
