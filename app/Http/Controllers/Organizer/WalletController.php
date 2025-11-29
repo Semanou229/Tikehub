@@ -40,19 +40,46 @@ class WalletController extends Controller
         $platformCommission = $totalEarnings * $commissionRate;
         $netEarnings = $totalEarnings - $platformCommission;
 
-        // Revenus des 6 derniers mois
-        $monthlyRevenue = Payment::whereHas('tickets.event', function ($q) use ($organizerId) {
-            $q->where('organizer_id', $organizerId);
+        // Revenus des 6 derniers mois (tous types confondus)
+        $monthlyRevenue = Payment::where(function ($q) use ($organizerId) {
+            $q->whereHas('tickets.event', function ($query) use ($organizerId) {
+                $query->where('organizer_id', $organizerId);
+            })
+            ->orWhereHas('votes', function ($query) use ($organizerId) {
+                $query->whereHas('contest', function ($q) use ($organizerId) {
+                    $q->where('organizer_id', $organizerId);
+                });
+            })
+            ->orWhereHas('donation', function ($query) use ($organizerId) {
+                $query->whereHas('fundraising', function ($q) use ($organizerId) {
+                    $q->where('organizer_id', $organizerId);
+                });
+            });
         })
         ->where('status', 'completed')
+        ->where('created_at', '>=', now()->subMonths(6))
         ->select(
             DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
             DB::raw('SUM(amount) as total')
         )
         ->groupBy('month')
-        ->orderBy('month', 'desc')
-        ->limit(6)
+        ->orderBy('month', 'asc')
         ->get();
+        
+        // Remplir les mois manquants avec 0
+        $last6Months = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i)->format('Y-m');
+            $last6Months[$month] = 0;
+        }
+        
+        foreach ($monthlyRevenue as $revenue) {
+            $last6Months[$revenue->month] = (float) $revenue->total;
+        }
+        
+        $monthlyRevenue = collect($last6Months)->map(function ($total, $month) {
+            return (object) ['month' => $month, 'total' => $total];
+        })->values();
 
         // Transactions récentes
         $recentTransactions = Payment::where(function ($q) use ($organizerId) {
