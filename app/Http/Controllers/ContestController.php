@@ -160,6 +160,45 @@ class ContestController extends Controller
         return redirect()->route('contests.show', $contest)->with('success', $message);
     }
 
+    public function edit(Contest $contest)
+    {
+        $this->authorize('update', $contest);
+        
+        $contest->load('candidates');
+        $events = \App\Models\Event::where('organizer_id', auth()->id())->get();
+        
+        return view('contests.edit', compact('contest', 'events'));
+    }
+
+    public function update(Request $request, Contest $contest)
+    {
+        $this->authorize('update', $contest);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'rules' => 'nullable|string',
+            'price_per_vote' => 'required|numeric|min:0',
+            'points_per_vote' => 'required|integer|min:1',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'cover_image' => 'nullable|image|max:2048',
+            'event_id' => 'nullable|exists:events,id',
+        ]);
+
+        if ($request->hasFile('cover_image')) {
+            if ($contest->cover_image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($contest->cover_image);
+            }
+            $validated['cover_image'] = $request->file('cover_image')->store('contests', 'public');
+        }
+
+        $contest->update($validated);
+
+        return redirect()->route('organizer.contests.index')
+            ->with('success', 'Concours mis à jour avec succès.');
+    }
+
     public function publish(Contest $contest)
     {
         $this->authorize('update', $contest);

@@ -80,6 +80,14 @@ Route::middleware('auth')->group(function () {
         // Scans
         Route::get('/events/{event}/scans', [\App\Http\Controllers\Organizer\ScanController::class, 'index'])->name('scans.index');
         Route::post('/events/{event}/scans', [\App\Http\Controllers\Organizer\ScanController::class, 'scan'])->name('scans.scan');
+
+        // Gestion des concours
+        Route::get('/contests', [\App\Http\Controllers\Organizer\ContestManagementController::class, 'index'])->name('contests.index');
+        Route::delete('/contests/{contest}', [\App\Http\Controllers\Organizer\ContestManagementController::class, 'destroy'])->name('contests.destroy');
+
+        // Gestion des collectes
+        Route::get('/fundraisings', [\App\Http\Controllers\Organizer\FundraisingManagementController::class, 'index'])->name('fundraisings.index');
+        Route::delete('/fundraisings/{fundraising}', [\App\Http\Controllers\Organizer\FundraisingManagementController::class, 'destroy'])->name('fundraisings.destroy');
     });
 });
 

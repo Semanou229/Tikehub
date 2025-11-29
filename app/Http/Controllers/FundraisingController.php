@@ -70,6 +70,46 @@ class FundraisingController extends Controller
             ->with('success', 'Collecte de fonds créée avec succès. Vous pouvez maintenant la publier et ajouter des paliers.');
     }
 
+    public function edit(Fundraising $fundraising)
+    {
+        $this->authorize('update', $fundraising);
+        
+        $events = \App\Models\Event::where('organizer_id', auth()->id())->get();
+        
+        return view('fundraisings.edit', compact('fundraising', 'events'));
+    }
+
+    public function update(Request $request, Fundraising $fundraising)
+    {
+        $this->authorize('update', $fundraising);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'goal_amount' => 'required|numeric|min:0',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'show_donors' => 'boolean',
+            'cover_image' => 'nullable|image|max:2048',
+            'event_id' => 'nullable|exists:events,id',
+        ]);
+
+        $validated['slug'] = Str::slug($validated['name']);
+        $validated['show_donors'] = $request->has('show_donors');
+
+        if ($request->hasFile('cover_image')) {
+            if ($fundraising->cover_image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($fundraising->cover_image);
+            }
+            $validated['cover_image'] = $request->file('cover_image')->store('fundraisings', 'public');
+        }
+
+        $fundraising->update($validated);
+
+        return redirect()->route('organizer.fundraisings.index')
+            ->with('success', 'Collecte de fonds mise à jour avec succès.');
+    }
+
     public function publish(Fundraising $fundraising)
     {
         $this->authorize('update', $fundraising);

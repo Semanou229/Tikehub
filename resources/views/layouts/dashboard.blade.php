@@ -39,11 +39,11 @@
                     <i class="fas fa-calendar-plus w-5 mr-3"></i>
                     <span>Mes Événements</span>
                 </a>
-                <a href="{{ route('contests.create') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('organizer.contests.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.contests.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-trophy w-5 mr-3"></i>
                     <span>Mes Concours</span>
                 </a>
-                <a href="{{ route('fundraisings.create') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('organizer.fundraisings.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('organizer.fundraisings.*') ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-heart w-5 mr-3"></i>
                     <span>Mes Collectes</span>
                 </a>
