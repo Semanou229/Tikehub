@@ -7,15 +7,15 @@ use Illuminate\Support\Facades\Log;
 
 class MonerooService
 {
-    protected string $apiKey;
-    protected string $apiSecret;
-    protected string $baseUrl;
+    protected ?string $apiKey;
+    protected ?string $apiSecret;
+    protected ?string $baseUrl;
 
     public function __construct()
     {
-        $this->apiKey = config('moneroo.api_key');
-        $this->apiSecret = config('moneroo.api_secret');
-        $this->baseUrl = config('moneroo.base_url');
+        $this->apiKey = config('moneroo.api_key') ?? '';
+        $this->apiSecret = config('moneroo.api_secret') ?? '';
+        $this->baseUrl = config('moneroo.base_url') ?? '';
     }
 
     public function createPayment(array $data): array
