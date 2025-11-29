@@ -115,7 +115,7 @@ class TeamController extends Controller
         return back()->with('success', 'Membre ajouté à l\'équipe.');
     }
 
-    public function removeMember(Team $team, User $user)
+    public function removeMember(Request $request, Team $team, User $user)
     {
         $this->authorize('update', $team);
 
