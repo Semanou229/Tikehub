@@ -8,9 +8,15 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
             margin: 0;
             padding: 0;
+            height: 100%;
+        }
+        body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -18,15 +24,20 @@
         nav {
             position: relative !important;
             top: 0 !important;
-            order: 1;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            order: 1 !important;
             flex-shrink: 0;
+            z-index: 1000 !important;
         }
         main {
-            order: 2;
+            order: 2 !important;
             flex: 1;
+            position: relative;
         }
         footer {
-            order: 3;
+            order: 3 !important;
             flex-shrink: 0;
         }
     </style>

@@ -468,9 +468,7 @@
         // TODO: Ouvrir un formulaire de contact
         alert('Fonctionnalité de contact à venir');
     }
-</script>
 @if($event->venue_latitude && $event->venue_longitude || $event->venue_address)
-@push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 (function() {
