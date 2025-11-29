@@ -6,7 +6,7 @@
 <div class="p-6">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Mes Billets</h1>
-        <a href="{{ route('events.index') }}" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
+        <a href="{{ route('home') }}" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
             <i class="fas fa-search mr-2"></i>Découvrir des événements
         </a>
     </div>
@@ -116,7 +116,7 @@
         <div class="bg-white rounded-lg shadow-md p-12 text-center">
             <i class="fas fa-ticket-alt text-6xl text-gray-300 mb-4"></i>
             <p class="text-gray-500 mb-4">Aucun billet trouvé</p>
-            <a href="{{ route('events.index') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
+            <a href="{{ route('home') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
                 <i class="fas fa-search mr-2"></i>Découvrir des événements
             </a>
         </div>

@@ -118,6 +118,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/tickets', [\App\Http\Controllers\Buyer\DashboardController::class, 'tickets'])->name('tickets');
         Route::get('/payments', [\App\Http\Controllers\Buyer\DashboardController::class, 'payments'])->name('payments');
         Route::get('/virtual-events', [\App\Http\Controllers\Buyer\DashboardController::class, 'virtualEvents'])->name('virtual-events');
+        
+        // Profil
+        Route::get('/profile', [\App\Http\Controllers\Buyer\ProfileController::class, 'index'])->name('profile');
+        Route::put('/profile', [\App\Http\Controllers\Buyer\ProfileController::class, 'update'])->name('profile.update');
     });
 
     // Paiements
