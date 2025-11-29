@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
-Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+// IMPORTANT: events/{event} doit être défini APRÈS events/create pour éviter les conflits
+// Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
 // Formulaires publics
 Route::get('/form/{slug}', [\App\Http\Controllers\PublicFormController::class, 'show'])->name('forms.show');
@@ -29,13 +30,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Événements (création, édition, publication - nécessitent auth)
-    // Route explicite pour create pour éviter les problèmes de routage
+    // Route explicite pour create AVANT les routes avec paramètres pour éviter les conflits
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
     Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
     Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
     Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
     Route::post('/events/{event}/publish', [EventController::class, 'publish'])->name('events.publish');
+});
+
+// Route publique pour afficher un événement (APRÈS les routes auth pour éviter les conflits)
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
     // Billets
     Route::get('/events/{event}/tickets', [TicketController::class, 'index'])->name('tickets.index');
