@@ -44,7 +44,7 @@ class MonerooService
                     'email' => $data['customer']['email'] ?? $data['customer']['name'] ?? '',
                     'first_name' => $this->extractFirstName($data['customer']['name'] ?? ''),
                     'last_name' => $this->extractLastName($data['customer']['name'] ?? ''),
-                    'phone' => $data['customer']['phone'] ?? null,
+                    'phone' => $this->normalizePhoneNumber($data['customer']['phone'] ?? null),
                 ],
             ];
 
@@ -278,5 +278,32 @@ class MonerooService
             return implode(' ', array_slice($parts, 1));
         }
         return '';
+    }
+
+    /**
+     * Normaliser un numéro de téléphone pour Moneroo
+     * Moneroo attend un entier (sans espaces, sans caractères spéciaux)
+     * 
+     * @param string|null $phone Numéro de téléphone
+     * @return int|null
+     */
+    protected function normalizePhoneNumber(?string $phone): ?int
+    {
+        if (empty($phone)) {
+            return null;
+        }
+
+        // Supprimer tous les caractères non numériques (espaces, +, -, etc.)
+        $cleaned = preg_replace('/[^0-9]/', '', $phone);
+        
+        // Convertir en entier
+        $phoneInt = (int) $cleaned;
+        
+        // Retourner null si le numéro est invalide (trop court ou vide)
+        if ($phoneInt <= 0 || strlen($cleaned) < 8) {
+            return null;
+        }
+
+        return $phoneInt;
     }
 }
