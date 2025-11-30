@@ -3,46 +3,46 @@
 @section('title', $team->name)
 
 @section('content')
-<div class="p-6">
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">{{ $team->name }}</h1>
-        <div class="flex gap-2">
-            <a href="{{ route('organizer.crm.teams.edit', $team) }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+<div class="p-3 sm:p-4 lg:p-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 break-words">{{ $team->name }}</h1>
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-2 w-full sm:w-auto">
+            <a href="{{ route('organizer.crm.teams.edit', $team) }}" class="bg-indigo-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition text-sm sm:text-base font-medium min-h-[44px] flex items-center justify-center">
                 <i class="fas fa-edit mr-2"></i>Modifier
             </a>
-            <a href="{{ route('organizer.crm.teams.index') }}" class="text-gray-600 hover:text-gray-800 px-4 py-2">
+            <a href="{{ route('organizer.crm.teams.index') }}" class="text-gray-600 hover:text-gray-800 active:text-gray-900 px-4 sm:px-6 py-2.5 sm:py-3 min-h-[44px] flex items-center justify-center">
                 <i class="fas fa-arrow-left mr-2"></i>Retour
             </a>
         </div>
     </div>
 
     @if($team->description)
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <p class="text-gray-700">{{ $team->description }}</p>
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+            <p class="text-sm sm:text-base text-gray-700 break-words">{{ $team->description }}</p>
         </div>
     @endif
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="text-3xl font-bold text-indigo-600">{{ $stats['members_count'] }}</div>
-            <div class="text-sm text-gray-600 mt-1">Membres</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div class="text-2xl sm:text-3xl font-bold text-indigo-600">{{ $stats['members_count'] }}</div>
+            <div class="text-xs sm:text-sm text-gray-600 mt-1">Membres</div>
         </div>
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="text-3xl font-bold text-yellow-600">{{ $stats['tasks_todo'] + $stats['tasks_in_progress'] }}</div>
-            <div class="text-sm text-gray-600 mt-1">Tâches en cours</div>
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div class="text-2xl sm:text-3xl font-bold text-yellow-600">{{ $stats['tasks_todo'] + $stats['tasks_in_progress'] }}</div>
+            <div class="text-xs sm:text-sm text-gray-600 mt-1">Tâches en cours</div>
         </div>
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="text-3xl font-bold text-green-600">{{ $stats['tasks_done'] }}</div>
-            <div class="text-sm text-gray-600 mt-1">Tâches terminées</div>
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div class="text-2xl sm:text-3xl font-bold text-green-600">{{ $stats['tasks_done'] }}</div>
+            <div class="text-xs sm:text-sm text-gray-600 mt-1">Tâches terminées</div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <!-- Membres -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold text-gray-800">Membres</h2>
-                <button onclick="showAddMemberModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition text-sm">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-3 sm:mb-4">
+                <h2 class="text-lg sm:text-xl font-bold text-gray-800">Membres</h2>
+                <button onclick="showAddMemberModal()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition text-sm font-medium min-h-[44px] flex items-center justify-center w-full sm:w-auto">
                     <i class="fas fa-plus mr-2"></i>Ajouter
                 </button>
             </div>
@@ -71,11 +71,11 @@
         </div>
 
         <!-- Tâches -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold text-gray-800">Tâches</h2>
-                <a href="{{ route('organizer.crm.teams.tasks.create', $team) }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition text-sm">
-                    <i class="fas fa-plus mr-2"></i>Nouvelle tâche
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-3 sm:mb-4">
+                <h2 class="text-lg sm:text-xl font-bold text-gray-800">Tâches</h2>
+                <a href="{{ route('organizer.crm.teams.tasks.create', $team) }}" class="bg-indigo-600 text-white px-4 py-2.5 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition text-sm font-medium min-h-[44px] flex items-center justify-center w-full sm:w-auto">
+                    <i class="fas fa-plus mr-2"></i><span class="hidden sm:inline">Nouvelle tâche</span><span class="sm:hidden">Nouvelle</span>
                 </a>
             </div>
             
@@ -120,12 +120,12 @@
 </div>
 
 <!-- Modal pour ajouter un membre -->
-<div id="addMemberModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+<div id="addMemberModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-bold text-gray-800">Ajouter un membre</h3>
-            <button onclick="hideAddMemberModal()" class="text-gray-500 hover:text-gray-700">
-                <i class="fas fa-times"></i>
+            <h3 class="text-lg sm:text-xl font-bold text-gray-800">Ajouter un membre</h3>
+            <button onclick="hideAddMemberModal()" class="text-gray-500 hover:text-gray-700 active:text-gray-900 min-w-[44px] min-h-[44px] flex items-center justify-center">
+                <i class="fas fa-times text-xl"></i>
             </button>
         </div>
         
@@ -153,11 +153,11 @@
                 </div>
             </div>
             
-            <div class="mt-6 flex gap-4">
-                <button type="submit" class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+            <div class="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <button type="submit" class="flex-1 bg-indigo-600 text-white px-4 py-2.5 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition font-medium min-h-[44px]">
                     Ajouter
                 </button>
-                <button type="button" onclick="hideAddMemberModal()" class="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition">
+                <button type="button" onclick="hideAddMemberModal()" class="flex-1 bg-gray-200 text-gray-800 px-4 py-2.5 rounded-lg hover:bg-gray-300 active:bg-gray-400 transition font-medium min-h-[44px]">
                     Annuler
                 </button>
             </div>

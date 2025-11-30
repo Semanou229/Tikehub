@@ -3,31 +3,31 @@
 @section('title', 'Contacts CRM')
 
 @section('content')
-<div class="p-6">
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800">Contacts CRM</h1>
-            <p class="text-gray-600 mt-1">Gérez tous vos contacts et relations</p>
+<div class="p-3 sm:p-4 lg:p-6">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <div class="flex-1 min-w-0">
+            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">Contacts CRM</h1>
+            <p class="text-sm sm:text-base text-gray-600 mt-1">Gérez tous vos contacts et relations</p>
         </div>
-        <div class="flex gap-3">
-            <button onclick="document.getElementById('importModal').classList.remove('hidden')" class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition">
-                <i class="fas fa-file-import mr-2"></i>Importer CSV/Excel
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+            <button onclick="document.getElementById('importModal').classList.remove('hidden')" class="bg-gray-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:bg-gray-700 active:bg-gray-800 transition text-sm sm:text-base font-medium min-h-[44px] flex items-center justify-center">
+                <i class="fas fa-file-import mr-2"></i><span class="hidden sm:inline">Importer CSV/Excel</span><span class="sm:hidden">Importer</span>
             </button>
-            <a href="{{ route('organizer.crm.contacts.create') }}" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
-                <i class="fas fa-plus mr-2"></i>Nouveau contact
+            <a href="{{ route('organizer.crm.contacts.create') }}" class="bg-indigo-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition text-sm sm:text-base font-medium min-h-[44px] flex items-center justify-center">
+                <i class="fas fa-plus mr-2"></i><span class="hidden sm:inline">Nouveau contact</span><span class="sm:hidden">Nouveau</span>
             </a>
         </div>
     </div>
 
     <!-- Statistiques -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="text-sm text-gray-600 mb-1">Total contacts</div>
-            <div class="text-3xl font-bold text-indigo-600">{{ $stats['total'] }}</div>
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div class="text-xs sm:text-sm text-gray-600 mb-1">Total contacts</div>
+            <div class="text-xl sm:text-2xl lg:text-3xl font-bold text-indigo-600">{{ $stats['total'] }}</div>
         </div>
         @foreach(['participant', 'sponsor', 'vip', 'staff'] as $cat)
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="text-sm text-gray-600 mb-1">{{ ucfirst($cat) }}s</div>
+            <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                <div class="text-xs sm:text-sm text-gray-600 mb-1">{{ ucfirst($cat) }}s</div>
                 <div class="text-3xl font-bold text-purple-600">{{ $stats['by_category'][$cat] ?? 0 }}</div>
             </div>
         @endforeach

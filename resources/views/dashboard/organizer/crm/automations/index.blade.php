@@ -3,36 +3,37 @@
 @section('title', 'Automations')
 
 @section('content')
-<div class="p-6">
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800">Automations</h1>
-            <p class="text-gray-600 mt-1">Créez des workflows automatiques pour vos contacts</p>
+<div class="p-3 sm:p-4 lg:p-6">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <div class="flex-1 min-w-0">
+            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">Automations</h1>
+            <p class="text-sm sm:text-base text-gray-600 mt-1">Créez des workflows automatiques pour vos contacts</p>
         </div>
-        <a href="{{ route('organizer.crm.automations.create') }}" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
-            <i class="fas fa-plus mr-2"></i>Nouvelle automation
+        <a href="{{ route('organizer.crm.automations.create') }}" class="bg-indigo-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition text-sm sm:text-base font-medium min-h-[44px] flex items-center justify-center w-full sm:w-auto">
+            <i class="fas fa-plus mr-2"></i><span class="hidden sm:inline">Nouvelle automation</span><span class="sm:hidden">Nouvelle</span>
         </a>
     </div>
 
     <!-- Statistiques -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="text-sm text-gray-600 mb-1">Total automations</div>
-            <div class="text-3xl font-bold text-indigo-600">{{ $stats['total'] }}</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div class="text-xs sm:text-sm text-gray-600 mb-1">Total automations</div>
+            <div class="text-xl sm:text-2xl lg:text-3xl font-bold text-indigo-600">{{ $stats['total'] }}</div>
         </div>
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="text-sm text-gray-600 mb-1">Actives</div>
-            <div class="text-3xl font-bold text-green-600">{{ $stats['active'] }}</div>
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div class="text-xs sm:text-sm text-gray-600 mb-1">Actives</div>
+            <div class="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">{{ $stats['active'] }}</div>
         </div>
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="text-sm text-gray-600 mb-1">Exécutions totales</div>
-            <div class="text-3xl font-bold text-purple-600">{{ number_format($stats['total_executed']) }}</div>
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div class="text-xs sm:text-sm text-gray-600 mb-1">Exécutions totales</div>
+            <div class="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-600 whitespace-nowrap">{{ number_format($stats['total_executed']) }}</div>
         </div>
     </div>
 
     <!-- Liste des automations -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
@@ -89,21 +90,21 @@
                                 <div class="text-xs text-gray-400 mt-1">Dernière: {{ $automation->last_executed_at->format('d/m/Y H:i') }}</div>
                             @endif
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-3 sm:px-6 py-4">
                             <div class="flex items-center gap-2">
                                 <form action="{{ route('organizer.crm.automations.toggle', $automation) }}" method="POST" class="inline">
                                     @csrf
-                                    <button type="submit" class="text-{{ $automation->is_active ? 'yellow' : 'green' }}-600 hover:text-{{ $automation->is_active ? 'yellow' : 'green' }}-900" title="{{ $automation->is_active ? 'Désactiver' : 'Activer' }}">
+                                    <button type="submit" class="text-{{ $automation->is_active ? 'yellow' : 'green' }}-600 hover:text-{{ $automation->is_active ? 'yellow' : 'green' }}-900 active:text-{{ $automation->is_active ? 'yellow' : 'green' }}-700 min-w-[36px] min-h-[36px] flex items-center justify-center" title="{{ $automation->is_active ? 'Désactiver' : 'Activer' }}">
                                         <i class="fas fa-{{ $automation->is_active ? 'pause' : 'play' }}"></i>
                                     </button>
                                 </form>
-                                <a href="{{ route('organizer.crm.automations.edit', $automation) }}" class="text-gray-600 hover:text-gray-900" title="Modifier">
+                                <a href="{{ route('organizer.crm.automations.edit', $automation) }}" class="text-gray-600 hover:text-gray-900 active:text-gray-700 min-w-[36px] min-h-[36px] flex items-center justify-center" title="Modifier">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="{{ route('organizer.crm.automations.destroy', $automation) }}" method="POST" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette automation ?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900" title="Supprimer">
+                                    <button type="submit" class="text-red-600 hover:text-red-900 active:text-red-700 min-w-[36px] min-h-[36px] flex items-center justify-center" title="Supprimer">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -123,6 +124,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 
     @if($automations->hasPages())
