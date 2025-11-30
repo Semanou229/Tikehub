@@ -79,166 +79,221 @@
 @section('title', 'Tikehub - Plateforme de Billetterie en Ligne pour l\'Afrique | Événements, Concours & Collectes')
 
 @section('content')
-<!-- Hero Section with Slider -->
-<section class="relative bg-gray-900 overflow-hidden" style="margin-top: 0 !important; padding-top: 0 !important;">
-    <!-- Slider Container -->
-    <div class="hero-slider relative h-[500px] sm:h-[600px] lg:h-[700px]">
-        @if($heroItems->count() > 0)
-            @foreach($heroItems as $index => $item)
-                <div class="hero-slide absolute inset-0 transition-opacity duration-1000 ease-in-out {{ $index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}" data-slide="{{ $index }}">
-                    <div class="relative w-full h-full">
-                        @if($item['image'])
-                            <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full bg-gradient-to-br 
-                                @if($item['type'] === 'event') from-indigo-600 to-purple-600
-                                @elseif($item['type'] === 'contest') from-purple-600 to-pink-600
-                                @else from-red-600 to-orange-600
-                                @endif flex items-center justify-center">
-                                <i class="fas 
-                                    @if($item['type'] === 'event') fa-calendar-alt
-                                    @elseif($item['type'] === 'contest') fa-trophy
-                                    @else fa-heart
-                                    @endif text-9xl text-white opacity-30"></i>
-                            </div>
-                        @endif
-                        <!-- Overlay Gradient -->
-                        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30"></div>
-                        
-                        <!-- Content -->
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                                <div class="max-w-2xl">
-                                    <!-- Badge Type -->
-                                    <div class="mb-4 inline-block">
-                                        <span class="px-4 py-2 rounded-full text-sm font-semibold
-                                            @if($item['type'] === 'event') bg-indigo-600 text-white
-                                            @elseif($item['type'] === 'contest') bg-purple-600 text-white
-                                            @else bg-red-600 text-white
-                                            @endif">
-                                            @if($item['type'] === 'event')
-                                                <i class="fas fa-calendar-alt mr-2"></i>Événement
-                                            @elseif($item['type'] === 'contest')
-                                                <i class="fas fa-trophy mr-2"></i>Concours
-                                            @else
-                                                <i class="fas fa-heart mr-2"></i>Collecte
-                                            @endif
-                                        </span>
-                                    </div>
-                                    
-                                    <!-- Title -->
-                                    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight animate-fade-in-up">
-                                        {{ $item['title'] }}
-                                    </h1>
-                                    
-                                    <!-- Description -->
-                                    <p class="text-lg sm:text-xl md:text-2xl text-gray-200 mb-6 sm:mb-8 leading-relaxed line-clamp-2 animate-fade-in-up animation-delay-200">
-                                        {{ $item['description'] }}
-                                    </p>
-                                    
-                                    <!-- Info -->
-                                    <div class="flex flex-wrap items-center gap-4 sm:gap-6 mb-6 sm:mb-8 text-white animate-fade-in-up animation-delay-400">
-                                        @if($item['date'])
-                                            <div class="flex items-center">
-                                                <i class="fas fa-calendar-alt mr-2 text-indigo-400"></i>
-                                                <span class="text-sm sm:text-base">{{ $item['date']->translatedFormat('d F Y') }}</span>
-                                            </div>
-                                        @endif
-                                        @if($item['location'])
-                                            <div class="flex items-center">
-                                                <i class="fas fa-map-marker-alt mr-2 text-indigo-400"></i>
-                                                <span class="text-sm sm:text-base">{{ $item['location'] }}</span>
-                                            </div>
-                                        @endif
-                                        @if(isset($item['price_per_vote']))
-                                            <div class="flex items-center">
-                                                <i class="fas fa-vote-yea mr-2 text-purple-400"></i>
-                                                <span class="text-sm sm:text-base">{{ number_format($item['price_per_vote'], 0, ',', ' ') }} XOF/vote</span>
-                                            </div>
-                                        @endif
-                                        @if(isset($item['progress']))
-                                            <div class="flex items-center">
-                                                <i class="fas fa-chart-line mr-2 text-red-400"></i>
-                                                <span class="text-sm sm:text-base">{{ number_format($item['progress'], 0) }}% collecté</span>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    
-                                    <!-- CTA Button -->
-                                    <a href="{{ $item['url'] }}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 shadow-lg hover:shadow-xl min-h-[44px] flex items-center justify-center animate-fade-in-up animation-delay-600">
-                                        <span>
-                                            @if($item['type'] === 'event')
-                                                Voir l'événement
-                                            @elseif($item['type'] === 'contest')
-                                                Voir le concours
-                                            @else
-                                                Contribuer
-                                            @endif
-                                        </span>
-                                        <i class="fas fa-arrow-right ml-2"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        @else
-            <!-- Fallback -->
-            <div class="hero-slide absolute inset-0 opacity-100 z-10">
-                <div class="relative w-full h-full bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center">
-                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30"></div>
-                    <div class="relative z-10 text-center text-white px-4">
-                        <div class="mb-4 inline-block">
-                            <span class="px-4 py-2 rounded-full text-sm font-semibold bg-indigo-600 text-white">
-                                <i class="fas fa-calendar-alt mr-2"></i>Plateforme
-                            </span>
-                        </div>
-                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
-                            Réservez et vendez vos billets<br>
-                            <span class="text-yellow-300">en toute simplicité en Afrique</span>
-                        </h1>
-                        <p class="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 text-gray-200 max-w-2xl mx-auto">
-                            Bienvenue sur la billetterie en ligne qui connecte l'Afrique aux plus grands événements
-                        </p>
-                        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-                            <a href="{{ route('events.index') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 shadow-lg hover:shadow-xl min-h-[44px] flex items-center justify-center">
-                                <i class="fas fa-calendar-alt mr-2"></i>Découvrir les événements
-                            </a>
-                            @auth
-                                <a href="{{ route('dashboard') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 border-2 border-white min-h-[44px] flex items-center justify-center">
-                                    <i class="fas fa-tachometer-alt mr-2"></i>Mon tableau de bord
-                                </a>
-                            @else
-                                <a href="{{ route('register') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 border-2 border-white min-h-[44px] flex items-center justify-center">
-                                    <i class="fas fa-user-plus mr-2"></i>Créer un compte
-                                </a>
-                            @endauth
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 overflow-hidden" style="margin-top: 0 !important; padding-top: 0 !important; position: relative; z-index: 1;">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-20">
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle, rgba(99, 102, 241, 0.3) 1px, transparent 1px); background-size: 30px 30px;"></div>
     </div>
     
-    <!-- Navigation Arrows -->
-    @if($heroItems->count() > 1)
-        <button id="hero-prev" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 sm:p-4 rounded-full transition duration-300 z-20 min-w-[44px] min-h-[44px] flex items-center justify-center">
-            <i class="fas fa-chevron-left text-lg sm:text-xl"></i>
-        </button>
-        <button id="hero-next" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 sm:p-4 rounded-full transition duration-300 z-20 min-w-[44px] min-h-[44px] flex items-center justify-center">
-            <i class="fas fa-chevron-right text-lg sm:text-xl"></i>
-        </button>
-    @endif
-    
-    <!-- Dots Navigation -->
-    @if($heroItems->count() > 1)
-        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-            @foreach($heroItems as $index => $item)
-                <button class="hero-dot w-3 h-3 rounded-full transition-all duration-300 {{ $index === 0 ? 'bg-white w-8' : 'bg-white/50' }}" data-slide="{{ $index }}"></button>
-            @endforeach
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <!-- Left Side: Content -->
+            <div class="text-white z-10">
+                <!-- Badge -->
+                <div class="mb-4 sm:mb-6">
+                    <span class="inline-block px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                        BILLETTERIE, CONCOURS & COLLECTES
+                    </span>
+                </div>
+                
+                <!-- Main Title -->
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
+                    Plus facile, plus puissant,<br>
+                    <span class="text-cyan-400">moins cher</span>
+                </h1>
+                
+                <!-- Description -->
+                <p class="text-lg sm:text-xl md:text-2xl text-gray-300 mb-6 sm:mb-8 leading-relaxed max-w-xl">
+                    La plateforme complète pour créer, gérer et vendre vos événements, organiser des concours avec votes payants et lancer des collectes de fonds en Afrique.
+                </p>
+                
+                <!-- Three Content Types -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                    <!-- Événements -->
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/15 transition">
+                        <div class="flex items-center mb-2 sm:mb-3">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-calendar-alt text-white text-lg sm:text-xl"></i>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-bold text-white">Événements</h3>
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                            Créez et vendez des billets pour vos événements avec notre système de billetterie sécurisé
+                        </p>
+                    </div>
+                    
+                    <!-- Concours -->
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/15 transition">
+                        <div class="flex items-center mb-2 sm:mb-3">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-trophy text-white text-lg sm:text-xl"></i>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-bold text-white">Concours</h3>
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                            Organisez des concours avec votes payants et suivez les résultats en temps réel
+                        </p>
+                    </div>
+                    
+                    <!-- Collectes -->
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/15 transition">
+                        <div class="flex items-center mb-2 sm:mb-3">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-heart text-white text-lg sm:text-xl"></i>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-bold text-white">Collectes</h3>
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                            Lancez des collectes de fonds pour vos causes et suivez les dons en temps réel
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <a href="{{ route('register') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 shadow-lg hover:shadow-xl min-h-[44px] flex items-center justify-center">
+                        <i class="fas fa-plus-circle mr-2"></i>Créer une billetterie
+                    </a>
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 border-2 border-cyan-500/50 min-h-[44px] flex items-center justify-center">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Mon tableau de bord
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 border-2 border-cyan-500/50 min-h-[44px] flex items-center justify-center">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Connexion
+                        </a>
+                    @endauth
+                </div>
+            </div>
+            
+            <!-- Right Side: Visual Cards -->
+            <div class="relative z-10">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    @php
+                        $sampleItems = $heroItems->take(3);
+                        if ($sampleItems->isEmpty()) {
+                            $sampleItems = collect([
+                                ['type' => 'event', 'title' => 'Concert de Jazz', 'location' => 'Cotonou', 'date' => now()->addDays(7)],
+                                ['type' => 'contest', 'title' => 'Concours de Talents', 'location' => 'Lomé', 'date' => now()->addDays(14)],
+                                ['type' => 'fundraising', 'title' => 'Collecte Solidaire', 'location' => 'Abidjan', 'date' => now()->addDays(21)],
+                            ]);
+                        }
+                    @endphp
+                    
+                    @foreach($sampleItems->take(3) as $index => $item)
+                        <div class="bg-white rounded-xl shadow-2xl overflow-hidden hover:shadow-cyan-500/20 transition duration-300 {{ $index === 0 ? 'sm:col-span-2' : '' }}">
+                            @if(isset($item['image']) && $item['image'])
+                                <div class="relative h-32 sm:h-40 lg:h-48 overflow-hidden">
+                                    <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                </div>
+                            @else
+                                <div class="relative h-32 sm:h-40 lg:h-48 overflow-hidden bg-gradient-to-br 
+                                    @if($item['type'] === 'event') from-indigo-500 to-purple-600
+                                    @elseif($item['type'] === 'contest') from-purple-500 to-pink-600
+                                    @else from-red-500 to-orange-600
+                                    @endif">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <i class="fas 
+                                            @if($item['type'] === 'event') fa-calendar-alt
+                                            @elseif($item['type'] === 'contest') fa-trophy
+                                            @else fa-heart
+                                            @endif text-6xl sm:text-7xl text-white opacity-30"></i>
+                                    </div>
+                                </div>
+                            @endif
+                            
+                            <div class="p-4 sm:p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                        @if($item['type'] === 'event') bg-indigo-100 text-indigo-800
+                                        @elseif($item['type'] === 'contest') bg-purple-100 text-purple-800
+                                        @else bg-red-100 text-red-800
+                                        @endif">
+                                        @if($item['type'] === 'event')
+                                            <i class="fas fa-calendar-alt mr-1"></i>Événement
+                                        @elseif($item['type'] === 'contest')
+                                            <i class="fas fa-trophy mr-1"></i>Concours
+                                        @else
+                                            <i class="fas fa-heart mr-1"></i>Collecte
+                                        @endif
+                                    </span>
+                                </div>
+                                
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                                    {{ $item['title'] ?? 'Exemple d\'événement' }}
+                                </h3>
+                                
+                                <div class="flex items-center text-sm text-gray-600 mb-3">
+                                    @if(isset($item['location']) && $item['location'])
+                                        <i class="fas fa-map-marker-alt mr-2 text-indigo-600"></i>
+                                        <span>{{ $item['location'] }}</span>
+                                        <span class="mx-2">•</span>
+                                    @endif
+                                    @if(isset($item['date']))
+                                        <i class="fas fa-calendar mr-2 text-indigo-600"></i>
+                                        <span>{{ is_object($item['date']) ? $item['date']->format('d/m/Y') : date('d/m/Y', strtotime($item['date'])) }}</span>
+                                    @endif
+                                </div>
+                                
+                                @if($index === 0)
+                                    <!-- Table preview for first card -->
+                                    <div class="border-t border-gray-200 pt-3 mt-3">
+                                        <div class="text-xs text-gray-500 mb-2">Billets disponibles</div>
+                                        <div class="space-y-2">
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-gray-700">VIP</span>
+                                                <span class="font-semibold text-gray-900">15 000 XOF</span>
+                                            </div>
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-gray-700">Standard</span>
+                                                <span class="font-semibold text-gray-900">5 000 XOF</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
-    @endif
+        
+        <!-- Categories Section -->
+        <div class="mt-12 sm:mt-16 lg:mt-20 pt-8 sm:pt-12 border-t border-white/10">
+            <div class="text-center mb-6 sm:mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Explorez par catégorie</h2>
+                <p class="text-gray-300 text-sm sm:text-base">Découvrez nos événements selon vos centres d'intérêt</p>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+                @php
+                    $categories = [
+                        ['name' => 'Concert', 'icon' => 'fa-music', 'color' => 'indigo'],
+                        ['name' => 'Sport', 'icon' => 'fa-futbol', 'color' => 'green'],
+                        ['name' => 'Culture', 'icon' => 'fa-theater-masks', 'color' => 'purple'],
+                        ['name' => 'Business', 'icon' => 'fa-briefcase', 'color' => 'blue'],
+                        ['name' => 'Éducation', 'icon' => 'fa-graduation-cap', 'color' => 'yellow'],
+                        ['name' => 'Autre', 'icon' => 'fa-star', 'color' => 'gray'],
+                    ];
+                @endphp
+                
+                @foreach($categories as $category)
+                    <a href="{{ route('events.index', ['category' => $category['name']]) }}" class="group bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/20 hover:border-cyan-500/50 transition duration-300 text-center">
+                        <div class="mb-3 flex justify-center">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-{{ $category['color'] }}-500/20 group-hover:bg-{{ $category['color'] }}-500/30 rounded-lg flex items-center justify-center transition">
+                                <i class="fas {{ $category['icon'] }} text-{{ $category['color'] }}-400 text-xl sm:text-2xl group-hover:scale-110 transition-transform"></i>
+                            </div>
+                        </div>
+                        <div class="text-white font-semibold text-sm sm:text-base group-hover:text-cyan-400 transition">
+                            {{ $category['name'] }}
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
 </section>
 
 @push('styles')
@@ -248,178 +303,7 @@
         margin-top: 0 !important;
         padding-top: 0 !important;
     }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .animate-fade-in-up {
-        animation: fadeInUp 0.8s ease-out forwards;
-        opacity: 0;
-    }
-    
-    .animation-delay-200 {
-        animation-delay: 0.2s;
-    }
-    
-    .animation-delay-400 {
-        animation-delay: 0.4s;
-    }
-    
-    .animation-delay-600 {
-        animation-delay: 0.6s;
-    }
-    
-    .hero-slide {
-        will-change: opacity;
-    }
-    
-    .hero-slide.active {
-        opacity: 1 !important;
-        z-index: 10 !important;
-    }
-    
-    .hero-dot.active {
-        background-color: white !important;
-        width: 2rem !important;
-    }
-    
-    /* Ensure hero slider is visible */
-    .hero-slider {
-        position: relative;
-        min-height: 500px;
-    }
-    
-    .hero-slide {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-    }
 </style>
-@endpush
-
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const slides = document.querySelectorAll('.hero-slide');
-    const dots = document.querySelectorAll('.hero-dot');
-    const prevBtn = document.getElementById('hero-prev');
-    const nextBtn = document.getElementById('hero-next');
-    let currentSlide = 0;
-    let slideInterval;
-    
-    if (slides.length <= 1) return;
-    
-    function showSlide(index) {
-        // Remove active class from all slides and dots
-        slides.forEach((slide, i) => {
-            if (i === index) {
-                slide.classList.add('opacity-100', 'z-10');
-                slide.classList.remove('opacity-0', 'z-0');
-            } else {
-                slide.classList.add('opacity-0', 'z-0');
-                slide.classList.remove('opacity-100', 'z-10');
-            }
-        });
-        
-        dots.forEach((dot, i) => {
-            if (i === index) {
-                dot.classList.add('bg-white', 'w-8');
-                dot.classList.remove('bg-white/50', 'w-3');
-            } else {
-                dot.classList.add('bg-white/50', 'w-3');
-                dot.classList.remove('bg-white', 'w-8');
-            }
-        });
-        
-        // Re-animate content
-        const activeSlide = slides[index];
-        const animatedElements = activeSlide.querySelectorAll('.animate-fade-in-up');
-        animatedElements.forEach(el => {
-            el.style.animation = 'none';
-            setTimeout(() => {
-                el.style.animation = '';
-            }, 10);
-        });
-    }
-    
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
-    }
-    
-    function prevSlide() {
-        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-        showSlide(currentSlide);
-    }
-    
-    function startAutoSlide() {
-        slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
-    }
-    
-    function stopAutoSlide() {
-        clearInterval(slideInterval);
-    }
-    
-    // Event listeners
-    if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); stopAutoSlide(); startAutoSlide(); });
-    if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); stopAutoSlide(); startAutoSlide(); });
-    
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            currentSlide = index;
-            showSlide(currentSlide);
-            stopAutoSlide();
-            startAutoSlide();
-        });
-    });
-    
-    // Pause on hover
-    const slider = document.querySelector('.hero-slider');
-    if (slider) {
-        slider.addEventListener('mouseenter', stopAutoSlide);
-        slider.addEventListener('mouseleave', startAutoSlide);
-    }
-    
-    // Start auto-slide
-    startAutoSlide();
-    
-    // Touch swipe support
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    slider.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    });
-    
-    slider.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    });
-    
-    function handleSwipe() {
-        if (touchEndX < touchStartX - 50) {
-            nextSlide();
-            stopAutoSlide();
-            startAutoSlide();
-        }
-        if (touchEndX > touchStartX + 50) {
-            prevSlide();
-            stopAutoSlide();
-            startAutoSlide();
-        }
-    }
-});
-</script>
 @endpush
 
 <!-- Statistiques -->
@@ -946,35 +830,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 @endif
 
-<!-- Catégories -->
-<section class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Explorez par catégorie</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            @php
-                $categories = ['Concert', 'Sport', 'Culture', 'Business', 'Éducation', 'Autre'];
-            @endphp
-            @foreach($categories as $category)
-                <a href="{{ route('events.index', ['category' => $category]) }}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 text-center group">
-                    <div class="text-4xl mb-3 group-hover:scale-110 transition duration-300">
-                        @if($category === 'Concert')
-                            <i class="fas fa-music text-indigo-600"></i>
-                        @elseif($category === 'Sport')
-                            <i class="fas fa-futbol text-green-600"></i>
-                        @elseif($category === 'Culture')
-                            <i class="fas fa-theater-masks text-purple-600"></i>
-                        @elseif($category === 'Business')
-                            <i class="fas fa-briefcase text-blue-600"></i>
-                        @elseif($category === 'Éducation')
-                            <i class="fas fa-graduation-cap text-yellow-600"></i>
-                        @else
-                            <i class="fas fa-star text-gray-600"></i>
-                        @endif
-                    </div>
-                    <div class="font-semibold text-gray-800">{{ $category }}</div>
-                </a>
-            @endforeach
-        </div>
-    </div>
-</section>
 @endsection
