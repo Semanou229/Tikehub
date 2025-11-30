@@ -176,118 +176,143 @@
                 </div>
             </div>
             
-            <!-- Right Side: Visual Cards - Animated Rotator -->
-            <div class="relative z-10 hidden lg:block">
-                <div class="relative h-[350px] sm:h-[400px] lg:h-[450px] overflow-hidden">
+            <!-- Right Side: Content Types Slider -->
+            <div class="relative z-10">
+                <div class="relative h-[280px] sm:h-[320px] lg:h-[360px] overflow-hidden">
                     @php
-                        // Préparer tous les items pour la rotation
-                        $allHeroItems = $heroItems;
-                        if ($allHeroItems->isEmpty()) {
-                            $allHeroItems = collect([
-                                ['type' => 'event', 'title' => 'Concert de Jazz', 'location' => 'Cotonou', 'date' => now()->addDays(7), 'image' => null],
-                                ['type' => 'contest', 'title' => 'Concours de Talents', 'location' => 'Lomé', 'date' => now()->addDays(14), 'image' => null],
-                                ['type' => 'fundraising', 'title' => 'Collecte Solidaire', 'location' => 'Abidjan', 'date' => now()->addDays(21), 'image' => null],
+                        // Préparer les items pour le slider (un par type)
+                        $sliderItems = collect();
+                        
+                        // Prendre un événement
+                        $event = $upcomingEvents->first();
+                        if ($event) {
+                            $sliderItems->push([
+                                'type' => 'event',
+                                'title' => $event->title,
+                                'date' => $event->start_date,
+                                'location' => $event->venue_city,
+                                'image' => $event->cover_image,
+                                'url' => route('events.show', $event),
                             ]);
                         }
-                        // Grouper par 3 pour chaque slide
-                        $slides = $allHeroItems->chunk(3);
-                        if ($slides->isEmpty()) {
-                            $slides = collect([collect([
-                                ['type' => 'event', 'title' => 'Concert de Jazz', 'location' => 'Cotonou', 'date' => now()->addDays(7), 'image' => null],
-                                ['type' => 'contest', 'title' => 'Concours de Talents', 'location' => 'Lomé', 'date' => now()->addDays(14), 'image' => null],
-                                ['type' => 'fundraising', 'title' => 'Collecte Solidaire', 'location' => 'Abidjan', 'date' => now()->addDays(21), 'image' => null],
-                            ])]);
+                        
+                        // Prendre un concours
+                        $contest = $activeContests->first();
+                        if ($contest) {
+                            $sliderItems->push([
+                                'type' => 'contest',
+                                'title' => $contest->name,
+                                'date' => $contest->end_date,
+                                'location' => null,
+                                'image' => $contest->cover_image,
+                                'url' => route('contests.show', $contest),
+                                'price_per_vote' => $contest->price_per_vote,
+                            ]);
+                        }
+                        
+                        // Prendre une collecte
+                        $fundraising = $activeFundraisings->first();
+                        if ($fundraising) {
+                            $sliderItems->push([
+                                'type' => 'fundraising',
+                                'title' => $fundraising->name,
+                                'date' => $fundraising->end_date,
+                                'location' => null,
+                                'image' => $fundraising->cover_image,
+                                'url' => route('fundraisings.show', $fundraising),
+                                'progress' => $fundraising->progress_percentage,
+                            ]);
+                        }
+                        
+                        // Si pas d'items, créer des exemples
+                        if ($sliderItems->isEmpty()) {
+                            $sliderItems = collect([
+                                ['type' => 'event', 'title' => 'Concert de Jazz', 'date' => now()->addDays(7), 'location' => 'Cotonou', 'image' => null, 'url' => '#'],
+                                ['type' => 'contest', 'title' => 'Concours de Talents', 'date' => now()->addDays(14), 'location' => null, 'image' => null, 'url' => '#'],
+                                ['type' => 'fundraising', 'title' => 'Collecte Solidaire', 'date' => now()->addDays(21), 'location' => null, 'image' => null, 'url' => '#'],
+                            ]);
                         }
                     @endphp
                     
-                    @foreach($slides as $slideIndex => $slideItems)
-                        <div class="visual-slide absolute inset-0 transition-all duration-700 ease-in-out {{ $slideIndex === 0 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full' }}" data-slide="{{ $slideIndex }}">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 h-full">
-                                @foreach($slideItems->take(3) as $index => $item)
-                                    <div class="bg-white rounded-xl shadow-2xl overflow-hidden hover:shadow-cyan-500/20 transition duration-300 {{ $index === 0 ? 'sm:col-span-2' : '' }}">
-                                        @if(isset($item['image']) && $item['image'])
-                                            <div class="relative h-32 sm:h-40 lg:h-48 overflow-hidden">
-                                                <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
-                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                            </div>
-                                        @else
-                                            <div class="relative h-32 sm:h-40 lg:h-48 overflow-hidden bg-gradient-to-br 
-                                                @if($item['type'] === 'event') from-indigo-500 to-purple-600
-                                                @elseif($item['type'] === 'contest') from-purple-500 to-pink-600
-                                                @else from-red-500 to-orange-600
+                    @foreach($sliderItems as $index => $item)
+                        <div class="hero-slide-item absolute inset-0 transition-all duration-700 ease-in-out {{ $index === 0 ? 'opacity-100 translate-x-0 z-10' : 'opacity-0 translate-x-full z-0' }}" data-slide-index="{{ $index }}">
+                            <a href="{{ $item['url'] ?? '#' }}" class="block h-full">
+                                <div class="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-6 sm:p-8 h-full flex flex-col hover:bg-white/15 transition duration-300">
+                                    @if(isset($item['image']) && $item['image'])
+                                        <div class="relative h-32 sm:h-36 lg:h-40 mb-4 rounded-lg overflow-hidden">
+                                            <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                        </div>
+                                    @else
+                                        <div class="relative h-32 sm:h-36 lg:h-40 mb-4 rounded-lg overflow-hidden bg-gradient-to-br 
+                                            @if($item['type'] === 'event') from-indigo-500 to-purple-600
+                                            @elseif($item['type'] === 'contest') from-purple-500 to-pink-600
+                                            @else from-red-500 to-orange-600
+                                            @endif flex items-center justify-center">
+                                            <i class="fas 
+                                                @if($item['type'] === 'event') fa-calendar-alt
+                                                @elseif($item['type'] === 'contest') fa-trophy
+                                                @else fa-heart
+                                                @endif text-5xl sm:text-6xl text-white opacity-30"></i>
+                                        </div>
+                                    @endif
+                                    
+                                    <div class="flex-1 flex flex-col">
+                                        <div class="mb-3">
+                                            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold
+                                                @if($item['type'] === 'event') bg-indigo-500/30 text-indigo-200 border border-indigo-400/30
+                                                @elseif($item['type'] === 'contest') bg-purple-500/30 text-purple-200 border border-purple-400/30
+                                                @else bg-red-500/30 text-red-200 border border-red-400/30
                                                 @endif">
-                                                <div class="absolute inset-0 flex items-center justify-center">
-                                                    <i class="fas 
-                                                        @if($item['type'] === 'event') fa-calendar-alt
-                                                        @elseif($item['type'] === 'contest') fa-trophy
-                                                        @else fa-heart
-                                                        @endif text-6xl sm:text-7xl text-white opacity-30"></i>
-                                                </div>
-                                            </div>
-                                        @endif
+                                                @if($item['type'] === 'event')
+                                                    <i class="fas fa-calendar-alt mr-1"></i>Événement
+                                                @elseif($item['type'] === 'contest')
+                                                    <i class="fas fa-trophy mr-1"></i>Concours
+                                                @else
+                                                    <i class="fas fa-heart mr-1"></i>Collecte
+                                                @endif
+                                            </span>
+                                        </div>
                                         
-                                        <div class="p-4 sm:p-6">
-                                            <div class="flex items-center justify-between mb-2">
-                                                <span class="px-3 py-1 rounded-full text-xs font-semibold
-                                                    @if($item['type'] === 'event') bg-indigo-100 text-indigo-800
-                                                    @elseif($item['type'] === 'contest') bg-purple-100 text-purple-800
-                                                    @else bg-red-100 text-red-800
-                                                    @endif">
-                                                    @if($item['type'] === 'event')
-                                                        <i class="fas fa-calendar-alt mr-1"></i>Événement
-                                                    @elseif($item['type'] === 'contest')
-                                                        <i class="fas fa-trophy mr-1"></i>Concours
-                                                    @else
-                                                        <i class="fas fa-heart mr-1"></i>Collecte
-                                                    @endif
-                                                </span>
-                                            </div>
-                                            
-                                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2">
-                                                {{ $item['title'] ?? 'Exemple d\'événement' }}
-                                            </h3>
-                                            
-                                            <div class="flex items-center text-sm text-gray-600 mb-3">
-                                                @if(isset($item['location']) && $item['location'])
-                                                    <i class="fas fa-map-marker-alt mr-2 text-indigo-600"></i>
-                                                    <span>{{ $item['location'] }}</span>
-                                                    <span class="mx-2">•</span>
-                                                @endif
-                                                @if(isset($item['date']))
-                                                    <i class="fas fa-calendar mr-2 text-indigo-600"></i>
-                                                    <span>{{ is_object($item['date']) ? $item['date']->format('d/m/Y') : (isset($item['date']) ? date('d/m/Y', strtotime($item['date'])) : '') }}</span>
-                                                @endif
-                                            </div>
-                                            
-                                            @if($index === 0 && $item['type'] === 'event')
-                                                <!-- Table preview for first event card -->
-                                                <div class="border-t border-gray-200 pt-3 mt-3">
-                                                    <div class="text-xs text-gray-500 mb-2">Billets disponibles</div>
-                                                    <div class="space-y-2">
-                                                        <div class="flex justify-between text-sm">
-                                                            <span class="text-gray-700">VIP</span>
-                                                            <span class="font-semibold text-gray-900">15 000 XOF</span>
-                                                        </div>
-                                                        <div class="flex justify-between text-sm">
-                                                            <span class="text-gray-700">Standard</span>
-                                                            <span class="font-semibold text-gray-900">5 000 XOF</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                        <h3 class="text-lg sm:text-xl font-bold text-white mb-3 line-clamp-2">
+                                            {{ $item['title'] }}
+                                        </h3>
+                                        
+                                        <div class="flex items-center text-sm text-gray-300 mb-3">
+                                            @if(isset($item['date']))
+                                                <i class="fas fa-calendar mr-2 text-cyan-400"></i>
+                                                <span>{{ is_object($item['date']) ? $item['date']->format('d/m/Y') : date('d/m/Y', strtotime($item['date'])) }}</span>
+                                            @endif
+                                            @if(isset($item['location']) && $item['location'])
+                                                <span class="mx-2">•</span>
+                                                <i class="fas fa-map-marker-alt mr-2 text-cyan-400"></i>
+                                                <span>{{ $item['location'] }}</span>
                                             @endif
                                         </div>
+                                        
+                                        @if($item['type'] === 'contest' && isset($item['price_per_vote']))
+                                            <div class="mt-auto pt-3 border-t border-white/10">
+                                                <div class="text-xs text-gray-400 mb-1">Prix par vote</div>
+                                                <div class="text-lg font-bold text-white">{{ number_format($item['price_per_vote'], 0, ',', ' ') }} XOF</div>
+                                            </div>
+                                        @elseif($item['type'] === 'fundraising' && isset($item['progress']))
+                                            <div class="mt-auto pt-3 border-t border-white/10">
+                                                <div class="text-xs text-gray-400 mb-1">Progression</div>
+                                                <div class="text-lg font-bold text-white">{{ number_format($item['progress'], 0) }}%</div>
+                                            </div>
+                                        @endif
                                     </div>
-                                @endforeach
-                            </div>
+                                </div>
+                            </a>
                         </div>
                     @endforeach
                 </div>
                 
-                <!-- Visual Cards Navigation Dots -->
-                @if($slides->count() > 1)
+                <!-- Slider Navigation Dots -->
+                @if($sliderItems->count() > 1)
                     <div class="flex justify-center gap-2 mt-4">
-                        @foreach($slides as $index => $slide)
-                            <button class="visual-dot w-2 h-2 rounded-full transition-all duration-300 {{ $index === 0 ? 'bg-cyan-400 w-8' : 'bg-white/30' }}" data-visual-slide="{{ $index }}"></button>
+                        @foreach($sliderItems as $index => $item)
+                            <button class="hero-slide-dot w-2 h-2 rounded-full transition-all duration-300 {{ $index === 0 ? 'bg-cyan-400 w-8' : 'bg-white/30' }}" data-slide-index="{{ $index }}"></button>
                         @endforeach
                     </div>
                 @endif
@@ -507,30 +532,30 @@ document.addEventListener('DOMContentLoaded', function() {
         rotator.addEventListener('mouseleave', startTypeRotation);
     }
     
-    // Visual Cards Rotator
-    const visualSlides = document.querySelectorAll('.visual-slide');
-    const visualDots = document.querySelectorAll('.visual-dot');
-    let currentVisualSlide = 0;
-    let visualInterval;
+    // Hero Content Types Slider
+    const heroSlideItems = document.querySelectorAll('.hero-slide-item');
+    const heroSlideDots = document.querySelectorAll('.hero-slide-dot');
+    let currentHeroSlide = 0;
+    let heroSlideInterval;
     
-    if (visualSlides.length <= 1) return;
+    if (heroSlideItems.length <= 1) return;
     
-    function showVisualSlide(index) {
-        visualSlides.forEach((slide, i) => {
+    function showHeroSlide(index) {
+        heroSlideItems.forEach((slide, i) => {
             if (i === index) {
-                slide.classList.remove('opacity-0', 'translate-x-full', '-translate-x-full');
-                slide.classList.add('opacity-100', 'translate-x-0');
+                slide.classList.remove('opacity-0', 'translate-x-full', '-translate-x-full', 'z-0');
+                slide.classList.add('opacity-100', 'translate-x-0', 'z-10');
             } else {
-                slide.classList.remove('opacity-100', 'translate-x-0');
+                slide.classList.remove('opacity-100', 'translate-x-0', 'z-10');
                 if (i < index) {
-                    slide.classList.add('opacity-0', '-translate-x-full');
+                    slide.classList.add('opacity-0', '-translate-x-full', 'z-0');
                 } else {
-                    slide.classList.add('opacity-0', 'translate-x-full');
+                    slide.classList.add('opacity-0', 'translate-x-full', 'z-0');
                 }
             }
         });
         
-        visualDots.forEach((dot, i) => {
+        heroSlideDots.forEach((dot, i) => {
             if (i === index) {
                 dot.classList.add('bg-cyan-400', 'w-8');
                 dot.classList.remove('bg-white/30', 'w-2');
@@ -540,36 +565,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        currentVisualSlide = index;
+        currentHeroSlide = index;
     }
     
-    function nextVisualSlide() {
-        const nextIndex = (currentVisualSlide + 1) % visualSlides.length;
-        showVisualSlide(nextIndex);
+    function nextHeroSlide() {
+        const nextIndex = (currentHeroSlide + 1) % heroSlideItems.length;
+        showHeroSlide(nextIndex);
     }
     
-    function startVisualRotation() {
-        visualInterval = setInterval(nextVisualSlide, 5000); // Change every 5 seconds
+    function startHeroSlideRotation() {
+        heroSlideInterval = setInterval(nextHeroSlide, 4000); // Change every 4 seconds
     }
     
     // Click on dots to navigate
-    visualDots.forEach((dot, index) => {
+    heroSlideDots.forEach((dot, index) => {
         dot.addEventListener('click', () => {
-            clearInterval(visualInterval);
-            showVisualSlide(index);
-            startVisualRotation();
+            clearInterval(heroSlideInterval);
+            showHeroSlide(index);
+            startHeroSlideRotation();
         });
     });
     
-    // Initialize visual slides
-    showVisualSlide(0);
-    startVisualRotation();
+    // Initialize hero slides
+    showHeroSlide(0);
+    startHeroSlideRotation();
     
-    // Pause visual rotation on hover
-    const visualContainer = document.querySelector('.relative.z-10');
-    if (visualContainer) {
-        visualContainer.addEventListener('mouseenter', () => clearInterval(visualInterval));
-        visualContainer.addEventListener('mouseleave', startVisualRotation);
+    // Pause hero slide rotation on hover
+    const heroSliderContainer = document.querySelector('.relative.z-10');
+    if (heroSliderContainer) {
+        heroSliderContainer.addEventListener('mouseenter', () => clearInterval(heroSlideInterval));
+        heroSliderContainer.addEventListener('mouseleave', startHeroSlideRotation);
     }
 });
 </script>
