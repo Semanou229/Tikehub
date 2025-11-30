@@ -536,19 +536,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const heroSlideItems = document.querySelectorAll('.hero-slide-item');
     const heroSlideDots = document.querySelectorAll('.hero-slide-dot');
     
+    console.log('Hero slider items found:', heroSlideItems.length);
+    console.log('Hero slider dots found:', heroSlideDots.length);
+    
     if (heroSlideItems.length > 1) {
         let currentHeroSlide = 0;
         let heroSlideInterval;
         
         function showHeroSlide(index) {
+            console.log('Showing hero slide:', index);
             heroSlideItems.forEach((slide, i) => {
                 if (i === index) {
                     slide.style.opacity = '1';
                     slide.style.transform = 'translateX(0)';
                     slide.style.zIndex = '10';
+                    slide.style.transition = 'all 0.7s ease-in-out';
                 } else {
                     slide.style.opacity = '0';
                     slide.style.zIndex = '0';
+                    slide.style.transition = 'all 0.7s ease-in-out';
                     if (i < index) {
                         slide.style.transform = 'translateX(-100%)';
                     } else {
@@ -559,11 +565,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             heroSlideDots.forEach((dot, i) => {
                 if (i === index) {
-                    dot.classList.add('bg-cyan-400', 'w-8');
-                    dot.classList.remove('bg-white/30', 'w-2');
+                    dot.style.backgroundColor = 'rgb(34, 211, 238)';
+                    dot.style.width = '2rem';
                 } else {
-                    dot.classList.add('bg-white/30', 'w-2');
-                    dot.classList.remove('bg-cyan-400', 'w-8');
+                    dot.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                    dot.style.width = '0.5rem';
                 }
             });
             
@@ -578,11 +584,13 @@ document.addEventListener('DOMContentLoaded', function() {
         function startHeroSlideRotation() {
             if (heroSlideInterval) clearInterval(heroSlideInterval);
             heroSlideInterval = setInterval(nextHeroSlide, 4000); // Change every 4 seconds
+            console.log('Hero slide rotation started');
         }
         
         // Click on dots to navigate
         heroSlideDots.forEach((dot, index) => {
             dot.addEventListener('click', () => {
+                console.log('Dot clicked:', index);
                 clearInterval(heroSlideInterval);
                 showHeroSlide(index);
                 startHeroSlideRotation();
@@ -597,10 +605,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const heroSliderContainer = document.querySelector('.relative.z-10');
         if (heroSliderContainer) {
             heroSliderContainer.addEventListener('mouseenter', () => {
-                if (heroSlideInterval) clearInterval(heroSlideInterval);
+                if (heroSlideInterval) {
+                    clearInterval(heroSlideInterval);
+                    console.log('Hero slide rotation paused');
+                }
             });
-            heroSliderContainer.addEventListener('mouseleave', startHeroSlideRotation);
+            heroSliderContainer.addEventListener('mouseleave', () => {
+                startHeroSlideRotation();
+            });
         }
+    } else {
+        console.log('Not enough hero slide items to create slider');
     }
 });
 </script>
