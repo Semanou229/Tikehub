@@ -127,14 +127,14 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Mot de passe (optionnel)</label>
-                                <input type="text" name="meeting_password" id="meeting_password" value="{{ old('meeting_password') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Mot de passe de la réunion">
+                                <input type="text" name="meeting_password" id="meeting_password" value="{{ old('meeting_password') }}" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Mot de passe de la réunion">
                                 @error('meeting_password')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Instructions d'accès (optionnel)</label>
-                            <textarea name="virtual_access_instructions" id="virtual_access_instructions" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Instructions spéciales pour les participants (ex: Activer la caméra, utiliser un nom spécifique, etc.)">{{ old('virtual_access_instructions') }}</textarea>
+                            <textarea name="virtual_access_instructions" id="virtual_access_instructions" rows="3" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[90px]" placeholder="Instructions spéciales pour les participants (ex: Activer la caméra, utiliser un nom spécifique, etc.)">{{ old('virtual_access_instructions') }}</textarea>
                             @error('virtual_access_instructions')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
                     </div>

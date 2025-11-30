@@ -75,7 +75,7 @@
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Options</h2>
                     <div class="space-y-4">
                         <div class="flex items-center">
-                            <input type="checkbox" name="show_donors" id="show_donors" value="1" {{ old('show_donors') ? 'checked' : '' }} class="rounded border-gray-300 text-green-600 focus:ring-green-500">
+                            <input type="checkbox" name="show_donors" id="show_donors" value="1" {{ old('show_donors') ? 'checked' : '' }} class="rounded border-gray-300 text-green-600 focus:ring-green-500 w-5 h-5 sm:w-6 sm:h-6 min-w-[20px] min-h-[20px]">
                             <label for="show_donors" class="ml-2 text-sm text-gray-700">
                                 Afficher la liste des donateurs publiquement
                             </label>
@@ -89,7 +89,7 @@
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Événement associé (optionnel)</h2>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Lier à un événement</label>
-                        <select name="event_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        <select name="event_id" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm sm:text-base min-h-[44px]">
                             <option value="">Aucun événement</option>
                             @foreach(\App\Models\Event::where('organizer_id', auth()->id())->get() as $event)
                                 <option value="{{ $event->id }}" {{ old('event_id') == $event->id ? 'selected' : '' }}>
