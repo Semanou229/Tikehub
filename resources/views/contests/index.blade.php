@@ -3,17 +3,17 @@
 @section('title', 'Concours & Votes - Tikehub')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="mb-8">
-        <div class="flex justify-between items-center mb-2">
+<div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+    <div class="mb-4 sm:mb-6 lg:mb-8">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 mb-2">
             <div>
-                <h1 class="text-4xl font-bold text-gray-800 mb-2">Concours & Votes payants</h1>
-                <p class="text-gray-600">Participez aux concours et votez pour vos favoris</p>
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">Concours & Votes payants</h1>
+                <p class="text-sm sm:text-base text-gray-600">Participez aux concours et votez pour vos favoris</p>
             </div>
             @auth
                 @if(auth()->user()->isOrganizer())
-                    <a href="{{ route('contests.create') }}" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-pink-700 transition shadow-md hover:shadow-lg">
-                        <i class="fas fa-plus mr-2"></i>Créer un concours
+                    <a href="{{ route('contests.create') }}" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:from-purple-700 hover:to-pink-700 active:from-purple-800 active:to-pink-800 transition shadow-md hover:shadow-lg text-sm sm:text-base font-medium min-h-[44px] flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i><span class="hidden sm:inline">Créer un concours</span><span class="sm:hidden">Créer</span>
                     </a>
                 @endif
             @endauth
@@ -21,48 +21,48 @@
     </div>
 
     <!-- Layout avec sidebar de filtres -->
-    <div class="flex flex-col lg:flex-row gap-6">
+    <div class="flex flex-col lg:flex-row gap-4 sm:gap-6">
         <!-- Sidebar des filtres (sticky) -->
-        <aside class="lg:w-80 flex-shrink-0">
-            <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+        <aside class="lg:w-80 flex-shrink-0 order-2 lg:order-1">
+            <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:sticky lg:top-20 relative">
+                <h2 class="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center">
                     <i class="fas fa-filter mr-2 text-purple-600"></i>Filtres
                 </h2>
-                <form method="GET" action="{{ route('contests.index') }}" class="space-y-4">
-                    <div class="space-y-4">
+                <form method="GET" action="{{ route('contests.index') }}" class="space-y-3 sm:space-y-4">
+                    <div class="space-y-3 sm:space-y-4">
                 <!-- Prix minimum par vote -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Prix min/vote (XOF)</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Prix min/vote (XOF)</label>
                     <input type="number" name="price_min" value="{{ request('price_min') }}" placeholder="0" min="0"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                           class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 min-h-[44px]">
                 </div>
 
                 <!-- Prix maximum par vote -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Prix max/vote (XOF)</label>
                     <input type="number" name="price_max" value="{{ request('price_max') }}" placeholder="∞" min="0"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                           class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 min-h-[44px]">
                 </div>
 
                 <!-- Date de fin (début) -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Fin après le</label>
                     <input type="date" name="end_date_from" value="{{ request('end_date_from') }}" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                           class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 min-h-[44px]">
                 </div>
 
                 <!-- Date de fin (fin) -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Fin avant le</label>
                     <input type="date" name="end_date_to" value="{{ request('end_date_to') }}" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                           class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 min-h-[44px]">
                 </div>
 
                 <!-- Nombre minimum de votes -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Min votes</label>
                     <input type="number" name="min_votes" value="{{ request('min_votes') }}" placeholder="0" min="0"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                           class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 min-h-[44px]">
                 </div>
 
                 <!-- Organisateur -->
@@ -109,19 +109,19 @@
             </div>
 
             <!-- Grille de concours -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         @forelse($contests as $contest)
             <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-200">
-                <a href="{{ route('contests.show', $contest) }}">
+                <a href="{{ route('contests.show', $contest) }}" class="block">
                     @if($contest->cover_image)
-                        <img src="{{ asset('storage/' . $contest->cover_image) }}" alt="{{ $contest->name }}" class="w-full h-48 object-cover">
+                        <img src="{{ asset('storage/' . $contest->cover_image) }}" alt="{{ $contest->name }}" class="w-full h-40 sm:h-48 object-cover">
                     @else
-                        <div class="w-full h-48 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
-                            <i class="fas fa-trophy text-6xl text-white opacity-50"></i>
+                        <div class="w-full h-40 sm:h-48 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+                            <i class="fas fa-trophy text-4xl sm:text-6xl text-white opacity-50"></i>
                         </div>
                     @endif
                 </a>
-                <div class="p-6">
+                <div class="p-4 sm:p-6">
                     <div class="flex items-center justify-between mb-2">
                         <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">
                             Concours

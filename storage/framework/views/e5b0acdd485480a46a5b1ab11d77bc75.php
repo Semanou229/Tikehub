@@ -20,31 +20,88 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            padding-top: 0 !important;
         }
-        nav {
-            position: relative !important;
+        /* Navigation fixée en haut */
+        body > nav:first-of-type {
+            position: fixed !important;
             top: 0 !important;
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
+            z-index: 9999 !important;
+            background: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+            border-bottom: 3px solid #6b7280 !important;
             order: 1 !important;
-            flex-shrink: 0;
-            z-index: 1000 !important;
+            opacity: 1 !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
         }
-        main {
+        /* Main avec padding pour la navigation fixe */
+        body > main {
+            margin-top: 80px !important;
+            padding-top: 2rem !important;
+            padding-bottom: 0 !important;
             order: 2 !important;
             flex: 1;
-            position: relative;
+            min-height: auto !important;
         }
-        footer {
+        /* Espacement supplémentaire uniquement pour la page de détail d'événement */
+        body.events-show-page > main {
+            margin-top: 140px !important;
+            padding-top: 6rem !important;
+        }
+        /* Footer */
+        body > footer {
             order: 3 !important;
             flex-shrink: 0;
+        }
+        /* Navigation */
+        nav {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            z-index: 9999 !important;
+            background: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+            border-bottom: 3px solid #6b7280 !important;
+            opacity: 1 !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+        }
+        /* Main */
+        main {
+            margin-top: 80px !important;
+            padding-top: 1rem !important;
+            padding-bottom: 0 !important;
+            min-height: auto !important;
+        }
+        /* Espacement supplémentaire uniquement pour la page de détail d'événement */
+        body.events-show-page main {
+            margin-top: 140px !important;
+            padding-top: 6rem !important;
+        }
+        /* Masquer toute barre de navigation fixée en bas */
+        nav.fixed.bottom-0,
+        .bottom-nav,
+        nav[class*="bottom"],
+        nav[class*="fixed"][class*="bottom"] {
+            display: none !important;
+        }
+        /* Empêcher le menu mobile de s'afficher en bas */
+        #mobile-menu {
+            position: relative !important;
+            top: auto !important;
+            bottom: auto !important;
         }
     </style>
     <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <body class="bg-gray-50">
-    <nav class="bg-white shadow-lg border-b border-gray-200" style="position: relative !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 1000 !important; order: 1 !important; flex-shrink: 0 !important;">
+    <nav class="bg-white shadow-lg border-b border-gray-200" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 9999 !important; background: #ffffff !important; opacity: 1 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important; border-bottom: 3px solid #6b7280 !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
@@ -96,6 +153,9 @@
                                     </div>
                                     <a href="<?php echo e(route('dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
                                         <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                    </a>
+                                    <a href="<?php echo e(route('support.tickets.index')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                                        <i class="fas fa-headset mr-2"></i>Support
                                     </a>
                                     <form method="POST" action="<?php echo e(route('logout')); ?>">
                                         <?php echo csrf_field(); ?>
@@ -156,7 +216,7 @@
     </script>
     <?php $__env->stopPush(); ?>
 
-    <main class="py-4" style="order: 2 !important; flex: 1 !important; position: relative !important;">
+    <main class="py-4" style="order: 2 !important; flex: 1 !important; position: relative !important; min-height: auto !important; padding-bottom: 1rem !important;">
         <?php if(session('success')): ?>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
@@ -181,7 +241,7 @@
         <?php echo $__env->yieldContent('content'); ?>
     </main>
 
-    <footer class="bg-gray-800 text-white mt-12" style="order: 3 !important; flex-shrink: 0 !important;">
+    <footer class="bg-gray-800 text-white mt-0" style="order: 3 !important; flex-shrink: 0 !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <p class="text-center">&copy; <?php echo e(date('Y')); ?> Tikehub. Tous droits réservés.</p>
         </div>

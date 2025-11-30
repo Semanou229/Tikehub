@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Modifier un Événement'); ?>
 
 <?php $__env->startSection('content'); ?>

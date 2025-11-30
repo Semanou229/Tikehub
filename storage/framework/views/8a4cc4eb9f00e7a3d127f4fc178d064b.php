@@ -1,9 +1,9 @@
 <?php $__env->startSection('title', $event->title . ' - Tikehub'); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
     <!-- Header avec date en rouge -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6 border border-gray-200">
         <div class="flex flex-col md:flex-row">
             <!-- Date Box (Rouge) -->
             <div class="bg-red-600 text-white p-6 text-center min-w-[120px] flex flex-col justify-center items-center">
@@ -447,7 +447,7 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="space-y-6 sticky top-4 self-start">
+        <div class="space-y-6 sticky self-start" style="top: 100px;">
             <!-- Organisateur -->
             <div class="bg-gray-100 rounded-lg p-6">
                 <div class="bg-white rounded-lg p-4">

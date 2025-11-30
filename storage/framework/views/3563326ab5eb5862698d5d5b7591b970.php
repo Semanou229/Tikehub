@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Pipeline CRM'); ?>
 
 <?php $__env->startSection('content'); ?>

@@ -3,22 +3,22 @@
 @section('title', $event->title . ' - Tikehub')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
+<div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6 lg:pt-24 pb-4 sm:pb-8">
     <!-- Header avec date en rouge -->
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6 border border-gray-200">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-4 sm:mb-6 border border-gray-200">
         <div class="flex flex-col md:flex-row">
             <!-- Date Box (Rouge) -->
-            <div class="bg-red-600 text-white p-6 text-center min-w-[120px] flex flex-col justify-center items-center">
-                <div class="text-2xl font-bold uppercase">{{ $event->start_date->translatedFormat('M') }}</div>
-                <div class="text-5xl font-bold">{{ $event->start_date->format('d') }}</div>
-                <div class="text-lg mt-2">{{ $event->start_date->translatedFormat('l') }}</div>
+            <div class="bg-red-600 text-white p-4 sm:p-6 text-center min-w-[100px] sm:min-w-[120px] flex flex-row md:flex-col justify-center items-center gap-2 md:gap-0">
+                <div class="text-lg sm:text-2xl font-bold uppercase">{{ $event->start_date->translatedFormat('M') }}</div>
+                <div class="text-4xl sm:text-5xl font-bold">{{ $event->start_date->format('d') }}</div>
+                <div class="text-base sm:text-lg mt-0 md:mt-2">{{ $event->start_date->translatedFormat('l') }}</div>
             </div>
 
             <!-- Contenu principal du header -->
-            <div class="flex-1 p-6">
-                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div class="flex-1 p-4 sm:p-6">
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3 sm:gap-4">
                     <div class="flex-1">
-                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $event->title }}</h1>
+                        <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 break-words">{{ $event->title }}</h1>
                         
                         <!-- Badge virtuel -->
                         @if($event->is_virtual)
@@ -31,10 +31,10 @@
                         @endif
                         
                         <!-- Informations date et lieu -->
-                        <div class="space-y-2 text-gray-700">
-                            <div class="flex items-center">
-                                <i class="fas fa-calendar-alt text-red-600 mr-3 w-5"></i>
-                                <span>
+                        <div class="space-y-2 text-gray-700 text-sm sm:text-base">
+                            <div class="flex items-start sm:items-center">
+                                <i class="fas fa-calendar-alt text-red-600 mr-2 sm:mr-3 w-4 sm:w-5 mt-0.5 sm:mt-0 flex-shrink-0"></i>
+                                <span class="break-words">
                                     {{ $event->start_date->translatedFormat('D, d M Y') }} 
                                     @if($event->end_date && $event->end_date->format('Y-m-d') !== $event->start_date->format('Y-m-d'))
                                         - {{ $event->end_date->translatedFormat('D, d M Y') }}
@@ -44,9 +44,9 @@
                                 </span>
                             </div>
                             @if($event->venue_name || $event->venue_city)
-                                <div class="flex items-center">
-                                    <i class="fas fa-map-marker-alt text-red-600 mr-3 w-5"></i>
-                                    <span>
+                                <div class="flex items-start sm:items-center">
+                                    <i class="fas fa-map-marker-alt text-red-600 mr-2 sm:mr-3 w-4 sm:w-5 mt-0.5 sm:mt-0 flex-shrink-0"></i>
+                                    <span class="break-words">
                                         @if($event->venue_name){{ $event->venue_name }}, @endif
                                         @if($event->venue_city){{ $event->venue_city }}@endif
                                         @if($event->venue_country), {{ $event->venue_country }}@endif
@@ -57,18 +57,21 @@
                     </div>
 
                     <!-- Boutons d'action -->
-                    <div class="flex flex-col gap-2 md:min-w-[150px]">
-                        <button onclick="shareEvent()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
+                    <div class="flex flex-row sm:flex-col gap-2 md:min-w-[150px] mt-2 sm:mt-0">
+                        <button onclick="shareEvent()" class="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition text-xs sm:text-sm min-h-[44px]">
                             <i class="fas fa-share-alt"></i>
-                            <span>PARTAGER</span>
+                            <span class="hidden sm:inline">PARTAGER</span>
+                            <span class="sm:hidden">PART.</span>
                         </button>
-                        <button onclick="reportEvent()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
+                        <button onclick="reportEvent()" class="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition text-xs sm:text-sm min-h-[44px]">
                             <i class="fas fa-flag"></i>
-                            <span>SIGNALER</span>
+                            <span class="hidden sm:inline">SIGNALER</span>
+                            <span class="sm:hidden">SIGN.</span>
                         </button>
-                        <button onclick="addToCalendar()" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
+                        <button onclick="addToCalendar()" class="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition text-xs sm:text-sm min-h-[44px]">
                             <i class="fas fa-calendar-plus"></i>
-                            <span>CALENDRIER</span>
+                            <span class="hidden sm:inline">CALENDRIER</span>
+                            <span class="sm:hidden">CAL.</span>
                         </button>
                     </div>
                 </div>
@@ -76,8 +79,8 @@
         </div>
         
         <!-- Modal de signalement -->
-        <div id="reportModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-            <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div id="reportModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-bold">Signaler cet événement</h3>
                     <button onclick="closeReportModal()" class="text-gray-500 hover:text-gray-700">
@@ -440,10 +443,10 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="space-y-6 sticky self-start" style="top: 100px;">
+        <div class="space-y-4 sm:space-y-6 lg:sticky lg:self-start relative lg:top-20" style="z-index: 10;">
             <!-- Organisateur -->
-            <div class="bg-gray-100 rounded-lg p-6">
-                <div class="bg-white rounded-lg p-4">
+            <div class="bg-gray-100 rounded-lg p-4 sm:p-6">
+                <div class="bg-white rounded-lg p-3 sm:p-4">
                     <div class="flex items-center mb-4">
                         <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-3">
                             {{ strtoupper(substr($event->organizer->name, 0, 2)) }}
@@ -492,7 +495,7 @@
                         </div>
                     @endif
                     
-                    <button onclick="contactOrganizer('{{ $event->organizer->email }}')" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-2">
+                    <button onclick="contactOrganizer('{{ $event->organizer->email }}')" class="w-full bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 active:bg-red-800 transition flex items-center justify-center gap-2 min-h-[44px] text-sm sm:text-base font-medium">
                         <i class="fas fa-envelope"></i>
                         <span>Envoyer un message</span>
                     </button>

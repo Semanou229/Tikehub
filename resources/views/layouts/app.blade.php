@@ -15,6 +15,9 @@
             margin: 0;
             padding: 0;
             height: 100%;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         body {
             display: flex;
@@ -22,7 +25,7 @@
             min-height: 100vh;
             padding-top: 0 !important;
         }
-        /* Navigation fixée en haut */
+        /* Navigation fixée en haut - Responsive */
         body > nav:first-of-type {
             position: fixed !important;
             top: 0 !important;
@@ -38,26 +41,27 @@
             backdrop-filter: blur(10px) !important;
             -webkit-backdrop-filter: blur(10px) !important;
         }
-        /* Main avec padding pour la navigation fixe */
+        /* Main avec padding pour la navigation fixe - Responsive */
         body > main {
             margin-top: 80px !important;
-            padding-top: 2rem !important;
+            padding-top: 1rem !important;
             padding-bottom: 0 !important;
             order: 2 !important;
             flex: 1;
             min-height: auto !important;
         }
-        /* Espacement supplémentaire uniquement pour la page de détail d'événement */
-        body.events-show-page > main {
-            margin-top: 140px !important;
-            padding-top: 6rem !important;
+        @media (max-width: 640px) {
+            body > main {
+                margin-top: 70px !important;
+                padding-top: 0.75rem !important;
+            }
         }
         /* Footer */
         body > footer {
             order: 3 !important;
             flex-shrink: 0;
         }
-        /* Navigation */
+        /* Navigation - Responsive */
         nav {
             position: fixed !important;
             top: 0 !important;
@@ -72,17 +76,18 @@
             backdrop-filter: blur(10px) !important;
             -webkit-backdrop-filter: blur(10px) !important;
         }
-        /* Main */
+        /* Main - Responsive */
         main {
             margin-top: 80px !important;
             padding-top: 1rem !important;
             padding-bottom: 0 !important;
             min-height: auto !important;
         }
-        /* Espacement supplémentaire uniquement pour la page de détail d'événement */
-        body.events-show-page main {
-            margin-top: 140px !important;
-            padding-top: 6rem !important;
+        @media (max-width: 640px) {
+            main {
+                margin-top: 70px !important;
+                padding-top: 0.75rem !important;
+            }
         }
         /* Masquer toute barre de navigation fixée en bas */
         nav.fixed.bottom-0,
@@ -97,20 +102,54 @@
             top: auto !important;
             bottom: auto !important;
         }
+        /* Améliorations mobile */
+        @media (max-width: 640px) {
+            /* Touch targets minimum 44x44px */
+            button, a, input, select, textarea {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            /* Typographie responsive */
+            h1 { font-size: 1.75rem !important; }
+            h2 { font-size: 1.5rem !important; }
+            h3 { font-size: 1.25rem !important; }
+            /* Espacement réduit sur mobile */
+            .space-y-6 > * + * { margin-top: 1rem !important; }
+            .space-y-4 > * + * { margin-top: 0.75rem !important; }
+            /* Padding réduit sur mobile */
+            .p-6 { padding: 1rem !important; }
+            .px-6 { padding-left: 1rem !important; padding-right: 1rem !important; }
+            .py-6 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+        }
+        /* Amélioration des formulaires sur mobile */
+        @media (max-width: 640px) {
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="number"],
+            input[type="tel"],
+            input[type="date"],
+            input[type="time"],
+            select,
+            textarea {
+                font-size: 16px !important; /* Évite le zoom automatique sur iOS */
+                padding: 0.75rem !important;
+            }
+        }
     </style>
     @stack('styles')
 </head>
 <body class="bg-gray-50">
     <nav class="bg-white shadow-lg border-b border-gray-200" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 9999 !important; background: #ffffff !important; opacity: 1 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important; border-bottom: 3px solid #6b7280 !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important;">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-20">
                 <!-- Logo -->
                 <div class="flex items-center">
-                    <a href="{{ route('home') }}" class="flex items-center space-x-2 group">
-                        <div class="bg-gradient-to-br from-indigo-600 to-purple-600 p-2 rounded-lg group-hover:shadow-lg transition">
-                            <i class="fas fa-ticket-alt text-white text-xl"></i>
+                    <a href="{{ route('home') }}" class="flex items-center space-x-1 sm:space-x-2 group">
+                        <div class="bg-gradient-to-br from-indigo-600 to-purple-600 p-1.5 sm:p-2 rounded-lg group-hover:shadow-lg transition">
+                            <i class="fas fa-ticket-alt text-white text-lg sm:text-xl"></i>
                         </div>
-                        <span class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        <span class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                             Tikehub
                         </span>
                     </a>
@@ -167,16 +206,16 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-medium">
-                            <i class="fas fa-sign-in-alt mr-2"></i>Connexion
+                        <a href="{{ route('login') }}" class="hidden sm:inline-flex px-3 sm:px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-medium text-sm sm:text-base">
+                            <i class="fas fa-sign-in-alt mr-1 sm:mr-2"></i><span class="hidden md:inline">Connexion</span>
                         </a>
-                        <a href="{{ route('register') }}" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition shadow-md hover:shadow-lg font-medium">
-                            <i class="fas fa-user-plus mr-2"></i>Inscription
+                        <a href="{{ route('register') }}" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 sm:px-6 py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition shadow-md hover:shadow-lg font-medium text-sm sm:text-base">
+                            <i class="fas fa-user-plus mr-1 sm:mr-2"></i><span class="hidden sm:inline">Inscription</span><span class="sm:hidden">Inscr.</span>
                         </a>
                     @endauth
 
                     <!-- Menu Mobile -->
-                    <button id="mobile-menu-button" class="lg:hidden p-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition">
+                    <button id="mobile-menu-button" class="lg:hidden p-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Menu mobile">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
