@@ -103,11 +103,11 @@
                 </div>
             </div>
 
-            <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-                <button type="submit" class="bg-green-600 text-white px-6 sm:px-8 py-3 rounded-lg hover:bg-green-700 active:bg-green-800 transition font-semibold text-sm sm:text-base min-h-[44px] flex items-center justify-center">
-                    <i class="fas fa-save mr-2"></i>Créer la collecte
+            <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4">
+                <button type="submit" class="bg-green-600 text-white px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 rounded-lg hover:bg-green-700 active:bg-green-800 transition font-semibold text-xs sm:text-sm lg:text-base min-h-[40px] sm:min-h-[44px] flex items-center justify-center shadow-md hover:shadow-lg">
+                    <i class="fas fa-save text-xs sm:text-sm mr-1.5 sm:mr-2"></i>Créer la collecte
                 </button>
-                <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800 active:text-gray-900 text-center sm:text-left py-3 sm:py-0 min-h-[44px] flex items-center justify-center sm:justify-start">
+                <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800 active:text-gray-900 text-center sm:text-left py-2.5 sm:py-0 text-xs sm:text-sm min-h-[40px] sm:min-h-[44px] flex items-center justify-center sm:justify-start">
                     Annuler
                 </a>
             </div>

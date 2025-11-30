@@ -6,8 +6,8 @@
 <div class="p-6">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Mes Collectes de Fonds</h1>
-        <a href="{{ route('fundraisings.create') }}" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
-            <i class="fas fa-plus mr-2"></i>Nouvelle collecte
+        <a href="{{ route('fundraisings.create') }}" class="bg-green-600 text-white px-3 sm:px-5 lg:px-6 py-2 sm:py-2.5 lg:py-3 rounded-lg hover:bg-green-700 active:bg-green-800 transition font-medium text-xs sm:text-sm lg:text-base min-h-[40px] sm:min-h-[44px] flex items-center justify-center shadow-md hover:shadow-lg">
+            <i class="fas fa-plus text-xs sm:text-sm mr-1.5 sm:mr-2"></i><span class="hidden sm:inline">Nouvelle collecte</span><span class="sm:hidden">Nouvelle</span>
         </a>
     </div>
 
@@ -96,8 +96,8 @@
         <div class="bg-white rounded-lg shadow-md p-12 text-center">
             <i class="fas fa-heart text-6xl text-gray-300 mb-4"></i>
             <p class="text-gray-500 mb-4">Aucune collecte de fonds créée pour le moment</p>
-            <a href="{{ route('fundraisings.create') }}" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
-                <i class="fas fa-plus mr-2"></i>Créer ma première collecte
+            <a href="{{ route('fundraisings.create') }}" class="inline-block bg-green-600 text-white px-4 sm:px-5 lg:px-6 py-2.5 sm:py-3 rounded-lg hover:bg-green-700 active:bg-green-800 transition font-medium text-xs sm:text-sm lg:text-base min-h-[40px] sm:min-h-[44px] flex items-center justify-center shadow-md hover:shadow-lg">
+                <i class="fas fa-plus text-xs sm:text-sm mr-1.5 sm:mr-2"></i>Créer ma première collecte
             </a>
         </div>
     @endif

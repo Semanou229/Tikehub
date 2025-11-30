@@ -6,8 +6,8 @@
 <div class="p-6">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Mes Concours</h1>
-        <a href="{{ route('contests.create') }}" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition">
-            <i class="fas fa-plus mr-2"></i>Nouveau concours
+        <a href="{{ route('contests.create') }}" class="bg-purple-600 text-white px-3 sm:px-5 lg:px-6 py-2 sm:py-2.5 lg:py-3 rounded-lg hover:bg-purple-700 active:bg-purple-800 transition font-medium text-xs sm:text-sm lg:text-base min-h-[40px] sm:min-h-[44px] flex items-center justify-center shadow-md hover:shadow-lg">
+            <i class="fas fa-plus text-xs sm:text-sm mr-1.5 sm:mr-2"></i><span class="hidden sm:inline">Nouveau concours</span><span class="sm:hidden">Nouveau</span>
         </a>
     </div>
 
@@ -93,8 +93,8 @@
         <div class="bg-white rounded-lg shadow-md p-12 text-center">
             <i class="fas fa-trophy text-6xl text-gray-300 mb-4"></i>
             <p class="text-gray-500 mb-4">Aucun concours créé pour le moment</p>
-            <a href="{{ route('contests.create') }}" class="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition">
-                <i class="fas fa-plus mr-2"></i>Créer mon premier concours
+            <a href="{{ route('contests.create') }}" class="inline-block bg-purple-600 text-white px-4 sm:px-5 lg:px-6 py-2.5 sm:py-3 rounded-lg hover:bg-purple-700 active:bg-purple-800 transition font-medium text-xs sm:text-sm lg:text-base min-h-[40px] sm:min-h-[44px] flex items-center justify-center shadow-md hover:shadow-lg">
+                <i class="fas fa-plus text-xs sm:text-sm mr-1.5 sm:mr-2"></i>Créer mon premier concours
             </a>
         </div>
     @endif
