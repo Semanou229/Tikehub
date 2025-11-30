@@ -41,7 +41,7 @@
         /* Main avec padding pour la navigation fixe */
         body > main {
             margin-top: 120px !important;
-            padding-top: 4rem !important;
+            padding-top: 5rem !important;
             padding-bottom: 0 !important;
             order: 2 !important;
             flex: 1;
@@ -70,7 +70,7 @@
         /* Main */
         main {
             margin-top: 120px !important;
-            padding-top: 4rem !important;
+            padding-top: 5rem !important;
             padding-bottom: 0 !important;
             min-height: auto !important;
         }
@@ -206,7 +206,7 @@
     </script>
     @endpush
 
-    <main class="py-4" style="order: 2 !important; flex: 1 !important; position: relative !important; min-height: auto !important; padding-bottom: 1rem !important; margin-top: 120px !important; padding-top: 4rem !important;">
+    <main class="py-4" style="order: 2 !important; flex: 1 !important; position: relative !important; min-height: auto !important; padding-bottom: 1rem !important; margin-top: 120px !important; padding-top: 5rem !important;">
         @if(session('success'))
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
