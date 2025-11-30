@@ -3,7 +3,7 @@
 @section('title', $event->title . ' - Tikehub')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6 lg:pt-24 pb-4 sm:pb-8">
+<div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-2 sm:pt-4 lg:pt-24 pb-4 sm:pb-8">
     <!-- Header avec date en rouge -->
     <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-4 sm:mb-6 border border-gray-200">
         <div class="flex flex-col md:flex-row">
