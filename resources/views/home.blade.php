@@ -80,7 +80,7 @@
 
 @section('content')
 <!-- Hero Section with Slider -->
-<section class="relative bg-gray-900 overflow-hidden">
+<section class="relative bg-gray-900 overflow-hidden" style="margin-top: 0 !important; padding-top: 0 !important;">
     <!-- Slider Container -->
     <div class="hero-slider relative h-[500px] sm:h-[600px] lg:h-[700px]">
         @if($heroItems->count() > 0)
@@ -187,10 +187,34 @@
             <!-- Fallback -->
             <div class="hero-slide absolute inset-0 opacity-100 z-10">
                 <div class="relative w-full h-full bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center">
-                    <div class="text-center text-white">
-                        <i class="fas fa-calendar-alt text-9xl opacity-30 mb-8"></i>
-                        <h1 class="text-5xl md:text-6xl font-bold mb-4">Découvrez les événements</h1>
-                        <p class="text-xl md:text-2xl mb-8">Rejoignez la communauté Tikehub</p>
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30"></div>
+                    <div class="relative z-10 text-center text-white px-4">
+                        <div class="mb-4 inline-block">
+                            <span class="px-4 py-2 rounded-full text-sm font-semibold bg-indigo-600 text-white">
+                                <i class="fas fa-calendar-alt mr-2"></i>Plateforme
+                            </span>
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
+                            Réservez et vendez vos billets<br>
+                            <span class="text-yellow-300">en toute simplicité en Afrique</span>
+                        </h1>
+                        <p class="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 text-gray-200 max-w-2xl mx-auto">
+                            Bienvenue sur la billetterie en ligne qui connecte l'Afrique aux plus grands événements
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                            <a href="{{ route('events.index') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 shadow-lg hover:shadow-xl min-h-[44px] flex items-center justify-center">
+                                <i class="fas fa-calendar-alt mr-2"></i>Découvrir les événements
+                            </a>
+                            @auth
+                                <a href="{{ route('dashboard') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 border-2 border-white min-h-[44px] flex items-center justify-center">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>Mon tableau de bord
+                                </a>
+                            @else
+                                <a href="{{ route('register') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 border-2 border-white min-h-[44px] flex items-center justify-center">
+                                    <i class="fas fa-user-plus mr-2"></i>Créer un compte
+                                </a>
+                            @endauth
+                        </div>
                     </div>
                 </div>
             </div>
@@ -219,6 +243,12 @@
 
 @push('styles')
 <style>
+    /* Hero Section - Override main margin */
+    section:first-of-type {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
     @keyframes fadeInUp {
         from {
             opacity: 0;
@@ -259,6 +289,20 @@
     .hero-dot.active {
         background-color: white !important;
         width: 2rem !important;
+    }
+    
+    /* Ensure hero slider is visible */
+    .hero-slider {
+        position: relative;
+        min-height: 500px;
+    }
+    
+    .hero-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
     }
 </style>
 @endpush
