@@ -2,25 +2,8 @@
 
 @section('title', $event->title . ' - Tikehub')
 
-@push('styles')
-<style>
-    body > main {
-        margin-top: 100px !important;
-        padding-top: 5rem !important;
-    }
-    main {
-        margin-top: 100px !important;
-        padding-top: 5rem !important;
-    }
-    /* Retirer l'espace vide avant le footer */
-    body > footer {
-        margin-top: 0 !important;
-    }
-</style>
-@endpush
-
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-2 mb-0" style="padding-top: 5rem;">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header avec date en rouge -->
     <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6 border border-gray-200">
         <div class="flex flex-col md:flex-row">
