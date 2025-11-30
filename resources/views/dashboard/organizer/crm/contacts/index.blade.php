@@ -28,7 +28,7 @@
         @foreach(['participant', 'sponsor', 'vip', 'staff'] as $cat)
             <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
                 <div class="text-xs sm:text-sm text-gray-600 mb-1">{{ ucfirst($cat) }}s</div>
-                <div class="text-3xl font-bold text-purple-600">{{ $stats['by_category'][$cat] ?? 0 }}</div>
+                <div class="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-600">{{ $stats['by_category'][$cat] ?? 0 }}</div>
             </div>
         @endforeach
     </div>
