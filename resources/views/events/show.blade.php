@@ -4,22 +4,19 @@
 
 @push('styles')
 <style>
-    body {
-        margin-top: 140px !important;
-    }
     body > main {
-        margin-top: 140px !important;
-        padding-top: 6rem !important;
+        margin-top: 100px !important;
+        padding-top: 3rem !important;
     }
     main {
-        margin-top: 140px !important;
-        padding-top: 6rem !important;
+        margin-top: 100px !important;
+        padding-top: 3rem !important;
     }
 </style>
 @endpush
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-4 mb-0">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4 mb-0">
     <!-- Header avec date en rouge -->
     <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6 border border-gray-200">
         <div class="flex flex-col md:flex-row">
