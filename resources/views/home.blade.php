@@ -80,72 +80,72 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="relative bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 overflow-hidden" style="margin-top: 0 !important; padding-top: 0 !important; position: relative; z-index: 1;">
+<section class="relative bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 overflow-hidden" style="margin-top: 0 !important; padding-top: 0 !important; position: relative; z-index: 1; min-height: 100vh; height: 100vh; max-height: 100vh;">
     <!-- Background Pattern -->
     <div class="absolute inset-0 opacity-20">
         <div class="absolute inset-0" style="background-image: radial-gradient(circle, rgba(99, 102, 241, 0.3) 1px, transparent 1px); background-size: 30px 30px;"></div>
     </div>
     
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col py-4 sm:py-6 lg:py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 items-center flex-1 min-h-0">
             <!-- Left Side: Content -->
-            <div class="text-white z-10">
+            <div class="text-white z-10 flex flex-col h-full justify-center">
                 <!-- Badge -->
-                <div class="mb-3 sm:mb-4">
-                    <span class="inline-block px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                <div class="mb-2 sm:mb-3">
+                    <span class="inline-block px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
                         BILLETTERIE, CONCOURS & COLLECTES
                     </span>
                 </div>
                 
                 <!-- Main Title -->
-                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 leading-tight">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3 leading-tight">
                     Plus facile, plus puissant,<br>
                     <span class="text-cyan-400">moins cher</span>
                 </h1>
                 
                 <!-- Description -->
-                <p class="text-base sm:text-lg md:text-xl text-gray-300 mb-4 sm:mb-6 leading-relaxed max-w-xl">
+                <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-3 sm:mb-4 leading-relaxed max-w-xl">
                     La plateforme complète pour créer, gérer et vendre vos événements, organiser des concours avec votes payants et lancer des collectes de fonds en Afrique.
                 </p>
                 
                 <!-- Three Content Types - Animated Rotator -->
-                <div class="relative h-32 sm:h-36 mb-4 sm:mb-6 overflow-hidden">
+                <div class="relative h-28 sm:h-32 mb-3 sm:mb-4 overflow-hidden">
                     <div id="content-types-rotator" class="relative h-full">
                         <!-- Événements -->
-                        <div class="content-type-card absolute inset-0 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 transition-all duration-500 ease-in-out" data-type="event">
-                            <div class="flex items-center mb-2">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 animate-pulse">
-                                    <i class="fas fa-calendar-alt text-white text-lg sm:text-xl"></i>
+                        <div class="content-type-card absolute inset-0 bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/20 transition-all duration-500 ease-in-out" data-type="event">
+                            <div class="flex items-center mb-1.5 sm:mb-2">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-indigo-500 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0 animate-pulse">
+                                    <i class="fas fa-calendar-alt text-white text-sm sm:text-lg"></i>
                                 </div>
-                                <h3 class="text-base sm:text-lg font-bold text-white">Événements</h3>
+                                <h3 class="text-sm sm:text-base font-bold text-white">Événements</h3>
                             </div>
-                            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                            <p class="text-xs text-gray-300 leading-relaxed line-clamp-2">
                                 Créez et vendez des billets pour vos événements avec notre système de billetterie sécurisé
                             </p>
                         </div>
                         
                         <!-- Concours -->
-                        <div class="content-type-card absolute inset-0 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 transition-all duration-500 ease-in-out opacity-0 translate-x-full" data-type="contest">
-                            <div class="flex items-center mb-2">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 animate-pulse">
-                                    <i class="fas fa-trophy text-white text-lg sm:text-xl"></i>
+                        <div class="content-type-card absolute inset-0 bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/20 transition-all duration-500 ease-in-out opacity-0 translate-x-full" data-type="contest">
+                            <div class="flex items-center mb-1.5 sm:mb-2">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0 animate-pulse">
+                                    <i class="fas fa-trophy text-white text-sm sm:text-lg"></i>
                                 </div>
-                                <h3 class="text-base sm:text-lg font-bold text-white">Concours</h3>
+                                <h3 class="text-sm sm:text-base font-bold text-white">Concours</h3>
                             </div>
-                            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                            <p class="text-xs text-gray-300 leading-relaxed line-clamp-2">
                                 Organisez des concours avec votes payants et suivez les résultats en temps réel
                             </p>
                         </div>
                         
                         <!-- Collectes -->
-                        <div class="content-type-card absolute inset-0 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 transition-all duration-500 ease-in-out opacity-0 translate-x-full" data-type="fundraising">
-                            <div class="flex items-center mb-2">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 animate-pulse">
-                                    <i class="fas fa-heart text-white text-lg sm:text-xl"></i>
+                        <div class="content-type-card absolute inset-0 bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/20 transition-all duration-500 ease-in-out opacity-0 translate-x-full" data-type="fundraising">
+                            <div class="flex items-center mb-1.5 sm:mb-2">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-red-500 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0 animate-pulse">
+                                    <i class="fas fa-heart text-white text-sm sm:text-lg"></i>
                                 </div>
-                                <h3 class="text-base sm:text-lg font-bold text-white">Collectes</h3>
+                                <h3 class="text-sm sm:text-base font-bold text-white">Collectes</h3>
                             </div>
-                            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                            <p class="text-xs text-gray-300 leading-relaxed line-clamp-2">
                                 Lancez des collectes de fonds pour vos causes et suivez les dons en temps réel
                             </p>
                         </div>
@@ -160,25 +160,25 @@
                 </div>
                 
                 <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                    <a href="{{ route('register') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 shadow-lg hover:shadow-xl min-h-[44px] flex items-center justify-center">
-                        <i class="fas fa-plus-circle mr-2"></i>Créer une billetterie
+                <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-auto">
+                    <a href="{{ route('register') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition duration-300 shadow-lg hover:shadow-xl min-h-[40px] sm:min-h-[44px] flex items-center justify-center">
+                        <i class="fas fa-plus-circle mr-2 text-xs sm:text-sm"></i>Créer une billetterie
                     </a>
                     @auth
-                        <a href="{{ route('dashboard') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 border-2 border-cyan-500/50 min-h-[44px] flex items-center justify-center">
-                            <i class="fas fa-tachometer-alt mr-2"></i>Mon tableau de bord
+                        <a href="{{ route('dashboard') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition duration-300 border-2 border-cyan-500/50 min-h-[40px] sm:min-h-[44px] flex items-center justify-center">
+                            <i class="fas fa-tachometer-alt mr-2 text-xs sm:text-sm"></i>Mon tableau de bord
                         </a>
                     @else
-                        <a href="{{ route('login') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 border-2 border-cyan-500/50 min-h-[44px] flex items-center justify-center">
-                            <i class="fas fa-sign-in-alt mr-2"></i>Connexion
+                        <a href="{{ route('login') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition duration-300 border-2 border-cyan-500/50 min-h-[40px] sm:min-h-[44px] flex items-center justify-center">
+                            <i class="fas fa-sign-in-alt mr-2 text-xs sm:text-sm"></i>Connexion
                         </a>
                     @endauth
                 </div>
             </div>
             
             <!-- Right Side: Visual Cards - Animated Rotator -->
-            <div class="relative z-10">
-                <div class="relative h-[400px] sm:h-[450px] lg:h-[500px] overflow-hidden">
+            <div class="relative z-10 h-full flex flex-col justify-center">
+                <div class="relative h-full max-h-[500px] overflow-hidden">
                     @php
                         // Préparer tous les items pour la rotation
                         $allHeroItems = $heroItems;
@@ -295,10 +295,10 @@
         </div>
         
         <!-- Categories Section - Animated Carousel -->
-        <div class="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
-            <div class="text-center mb-4 sm:mb-6">
-                <h2 class="text-xl sm:text-2xl font-bold text-white mb-2">Explorez par catégorie</h2>
-                <p class="text-gray-300 text-xs sm:text-sm">Découvrez nos événements selon vos centres d'intérêt</p>
+        <div class="mt-auto pt-4 sm:pt-6 border-t border-white/10 flex-shrink-0">
+            <div class="text-center mb-3 sm:mb-4">
+                <h2 class="text-lg sm:text-xl font-bold text-white mb-1">Explorez par catégorie</h2>
+                <p class="text-gray-300 text-xs">Découvrez nos événements selon vos centres d'intérêt</p>
             </div>
             
             <div class="relative overflow-hidden">
@@ -316,18 +316,18 @@
                         @endphp
                         
                         <!-- First set -->
-                        @foreach($categories as $index => $category)
-                            <a href="{{ route('events.index', ['category' => $category['name']]) }}" class="category-item group bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/20 hover:border-cyan-500/50 transition duration-300 text-center flex-shrink-0 min-w-[120px] sm:min-w-[140px] animate-float" style="animation-delay: {{ $index * 0.1 }}s;">
-                                <div class="mb-3 flex justify-center">
-                                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-{{ $category['color'] }}-500/20 group-hover:bg-{{ $category['color'] }}-500/30 rounded-lg flex items-center justify-center transition group-hover:scale-110">
-                                        <i class="fas {{ $category['icon'] }} text-{{ $category['color'] }}-400 text-xl sm:text-2xl transition-transform"></i>
-                                    </div>
+                    @foreach($categories as $index => $category)
+                        <a href="{{ route('events.index', ['category' => $category['name']]) }}" class="category-item group bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/20 hover:bg-white/20 hover:border-cyan-500/50 transition duration-300 text-center flex-shrink-0 min-w-[100px] sm:min-w-[120px] animate-float" style="animation-delay: {{ $index * 0.1 }}s;">
+                            <div class="mb-2 flex justify-center">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-{{ $category['color'] }}-500/20 group-hover:bg-{{ $category['color'] }}-500/30 rounded-lg flex items-center justify-center transition group-hover:scale-110">
+                                    <i class="fas {{ $category['icon'] }} text-{{ $category['color'] }}-400 text-lg sm:text-xl transition-transform"></i>
                                 </div>
-                                <div class="text-white font-semibold text-sm sm:text-base group-hover:text-cyan-400 transition">
-                                    {{ $category['name'] }}
-                                </div>
-                            </a>
-                        @endforeach
+                            </div>
+                            <div class="text-white font-semibold text-xs sm:text-sm group-hover:text-cyan-400 transition">
+                                {{ $category['name'] }}
+                            </div>
+                        </a>
+                    @endforeach
                         
                         <!-- Duplicate set for seamless loop -->
                         @foreach($categories as $index => $category)
