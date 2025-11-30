@@ -40,12 +40,17 @@
         }
         /* Main avec padding pour la navigation fixe */
         body > main {
-            margin-top: 140px !important;
-            padding-top: 6rem !important;
+            margin-top: 80px !important;
+            padding-top: 1rem !important;
             padding-bottom: 0 !important;
             order: 2 !important;
             flex: 1;
             min-height: auto !important;
+        }
+        /* Espacement supplémentaire uniquement pour la page de détail d'événement */
+        body.events-show-page > main {
+            margin-top: 140px !important;
+            padding-top: 6rem !important;
         }
         /* Footer */
         body > footer {
@@ -69,10 +74,15 @@
         }
         /* Main */
         main {
-            margin-top: 140px !important;
-            padding-top: 6rem !important;
+            margin-top: 80px !important;
+            padding-top: 1rem !important;
             padding-bottom: 0 !important;
             min-height: auto !important;
+        }
+        /* Espacement supplémentaire uniquement pour la page de détail d'événement */
+        body.events-show-page main {
+            margin-top: 140px !important;
+            padding-top: 6rem !important;
         }
         /* Masquer toute barre de navigation fixée en bas */
         nav.fixed.bottom-0,
@@ -206,7 +216,7 @@
     </script>
     @endpush
 
-    <main class="py-4" style="order: 2 !important; flex: 1 !important; position: relative !important; min-height: auto !important; padding-bottom: 1rem !important; margin-top: 140px !important; padding-top: 6rem !important;">
+    <main class="py-4" style="order: 2 !important; flex: 1 !important; position: relative !important; min-height: auto !important; padding-bottom: 1rem !important;">
         @if(session('success'))
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">

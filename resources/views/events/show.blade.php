@@ -2,6 +2,22 @@
 
 @section('title', $event->title . ' - Tikehub')
 
+@push('styles')
+<style>
+    body {
+        margin-top: 140px !important;
+    }
+    body > main {
+        margin-top: 140px !important;
+        padding-top: 6rem !important;
+    }
+    main {
+        margin-top: 140px !important;
+        padding-top: 6rem !important;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-4 mb-0">
     <!-- Header avec date en rouge -->
