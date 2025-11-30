@@ -543,90 +543,100 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Hero Content Types Slider
-    const heroSlideItems = document.querySelectorAll('.hero-slide-item');
-    const heroSlideDots = document.querySelectorAll('.hero-slide-dot');
-    
-    console.log('Hero slider items found:', heroSlideItems.length);
-    console.log('Hero slider dots found:', heroSlideDots.length);
-    
-    if (heroSlideItems.length > 1) {
-        let currentHeroSlide = 0;
-        let heroSlideInterval;
+    setTimeout(function() {
+        const heroSlideItems = document.querySelectorAll('.hero-slide-item');
+        const heroSlideDots = document.querySelectorAll('.hero-slide-dot');
         
-        function showHeroSlide(index) {
-            console.log('Showing hero slide:', index);
-            heroSlideItems.forEach((slide, i) => {
-                if (i === index) {
-                    slide.style.opacity = '1';
-                    slide.style.transform = 'translateX(0)';
-                    slide.style.zIndex = '10';
-                    slide.style.transition = 'all 0.7s ease-in-out';
-                } else {
-                    slide.style.opacity = '0';
-                    slide.style.zIndex = '0';
-                    slide.style.transition = 'all 0.7s ease-in-out';
-                    if (i < index) {
-                        slide.style.transform = 'translateX(-100%)';
+        console.log('Hero slider items found:', heroSlideItems.length);
+        console.log('Hero slider dots found:', heroSlideDots.length);
+        
+        if (heroSlideItems.length > 1) {
+            let currentHeroSlide = 0;
+            let heroSlideInterval;
+            
+            function showHeroSlide(index) {
+                console.log('Showing hero slide:', index, 'of', heroSlideItems.length);
+                heroSlideItems.forEach((slide, i) => {
+                    if (i === index) {
+                        slide.style.opacity = '1';
+                        slide.style.transform = 'translateX(0)';
+                        slide.style.zIndex = '10';
+                        slide.style.pointerEvents = 'auto';
                     } else {
-                        slide.style.transform = 'translateX(100%)';
+                        slide.style.opacity = '0';
+                        slide.style.zIndex = '0';
+                        slide.style.pointerEvents = 'none';
+                        if (i < index) {
+                            slide.style.transform = 'translateX(-100%)';
+                        } else {
+                            slide.style.transform = 'translateX(100%)';
+                        }
                     }
-                }
-            });
+                });
+                
+                heroSlideDots.forEach((dot, i) => {
+                    if (i === index) {
+                        dot.style.backgroundColor = 'rgb(34, 211, 238)';
+                        dot.style.width = '2rem';
+                    } else {
+                        dot.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                        dot.style.width = '0.5rem';
+                    }
+                });
+                
+                currentHeroSlide = index;
+            }
             
-            heroSlideDots.forEach((dot, i) => {
-                if (i === index) {
-                    dot.style.backgroundColor = 'rgb(34, 211, 238)';
-                    dot.style.width = '2rem';
-                } else {
-                    dot.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
-                    dot.style.width = '0.5rem';
-                }
-            });
+            function nextHeroSlide() {
+                const nextIndex = (currentHeroSlide + 1) % heroSlideItems.length;
+                showHeroSlide(nextIndex);
+            }
             
-            currentHeroSlide = index;
-        }
-        
-        function nextHeroSlide() {
-            const nextIndex = (currentHeroSlide + 1) % heroSlideItems.length;
-            showHeroSlide(nextIndex);
-        }
-        
-        function startHeroSlideRotation() {
-            if (heroSlideInterval) clearInterval(heroSlideInterval);
-            heroSlideInterval = setInterval(nextHeroSlide, 4000); // Change every 4 seconds
-            console.log('Hero slide rotation started');
-        }
-        
-        // Click on dots to navigate
-        heroSlideDots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                console.log('Dot clicked:', index);
-                clearInterval(heroSlideInterval);
-                showHeroSlide(index);
-                startHeroSlideRotation();
-            });
-        });
-        
-        // Initialize hero slides
-        showHeroSlide(0);
-        startHeroSlideRotation();
-        
-        // Pause hero slide rotation on hover
-        const heroSliderContainer = document.querySelector('.relative.z-10');
-        if (heroSliderContainer) {
-            heroSliderContainer.addEventListener('mouseenter', () => {
-                if (heroSlideInterval) {
+            function startHeroSlideRotation() {
+                if (heroSlideInterval) clearInterval(heroSlideInterval);
+                heroSlideInterval = setInterval(nextHeroSlide, 4000); // Change every 4 seconds
+                console.log('Hero slide rotation started');
+            }
+            
+            // Click on dots to navigate
+            heroSlideDots.forEach((dot, index) => {
+                dot.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Dot clicked:', index);
                     clearInterval(heroSlideInterval);
-                    console.log('Hero slide rotation paused');
-                }
+                    showHeroSlide(index);
+                    startHeroSlideRotation();
+                });
             });
-            heroSliderContainer.addEventListener('mouseleave', () => {
-                startHeroSlideRotation();
-            });
+            
+            // Initialize hero slides
+            showHeroSlide(0);
+            startHeroSlideRotation();
+            
+            // Pause hero slide rotation on hover
+            const heroSliderContainer = document.querySelector('.relative.z-10');
+            if (heroSliderContainer) {
+                heroSliderContainer.addEventListener('mouseenter', () => {
+                    if (heroSlideInterval) {
+                        clearInterval(heroSlideInterval);
+                        console.log('Hero slide rotation paused');
+                    }
+                });
+                heroSliderContainer.addEventListener('mouseleave', () => {
+                    startHeroSlideRotation();
+                });
+            }
+        } else if (heroSlideItems.length === 1) {
+            // Si un seul élément, s'assurer qu'il est visible
+            heroSlideItems[0].style.opacity = '1';
+            heroSlideItems[0].style.transform = 'translateX(0)';
+            heroSlideItems[0].style.zIndex = '10';
+            console.log('Only one hero slide item, making it visible');
+        } else {
+            console.log('No hero slide items found');
         }
-    } else {
-        console.log('Not enough hero slide items to create slider');
-    }
+    }, 100);
 });
 </script>
 @endpush
