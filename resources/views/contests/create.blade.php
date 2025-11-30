@@ -3,32 +3,32 @@
 @section('title', 'Créer un Concours')
 
 @section('content')
-<div class="p-6">
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Créer un Concours</h1>
-        <a href="{{ route('dashboard') }}" class="text-indigo-600 hover:text-indigo-800">
+<div class="p-3 sm:p-4 lg:p-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">Créer un Concours</h1>
+        <a href="{{ route('dashboard') }}" class="text-indigo-600 hover:text-indigo-800 active:text-indigo-900 min-h-[44px] flex items-center justify-center sm:justify-start">
             <i class="fas fa-arrow-left mr-2"></i>Retour
         </a>
     </div>
 
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <form action="{{ route('contests.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="space-y-6">
                 <!-- Informations de base -->
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Informations de base</h2>
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Informations de base</h2>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nom du concours *</label>
-                            <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Ex: Miss Bénin 2025">
+                            <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Miss Bénin 2025">
                             @error('name')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
-                            <textarea name="description" rows="5" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Décrivez votre concours...">{{ old('description') }}</textarea>
+                            <textarea name="description" rows="5" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base min-h-[120px]" placeholder="Décrivez votre concours...">{{ old('description') }}</textarea>
                             @error('description')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
@@ -49,17 +49,17 @@
 
                 <!-- Paramètres de vote -->
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Paramètres de vote</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Paramètres de vote</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Prix par vote (XOF) *</label>
-                            <input type="number" name="price_per_vote" value="{{ old('price_per_vote') }}" min="0" step="0.01" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="100">
+                            <input type="number" name="price_per_vote" value="{{ old('price_per_vote') }}" min="0" step="0.01" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base min-h-[44px]" placeholder="100">
                             @error('price_per_vote')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Points par vote *</label>
-                            <input type="number" name="points_per_vote" value="{{ old('points_per_vote', 1) }}" min="1" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="1">
+                            <input type="number" name="points_per_vote" value="{{ old('points_per_vote', 1) }}" min="1" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base min-h-[44px]" placeholder="1">
                             @error('points_per_vote')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                             <p class="text-sm text-gray-500 mt-1">Nombre de points attribués par vote</p>
                         </div>
@@ -68,17 +68,17 @@
 
                 <!-- Dates -->
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Dates</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Dates</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Date de début *</label>
-                            <input type="datetime-local" name="start_date" value="{{ old('start_date') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            <input type="datetime-local" name="start_date" value="{{ old('start_date') }}" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base min-h-[44px]">
                             @error('start_date')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Date de fin *</label>
-                            <input type="datetime-local" name="end_date" value="{{ old('end_date') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            <input type="datetime-local" name="end_date" value="{{ old('end_date') }}" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base min-h-[44px]">
                             @error('end_date')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
                     </div>
@@ -112,8 +112,8 @@
                             </h2>
                             <p class="text-sm text-gray-600 mt-1">Ajoutez les candidats qui participeront à ce concours</p>
                         </div>
-                        <button type="button" id="addCandidateBtn" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition font-semibold shadow-md">
-                            <i class="fas fa-plus mr-2"></i>Ajouter un candidat
+                        <button type="button" id="addCandidateBtn" class="bg-purple-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:bg-purple-700 active:bg-purple-800 transition font-semibold shadow-md text-sm sm:text-base min-h-[44px] flex items-center justify-center w-full sm:w-auto">
+                            <i class="fas fa-plus mr-2"></i><span class="hidden sm:inline">Ajouter un candidat</span><span class="sm:hidden">Ajouter</span>
                         </button>
                     </div>
                     
@@ -141,11 +141,11 @@
                 </div>
             </div>
 
-            <div class="mt-8 flex items-center gap-4">
-                <button type="submit" class="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition font-semibold">
+            <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <button type="submit" class="bg-purple-600 text-white px-6 sm:px-8 py-3 rounded-lg hover:bg-purple-700 active:bg-purple-800 transition font-semibold text-sm sm:text-base min-h-[44px] flex items-center justify-center">
                     <i class="fas fa-save mr-2"></i>Créer le concours
                 </button>
-                <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800">
+                <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800 active:text-gray-900 text-center sm:text-left py-3 sm:py-0 min-h-[44px] flex items-center justify-center sm:justify-start">
                     Annuler
                 </a>
             </div>
@@ -189,18 +189,18 @@ document.getElementById('addCandidateBtn').addEventListener('click', function() 
                     <i class="fas fa-user-circle mr-2"></i>
                     Candidat #<span class="candidate-number">${candidateIndex + 1}</span>
                 </h3>
-                <button type="button" class="removeCandidateBtn text-red-600 hover:text-red-800 hover:bg-red-50 px-3 py-1 rounded-lg transition text-sm font-medium">
-                    <i class="fas fa-trash mr-1"></i> Supprimer
+                <button type="button" class="removeCandidateBtn text-red-600 hover:text-red-800 active:text-red-900 hover:bg-red-50 active:bg-red-100 px-3 sm:px-4 py-2 rounded-lg transition text-sm font-medium min-h-[44px] flex items-center justify-center">
+                    <i class="fas fa-trash mr-1"></i><span class="hidden sm:inline">Supprimer</span><span class="sm:hidden">Suppr.</span>
                 </button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Nom complet *</label>
-                    <input type="text" name="candidates[${candidateIndex}][name]" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Ex: Amina Diallo">
+                    <input type="text" name="candidates[${candidateIndex}][name]" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Amina Diallo">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Numéro *</label>
-                    <input type="number" name="candidates[${candidateIndex}][number]" value="${candidateIndex + 1}" min="1" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    <input type="number" name="candidates[${candidateIndex}][number]" value="${candidateIndex + 1}" min="1" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base min-h-[44px]">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Photo (optionnel)</label>

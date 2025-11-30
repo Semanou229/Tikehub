@@ -3,38 +3,38 @@
 @section('title', 'Créer un Événement')
 
 @section('content')
-<div class="p-6">
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Créer un Événement</h1>
-        <a href="{{ route('organizer.events.index') }}" class="text-indigo-600 hover:text-indigo-800">
+<div class="p-3 sm:p-4 lg:p-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">Créer un Événement</h1>
+        <a href="{{ route('organizer.events.index') }}" class="text-indigo-600 hover:text-indigo-800 active:text-indigo-900 min-h-[44px] flex items-center justify-center sm:justify-start">
             <i class="fas fa-arrow-left mr-2"></i>Retour
         </a>
     </div>
 
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="space-y-6">
                 <!-- Informations de base -->
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Informations de base</h2>
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Informations de base</h2>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Titre de l'événement *</label>
-                            <input type="text" name="title" value="{{ old('title') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Concert de Musique Live">
+                            <input type="text" name="title" value="{{ old('title') }}" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Concert de Musique Live">
                             @error('title')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
-                            <textarea name="description" rows="5" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Décrivez votre événement...">{{ old('description') }}</textarea>
+                            <textarea name="description" rows="5" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[120px]" placeholder="Décrivez votre événement...">{{ old('description') }}</textarea>
                             @error('description')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie *</label>
-                            <select name="category" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <select name="category" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]">
                                 <option value="">Sélectionner une catégorie</option>
                                 <option value="Musique" {{ old('category') == 'Musique' ? 'selected' : '' }}>Musique</option>
                                 <option value="Sport" {{ old('category') == 'Sport' ? 'selected' : '' }}>Sport</option>
@@ -64,17 +64,17 @@
 
                 <!-- Dates -->
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Dates</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Dates</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Date de début *</label>
-                            <input type="datetime-local" name="start_date" value="{{ old('start_date') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input type="datetime-local" name="start_date" value="{{ old('start_date') }}" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]">
                             @error('start_date')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Date de fin *</label>
-                            <input type="datetime-local" name="end_date" value="{{ old('end_date') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input type="datetime-local" name="end_date" value="{{ old('end_date') }}" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]">
                             @error('end_date')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
                     </div>
@@ -82,7 +82,7 @@
 
                 <!-- Type d'événement -->
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Type d'événement</h2>
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Type d'événement</h2>
                     <div class="space-y-4">
                         <div>
                             <label class="flex items-center">
@@ -96,11 +96,11 @@
 
                 <!-- Configuration virtuelle (masqué par défaut) -->
                 <div id="virtual-config" class="hidden">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Configuration de la visioconférence</h2>
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Configuration de la visioconférence</h2>
                     <div class="space-y-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Plateforme *</label>
-                            <select name="platform_type" id="platform_type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <select name="platform_type" id="platform_type" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]">
                                 <option value="">Sélectionner une plateforme</option>
                                 <option value="google_meet" {{ old('platform_type') == 'google_meet' ? 'selected' : '' }}>Google Meet</option>
                                 <option value="zoom" {{ old('platform_type') == 'zoom' ? 'selected' : '' }}>Zoom</option>
@@ -113,7 +113,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Lien de la visioconférence *</label>
-                            <input type="url" name="meeting_link" id="meeting_link" value="{{ old('meeting_link') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="https://meet.google.com/xxx-xxxx-xxx ou https://zoom.us/j/xxxxx">
+                            <input type="url" name="meeting_link" id="meeting_link" value="{{ old('meeting_link') }}" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="https://meet.google.com/xxx-xxxx-xxx ou https://zoom.us/j/xxxxx">
                             @error('meeting_link')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                             <p class="text-xs text-gray-500 mt-1">Collez le lien complet de votre réunion</p>
                         </div>
@@ -142,49 +142,49 @@
 
                 <!-- Lieu (masqué si virtuel) -->
                 <div id="venue-section">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Lieu</h2>
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Lieu</h2>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nom du lieu</label>
-                            <input type="text" name="venue_name" id="venue_name" value="{{ old('venue_name') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Stade de l'Amitié">
+                            <input type="text" name="venue_name" id="venue_name" value="{{ old('venue_name') }}" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Stade de l'Amitié">
                             @error('venue_name')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-                            <div class="flex gap-2">
-                                <input type="text" name="venue_address" id="venue_address" value="{{ old('venue_address') }}" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Rue 123, Quartier...">
-                                <button type="button" id="geocodeBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                                    <i class="fas fa-search-location"></i> Localiser
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="text" name="venue_address" id="venue_address" value="{{ old('venue_address') }}" class="flex-1 px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Rue 123, Quartier...">
+                                <button type="button" id="geocodeBtn" class="px-4 sm:px-6 py-2.5 sm:py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition font-medium min-h-[44px] flex items-center justify-center whitespace-nowrap">
+                                    <i class="fas fa-search-location mr-2"></i><span class="hidden sm:inline">Localiser</span><span class="sm:hidden">Loc.</span>
                                 </button>
                             </div>
                             <p class="text-sm text-gray-500 mt-1">Saisissez l'adresse et cliquez sur "Localiser" pour afficher sur la carte</p>
                             @error('venue_address')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Ville</label>
-                                <input type="text" name="venue_city" id="venue_city" value="{{ old('venue_city') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Cotonou">
+                                <input type="text" name="venue_city" id="venue_city" value="{{ old('venue_city') }}" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Cotonou">
                                 @error('venue_city')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Pays</label>
-                                <input type="text" name="venue_country" id="venue_country" value="{{ old('venue_country') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Bénin">
+                                <input type="text" name="venue_country" id="venue_country" value="{{ old('venue_country') }}" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Bénin">
                                 @error('venue_country')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                             </div>
                         </div>
 
                         <!-- Carte OpenStreetMap -->
                         <div>
-                            <div class="flex items-center justify-between mb-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-2">
                                 <label class="block text-sm font-medium text-gray-700">Localisation sur la carte</label>
-                                <button type="button" id="geolocateBtn" class="px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2">
-                                    <i class="fas fa-crosshairs"></i> Ma localisation
+                                <button type="button" id="geolocateBtn" class="px-4 py-2.5 text-sm sm:text-base bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 transition font-medium min-h-[44px] flex items-center justify-center gap-2 w-full sm:w-auto">
+                                    <i class="fas fa-crosshairs"></i><span class="hidden sm:inline">Ma localisation</span><span class="sm:hidden">Ma loc.</span>
                                 </button>
                             </div>
-                            <div id="map" class="w-full h-64 rounded-lg border border-gray-300"></div>
+                            <div id="map" class="w-full h-48 sm:h-64 rounded-lg border border-gray-300"></div>
                             <p class="text-sm text-gray-500 mt-2">Saisissez une adresse et cliquez sur "Localiser", utilisez "Ma localisation", ou cliquez directement sur la carte</p>
                             <input type="hidden" name="venue_latitude" id="venue_latitude" value="{{ old('venue_latitude') }}">
                             <input type="hidden" name="venue_longitude" id="venue_longitude" value="{{ old('venue_longitude') }}">
@@ -195,11 +195,11 @@
                 </div>
             </div>
 
-            <div class="mt-8 flex items-center gap-4">
-                <button type="submit" class="bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">
+            <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <button type="submit" class="bg-indigo-600 text-white px-6 sm:px-8 py-3 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition font-semibold text-sm sm:text-base min-h-[44px] flex items-center justify-center">
                     <i class="fas fa-save mr-2"></i>Créer l'événement
                 </button>
-                <a href="{{ route('organizer.events.index') }}" class="text-gray-600 hover:text-gray-800">
+                <a href="{{ route('organizer.events.index') }}" class="text-gray-600 hover:text-gray-800 active:text-gray-900 text-center sm:text-left py-3 sm:py-0 min-h-[44px] flex items-center justify-center sm:justify-start">
                     Annuler
                 </a>
             </div>
@@ -207,7 +207,7 @@
     </div>
 
     <!-- Note importante -->
-    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+    <div class="mt-4 sm:mt-6 bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
         <div class="flex items-start">
             <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
             <div class="text-sm text-blue-800">
