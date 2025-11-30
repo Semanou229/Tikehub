@@ -180,8 +180,8 @@
             </div>
 
             <!-- Informations sur le billet -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-red-600">Informations sur le billet</h2>
+            <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                <h2 class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 pb-2 border-b-2 border-red-600">Informations sur le billet</h2>
                 
                 @if($event->ticketTypes->count() > 0)
                     @php
@@ -192,22 +192,22 @@
                     @if($hasAvailableTickets && auth()->check())
                         <!-- Panier flottant -->
                         <div id="ticket-cart" class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-red-600 shadow-2xl z-50 transform translate-y-full transition-transform duration-300">
-                            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex-1">
-                                        <div class="text-sm text-gray-600 mb-1">
+                            <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-4">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-xs sm:text-sm text-gray-600 mb-1">
                                             <span id="cart-total-items">0</span> billet(s) sélectionné(s)
                                         </div>
-                                        <div class="text-2xl font-bold text-red-600">
+                                        <div class="text-xl sm:text-2xl font-bold text-red-600">
                                             <span id="cart-total-price">0</span> XOF
                                         </div>
                                     </div>
-                                    <form id="checkout-form" method="POST" action="{{ route('tickets.checkout', $event) }}" class="ml-4">
+                                    <form id="checkout-form" method="POST" action="{{ route('tickets.checkout', $event) }}" class="sm:ml-4 w-full sm:w-auto">
                                         @csrf
                                         <input type="hidden" name="tickets" id="tickets-data">
                                         <button type="submit" 
                                                 id="checkout-btn"
-                                                class="bg-red-600 text-white px-8 py-3 rounded-lg hover:bg-red-700 transition font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                                class="w-full sm:w-auto bg-red-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg hover:bg-red-700 active:bg-red-800 transition font-semibold text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] flex items-center justify-center"
                                                 disabled>
                                             <i class="fas fa-ticket-alt mr-2"></i>Réserver
                                         </button>
@@ -216,24 +216,24 @@
                             </div>
                         </div>
                     @elseif($hasAvailableTickets && !auth()->check())
-                        <div class="flex items-center justify-between mb-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                             <span class="font-semibold text-gray-700">Billets</span>
-                            <a href="{{ route('login') }}" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition font-semibold">
+                            <a href="{{ route('login') }}" class="bg-red-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-red-700 active:bg-red-800 transition font-semibold text-sm sm:text-base text-center min-h-[44px] flex items-center justify-center">
                                 <i class="fas fa-ticket-alt mr-2"></i>Réserver maintenant
                             </a>
                         </div>
                     @else
-                        <div class="flex items-center justify-between mb-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                             <span class="font-semibold text-gray-700">Billets</span>
-                            <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm">
+                            <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm text-center">
                                 Réservation en ligne fermée
                             </span>
                         </div>
                     @endif
                 @else
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                         <span class="font-semibold text-gray-700">Billets</span>
-                        <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm">
+                        <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm text-center">
                             Aucun billet disponible
                         </span>
                     </div>
@@ -241,17 +241,17 @@
 
                 <!-- Liste des types de billets -->
                 @if($event->ticketTypes->count() > 0)
-                    <div class="mt-6 space-y-4">
+                    <div class="mt-4 sm:mt-6 space-y-4">
                         @foreach($event->ticketTypes as $ticketType)
                             @php
                                 $urgencyBadges = $ticketType->getUrgencyBadges();
                             @endphp
-                            <div class="border border-gray-200 rounded-lg p-4 hover:border-red-500 transition relative">
-                                <div class="flex justify-between items-start">
-                                    <div class="flex-1">
+                            <div class="border border-gray-200 rounded-lg p-3 sm:p-4 hover:border-red-500 transition relative">
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+                                    <div class="flex-1 min-w-0">
                                         <!-- Badges d'urgence en haut à gauche -->
                                         @if(count($urgencyBadges) > 0)
-                                            <div class="flex flex-wrap gap-2 mb-2">
+                                            <div class="flex flex-wrap gap-1.5 sm:gap-2 mb-2">
                                                 @foreach($urgencyBadges as $badge)
                                                     <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold 
                                                         @if($badge['color'] === 'red') bg-red-100 text-red-700 border border-red-300
@@ -259,20 +259,20 @@
                                                         @else bg-yellow-100 text-yellow-700 border border-yellow-300
                                                         @endif
                                                         animate-pulse">
-                                                        <i class="fas fa-{{ $badge['icon'] }}"></i>
-                                                        {{ $badge['text'] }}
+                                                        <i class="fas fa-{{ $badge['icon'] }} text-xs"></i>
+                                                        <span class="whitespace-nowrap">{{ $badge['text'] }}</span>
                                                     </span>
                                                 @endforeach
                                             </div>
                                         @endif
                                         
-                                        <h3 class="font-semibold text-lg mb-1">{{ $ticketType->name }}</h3>
+                                        <h3 class="font-semibold text-base sm:text-lg mb-1">{{ $ticketType->name }}</h3>
                                         @if($ticketType->description)
-                                            <p class="text-gray-600 text-sm mb-2">{{ $ticketType->description }}</p>
+                                            <p class="text-gray-600 text-xs sm:text-sm mb-2">{{ $ticketType->description }}</p>
                                         @endif
-                                        <div class="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
+                                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
                                             <span class="flex items-center">
-                                                <i class="fas fa-ticket-alt mr-1"></i>
+                                                <i class="fas fa-ticket-alt mr-1 text-xs"></i>
                                                 {{ $ticketType->available_quantity }} disponible(s)
                                             </span>
                                             @if($ticketType->quantity > 0)
@@ -280,34 +280,34 @@
                                                     $percentageSold = ($ticketType->sold_quantity / $ticketType->quantity) * 100;
                                                 @endphp
                                                 <span class="flex items-center">
-                                                    <i class="fas fa-chart-line mr-1"></i>
+                                                    <i class="fas fa-chart-line mr-1 text-xs"></i>
                                                     {{ number_format($percentageSold, 0) }}% vendu
                                                 </span>
                                             @endif
                                             @if($ticketType->start_sale_date && $ticketType->end_sale_date)
-                                                <span>
+                                                <span class="block sm:inline">
                                                     Du {{ $ticketType->start_sale_date->format('d/m/Y') }} au {{ $ticketType->end_sale_date->format('d/m/Y') }}
                                                 </span>
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="text-right ml-4">
-                                        <div class="text-2xl font-bold text-red-600 mb-3">
+                                    <div class="flex sm:flex-col sm:text-right items-center sm:items-end justify-between sm:justify-start gap-3 sm:gap-0 sm:ml-4 flex-shrink-0">
+                                        <div class="text-xl sm:text-2xl font-bold text-red-600">
                                             {{ number_format($ticketType->price, 0, ',', ' ') }} XOF
                                         </div>
                                         @if($ticketType->isOnSale())
                                             @if(auth()->check())
                                                 <!-- Sélecteur de quantité -->
-                                                <div class="flex items-center justify-end gap-2 mb-2">
+                                                <div class="flex items-center gap-2">
                                                     <button type="button" 
-                                                            class="ticket-decrease bg-gray-200 hover:bg-gray-300 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed" 
+                                                            class="ticket-decrease bg-gray-200 hover:bg-gray-300 active:bg-gray-400 text-gray-700 w-9 h-9 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed min-w-[36px] min-h-[36px] sm:min-w-[32px] sm:min-h-[32px]" 
                                                             data-ticket-type-id="{{ $ticketType->id }}"
                                                             data-price="{{ $ticketType->price }}"
                                                             data-max="{{ $ticketType->available_quantity }}">
                                                         <i class="fas fa-minus text-xs"></i>
                                                     </button>
                                                     <input type="number" 
-                                                           class="ticket-quantity w-12 text-center border border-gray-300 rounded py-1 text-sm font-semibold" 
+                                                           class="ticket-quantity w-14 sm:w-12 text-center border border-gray-300 rounded py-1.5 sm:py-1 text-sm font-semibold min-h-[36px] sm:min-h-[32px]" 
                                                            data-ticket-type-id="{{ $ticketType->id }}"
                                                            data-price="{{ $ticketType->price }}"
                                                            value="0" 
@@ -315,7 +315,7 @@
                                                            max="{{ $ticketType->available_quantity }}"
                                                            readonly>
                                                     <button type="button" 
-                                                            class="ticket-increase bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed" 
+                                                            class="ticket-increase bg-red-600 hover:bg-red-700 active:bg-red-800 text-white w-9 h-9 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed min-w-[36px] min-h-[36px] sm:min-w-[32px] sm:min-h-[32px]" 
                                                             data-ticket-type-id="{{ $ticketType->id }}"
                                                             data-price="{{ $ticketType->price }}"
                                                             data-max="{{ $ticketType->available_quantity }}">
@@ -323,7 +323,7 @@
                                                     </button>
                                                 </div>
                                             @else
-                                                <a href="{{ route('login') }}" class="mt-2 inline-block bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
+                                                <a href="{{ route('login') }}" class="mt-2 inline-block bg-red-600 text-white px-4 py-2.5 sm:py-2 rounded-lg hover:bg-red-700 active:bg-red-800 transition text-xs sm:text-sm font-semibold min-h-[44px] flex items-center justify-center">
                                                     <i class="fas fa-shopping-cart mr-1"></i>Acheter
                                                 </a>
                                             @endif
