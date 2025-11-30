@@ -60,6 +60,10 @@
                     <i class="fas fa-tasks w-5 mr-2 sm:mr-3 flex-shrink-0"></i>
                     <span class="text-sm sm:text-base">Mes Tâches</span>
                 </a>
+                <a href="{{ route('collaborator.tickets.index') }}" onclick="closeSidebarOnMobile()" class="flex items-center px-3 sm:px-4 py-2.5 sm:py-3 mb-2 rounded-lg {{ request()->routeIs('collaborator.tickets.*') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100' }} min-h-[44px]">
+                    <i class="fas fa-ticket-alt w-5 mr-2 sm:mr-3 flex-shrink-0"></i>
+                    <span class="text-sm sm:text-base">Mes Billets</span>
+                </a>
                 <a href="{{ route('collaborator.profile.index') }}" onclick="closeSidebarOnMobile()" class="flex items-center px-3 sm:px-4 py-2.5 sm:py-3 mb-2 rounded-lg {{ request()->routeIs('collaborator.profile.*') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100' }} min-h-[44px]">
                     <i class="fas fa-user w-5 mr-2 sm:mr-3 flex-shrink-0"></i>
                     <span class="text-sm sm:text-base">Mon Profil</span>

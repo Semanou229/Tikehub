@@ -297,6 +297,9 @@ Route::middleware(['auth', 'collaborator'])->prefix('collaborator')->name('colla
     // Profil
     Route::get('/profile', [\App\Http\Controllers\Collaborator\ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile', [\App\Http\Controllers\Collaborator\ProfileController::class, 'update'])->name('profile.update');
+    
+    // Billets, votes et dons
+    Route::get('/tickets', [\App\Http\Controllers\Collaborator\TicketController::class, 'index'])->name('tickets.index');
 });
 
 // Routes publiques pour concours et collectes
