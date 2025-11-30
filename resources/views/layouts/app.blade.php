@@ -40,8 +40,8 @@
         }
         /* Main avec padding pour la navigation fixe */
         body > main {
-            margin-top: 80px !important;
-            padding-top: 2.5rem !important;
+            margin-top: 100px !important;
+            padding-top: 3rem !important;
             padding-bottom: 0 !important;
             order: 2 !important;
             flex: 1;
@@ -69,8 +69,8 @@
         }
         /* Main */
         main {
-            margin-top: 80px !important;
-            padding-top: 2.5rem !important;
+            margin-top: 100px !important;
+            padding-top: 3rem !important;
             padding-bottom: 0 !important;
             min-height: auto !important;
         }
