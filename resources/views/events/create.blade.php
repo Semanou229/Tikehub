@@ -152,9 +152,9 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-                            <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="text" name="venue_address" id="venue_address" value="{{ old('venue_address') }}" class="flex-1 w-full sm:w-auto px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Rue 123, Quartier...">
-                                <button type="button" id="geocodeBtn" class="w-full sm:w-auto px-3 sm:px-5 py-2 sm:py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition font-medium text-xs sm:text-sm min-h-[40px] sm:min-h-[44px] flex items-center justify-center whitespace-nowrap flex-shrink-0 shadow-sm hover:shadow-md">
+                            <div class="flex flex-col sm:flex-row gap-2 w-full">
+                                <input type="text" name="venue_address" id="venue_address" value="{{ old('venue_address') }}" class="flex-1 min-w-0 w-full sm:w-auto px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Rue 123, Quartier...">
+                                <button type="button" id="geocodeBtn" class="w-full sm:w-auto sm:flex-shrink-0 px-3 sm:px-4 lg:px-5 py-2 sm:py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition font-medium text-xs sm:text-sm min-h-[44px] flex items-center justify-center whitespace-nowrap shadow-sm hover:shadow-md">
                                     <i class="fas fa-search-location text-xs sm:text-sm mr-1.5 sm:mr-2"></i><span class="hidden sm:inline">Localiser</span><span class="sm:hidden">Loc.</span>
                                 </button>
                             </div>
