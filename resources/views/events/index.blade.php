@@ -9,10 +9,16 @@
         <p class="text-gray-600">Trouvez l'événement parfait pour vous</p>
     </div>
 
-    <!-- Filtres -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <form method="GET" action="{{ route('events.index') }}" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Layout avec sidebar de filtres -->
+    <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Sidebar des filtres (sticky) -->
+        <aside class="lg:w-80 flex-shrink-0">
+            <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-filter mr-2 text-indigo-600"></i>Filtres
+                </h2>
+                <form method="GET" action="{{ route('events.index') }}" class="space-y-4">
+                    <div class="space-y-4">
                 <!-- Recherche -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Recherche</label>
@@ -103,27 +109,30 @@
                         <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Plus populaires</option>
                     </select>
                 </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2 pt-4 border-t border-gray-200">
+                        <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                            <i class="fas fa-filter mr-2"></i>Appliquer les filtres
+                        </button>
+                        <a href="{{ route('events.index') }}" class="w-full text-center text-sm text-gray-600 hover:text-indigo-600 py-2">
+                            <i class="fas fa-redo mr-1"></i>Réinitialiser
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Contenu principal -->
+        <div class="flex-1 min-w-0">
+            <!-- Résultats -->
+            <div class="mb-4 text-sm text-gray-600">
+                <i class="fas fa-info-circle mr-2"></i>
+                {{ $events->total() }} événement(s) trouvé(s)
             </div>
 
-            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
-                <a href="{{ route('events.index') }}" class="text-sm text-gray-600 hover:text-indigo-600">
-                    <i class="fas fa-redo mr-1"></i>Réinitialiser
-                </a>
-                <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
-                    <i class="fas fa-filter mr-2"></i>Filtrer
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Résultats -->
-    <div class="mb-4 text-sm text-gray-600">
-        <i class="fas fa-info-circle mr-2"></i>
-        {{ $events->total() }} événement(s) trouvé(s)
-    </div>
-
-    <!-- Grille d'événements -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Grille d'événements -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($events as $event)
             <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-200">
                 <a href="{{ route('events.show', $event) }}">
@@ -208,11 +217,13 @@
         @endforelse
     </div>
 
-    <!-- Pagination -->
-    @if($events->hasPages())
-        <div class="mt-8">
-            {{ $events->links() }}
+            <!-- Pagination -->
+            @if($events->hasPages())
+                <div class="mt-8">
+                    {{ $events->links() }}
+                </div>
+            @endif
         </div>
-    @endif
+    </div>
 </div>
 @endsection
