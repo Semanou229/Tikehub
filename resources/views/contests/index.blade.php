@@ -166,8 +166,10 @@
 
             <!-- Pagination -->
             @if($contests->hasPages())
-                <div class="mt-8">
-                    {{ $contests->links() }}
+                <div class="mt-8 flex justify-center">
+                    <div class="bg-white rounded-lg shadow-md px-4 py-3 inline-flex items-center space-x-2">
+                        {{ $contests->links() }}
+                    </div>
                 </div>
             @endif
         </div>

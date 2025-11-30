@@ -219,8 +219,10 @@
 
             <!-- Pagination -->
             @if($events->hasPages())
-                <div class="mt-8">
-                    {{ $events->links() }}
+                <div class="mt-8 flex justify-center">
+                    <div class="bg-white rounded-lg shadow-md px-4 py-3 inline-flex items-center space-x-2">
+                        {{ $events->links() }}
+                    </div>
                 </div>
             @endif
         </div>

@@ -184,8 +184,10 @@
 
             <!-- Pagination -->
             @if($fundraisings->hasPages())
-                <div class="mt-8">
-                    {{ $fundraisings->links() }}
+                <div class="mt-8 flex justify-center">
+                    <div class="bg-white rounded-lg shadow-md px-4 py-3 inline-flex items-center space-x-2">
+                        {{ $fundraisings->links() }}
+                    </div>
                 </div>
             @endif
         </div>
