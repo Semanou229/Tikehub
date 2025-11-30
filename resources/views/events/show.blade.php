@@ -291,23 +291,23 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="flex sm:flex-col sm:text-right items-center sm:items-end justify-between sm:justify-start gap-3 sm:gap-0 sm:ml-4 flex-shrink-0">
-                                        <div class="text-lg sm:text-2xl font-bold text-red-600 whitespace-nowrap">
+                                    <div class="flex flex-col sm:flex-col sm:text-right items-end sm:items-end justify-end gap-3 sm:gap-3 sm:ml-4 flex-shrink-0 w-full sm:w-auto">
+                                        <div class="text-lg sm:text-2xl font-bold text-red-600 whitespace-nowrap w-full sm:w-auto text-right">
                                             {{ number_format($ticketType->price, 0, ',', ' ') }} XOF
                                         </div>
                                         @if($ticketType->isOnSale())
                                             @if(auth()->check())
                                                 <!-- Sélecteur de quantité -->
-                                                <div class="flex items-center gap-2">
+                                                <div class="flex items-center gap-2 justify-end w-full sm:w-auto">
                                                     <button type="button" 
-                                                            class="ticket-decrease bg-gray-200 hover:bg-gray-300 active:bg-gray-400 text-gray-700 w-9 h-9 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed min-w-[36px] min-h-[36px] sm:min-w-[32px] sm:min-h-[32px]" 
+                                                            class="ticket-decrease bg-gray-200 hover:bg-gray-300 active:bg-gray-400 text-gray-700 w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0" 
                                                             data-ticket-type-id="{{ $ticketType->id }}"
                                                             data-price="{{ $ticketType->price }}"
                                                             data-max="{{ $ticketType->available_quantity }}">
                                                         <i class="fas fa-minus text-xs"></i>
                                                     </button>
                                                     <input type="number" 
-                                                           class="ticket-quantity w-14 sm:w-12 text-center border border-gray-300 rounded py-1.5 sm:py-1 text-sm font-semibold min-h-[36px] sm:min-h-[32px]" 
+                                                           class="ticket-quantity w-16 sm:w-14 text-center border border-gray-300 rounded py-2 sm:py-1.5 text-sm font-semibold flex-shrink-0" 
                                                            data-ticket-type-id="{{ $ticketType->id }}"
                                                            data-price="{{ $ticketType->price }}"
                                                            value="0" 
@@ -315,7 +315,7 @@
                                                            max="{{ $ticketType->available_quantity }}"
                                                            readonly>
                                                     <button type="button" 
-                                                            class="ticket-increase bg-red-600 hover:bg-red-700 active:bg-red-800 text-white w-9 h-9 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed min-w-[36px] min-h-[36px] sm:min-w-[32px] sm:min-h-[32px]" 
+                                                            class="ticket-increase bg-red-600 hover:bg-red-700 active:bg-red-800 text-white w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0" 
                                                             data-ticket-type-id="{{ $ticketType->id }}"
                                                             data-price="{{ $ticketType->price }}"
                                                             data-max="{{ $ticketType->available_quantity }}">
@@ -323,7 +323,7 @@
                                                     </button>
                                                 </div>
                                             @else
-                                                <a href="{{ route('login') }}" class="mt-2 inline-block bg-red-600 text-white px-4 py-2.5 sm:py-2 rounded-lg hover:bg-red-700 active:bg-red-800 transition text-xs sm:text-sm font-semibold min-h-[44px] flex items-center justify-center">
+                                                <a href="{{ route('login') }}" class="w-full sm:w-auto mt-0 sm:mt-2 inline-block bg-red-600 text-white px-4 py-2.5 sm:py-2 rounded-lg hover:bg-red-700 active:bg-red-800 transition text-xs sm:text-sm font-semibold min-h-[44px] flex items-center justify-center">
                                                     <i class="fas fa-shopping-cart mr-1"></i>Acheter
                                                 </a>
                                             @endif
