@@ -3,15 +3,15 @@
 @section('title', 'Modifier un Événement')
 
 @section('content')
-<div class="p-6">
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Modifier l'Événement</h1>
-        <a href="{{ route('organizer.events.index') }}" class="text-indigo-600 hover:text-indigo-800">
-            <i class="fas fa-arrow-left mr-2"></i>Retour
+<div class="p-3 sm:p-4 lg:p-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">Modifier l'Événement</h1>
+        <a href="{{ route('organizer.events.index') }}" class="text-indigo-600 hover:text-indigo-800 text-sm sm:text-base min-h-[44px] flex items-center">
+            <i class="fas fa-arrow-left text-xs sm:text-sm mr-1.5 sm:mr-2"></i>Retour
         </a>
     </div>
 
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="bg-white rounded-lg shadow-md p-3 sm:p-4 lg:p-6">
         <form action="{{ route('events.update', $event) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
