@@ -21,6 +21,19 @@
             flex-direction: column;
             min-height: 100vh;
         }
+        /* S'assurer que la structure est correcte */
+        body > nav {
+            order: 1 !important;
+            position: relative !important;
+            top: 0 !important;
+            bottom: auto !important;
+        }
+        body > main {
+            order: 2 !important;
+        }
+        body > footer {
+            order: 3 !important;
+        }
         nav {
             position: relative !important;
             top: 0 !important;
