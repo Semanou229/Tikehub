@@ -26,7 +26,7 @@ class DonationService
         }
 
         return DB::transaction(function () use ($user, $fundraising, $amount, $message, $isAnonymous) {
-            $commissionRate = config('platform.commission_rate', 5);
+            $commissionRate = get_commission_rate();
             $platformCommission = ($amount * $commissionRate) / 100;
             $organizerAmount = $amount - $platformCommission;
 

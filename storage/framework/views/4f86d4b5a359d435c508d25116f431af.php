@@ -64,13 +64,24 @@
             <div class="space-y-3">
                 <div>
                     <span class="text-sm text-gray-600">Statut:</span>
-                    <span class="ml-2 px-2 py-1 text-xs font-semibold rounded-full
+                    <?php
+                        $statusLabels = [
+                            'sent' => 'Envoyée',
+                            'draft' => 'Brouillon',
+                            'scheduled' => 'Planifiée',
+                            'sending' => 'En cours'
+                        ];
+                        $statusLabel = $statusLabels[$campaign->status] ?? ucfirst($campaign->status);
+                    ?>
+                    <span class="ml-2 px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap
                         <?php echo e($campaign->status === 'sent' ? 'bg-green-100 text-green-800' : ''); ?>
 
                         <?php echo e($campaign->status === 'draft' ? 'bg-yellow-100 text-yellow-800' : ''); ?>
 
-                        <?php echo e($campaign->status === 'scheduled' ? 'bg-blue-100 text-blue-800' : ''); ?>">
-                        <?php echo e(ucfirst($campaign->status)); ?>
+                        <?php echo e($campaign->status === 'scheduled' ? 'bg-blue-100 text-blue-800' : ''); ?>
+
+                        <?php echo e($campaign->status === 'sending' ? 'bg-purple-100 text-purple-800' : ''); ?>">
+                        <?php echo e($statusLabel); ?>
 
                     </span>
                 </div>

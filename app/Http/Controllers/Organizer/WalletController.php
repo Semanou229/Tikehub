@@ -38,7 +38,7 @@ class WalletController extends Controller
         $totalEarnings = $totalRevenue + $contestRevenue + $fundraisingRevenue;
 
         // Commission plateforme (généralement 5-10%)
-        $commissionRate = config('platform.commission_rate', 0.05);
+        $commissionRate = get_commission_rate() / 100;
         $platformCommission = $totalEarnings * $commissionRate;
         $netEarnings = $totalEarnings - $platformCommission;
 
@@ -209,7 +209,7 @@ class WalletController extends Controller
         })->where('status', 'completed')->sum('amount');
 
         $totalEarnings = $totalRevenue + $contestRevenue + $fundraisingRevenue;
-        $commissionRate = PlatformSetting::get('commission_rate', 5) / 100;
+        $commissionRate = get_commission_rate() / 100;
         $platformCommission = $totalEarnings * $commissionRate;
         $netEarnings = $totalEarnings - $platformCommission;
 

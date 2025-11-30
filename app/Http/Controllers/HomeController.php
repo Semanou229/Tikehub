@@ -69,7 +69,10 @@ class HomeController extends Controller
                 ->count(),
         ];
 
-        return view('home', compact('upcomingEvents', 'popularEvents', 'activeContests', 'activeFundraisings', 'stats'));
+        // Récupérer le pourcentage de commission dynamique
+        $commissionRate = get_commission_rate();
+        
+        return view('home', compact('upcomingEvents', 'popularEvents', 'activeContests', 'activeFundraisings', 'stats', 'commissionRate'));
     }
 }
 

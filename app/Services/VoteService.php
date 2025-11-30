@@ -36,7 +36,7 @@ class VoteService
             $totalAmount = $contest->price_per_vote * $quantity;
             $totalPoints = $contest->points_per_vote * $quantity;
 
-            $commissionRate = config('platform.commission_rate', 5);
+            $commissionRate = get_commission_rate();
             $platformCommission = ($totalAmount * $commissionRate) / 100;
             $organizerAmount = $totalAmount - $platformCommission;
 

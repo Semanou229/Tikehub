@@ -1,28 +1,26 @@
-
-
 <?php $__env->startSection('title', 'Créer un Événement'); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="p-6">
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Créer un Événement</h1>
-        <a href="<?php echo e(route('organizer.events.index')); ?>" class="text-indigo-600 hover:text-indigo-800">
+<div class="p-3 sm:p-4 lg:p-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">Créer un Événement</h1>
+        <a href="<?php echo e(route('organizer.events.index')); ?>" class="text-indigo-600 hover:text-indigo-800 active:text-indigo-900 min-h-[44px] flex items-center justify-center sm:justify-start">
             <i class="fas fa-arrow-left mr-2"></i>Retour
         </a>
     </div>
 
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <form action="<?php echo e(route('events.store')); ?>" method="POST" enctype="multipart/form-data">
             <?php echo csrf_field(); ?>
             
             <div class="space-y-6">
                 <!-- Informations de base -->
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Informations de base</h2>
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Informations de base</h2>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Titre de l'événement *</label>
-                            <input type="text" name="title" value="<?php echo e(old('title')); ?>" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Concert de Musique Live">
+                            <input type="text" name="title" value="<?php echo e(old('title')); ?>" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Concert de Musique Live">
                             <?php $__errorArgs = ['title'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -35,7 +33,7 @@ unset($__errorArgs, $__bag); ?>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
-                            <textarea name="description" rows="5" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Décrivez votre événement..."><?php echo e(old('description')); ?></textarea>
+                            <textarea name="description" rows="5" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[120px]" placeholder="Décrivez votre événement..."><?php echo e(old('description')); ?></textarea>
                             <?php $__errorArgs = ['description'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -48,7 +46,7 @@ unset($__errorArgs, $__bag); ?>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie *</label>
-                            <select name="category" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <select name="category" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]">
                                 <option value="">Sélectionner une catégorie</option>
                                 <option value="Musique" <?php echo e(old('category') == 'Musique' ? 'selected' : ''); ?>>Musique</option>
                                 <option value="Sport" <?php echo e(old('category') == 'Sport' ? 'selected' : ''); ?>>Sport</option>
@@ -76,7 +74,7 @@ unset($__errorArgs, $__bag); ?>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Image de couverture</label>
-                            <input type="file" name="cover_image" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input type="file" name="cover_image" accept="image/*" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm min-h-[44px]">
                             <?php $__errorArgs = ['cover_image'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -92,11 +90,11 @@ unset($__errorArgs, $__bag); ?>
 
                 <!-- Dates -->
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Dates</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Dates</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Date de début *</label>
-                            <input type="datetime-local" name="start_date" value="<?php echo e(old('start_date')); ?>" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input type="datetime-local" name="start_date" value="<?php echo e(old('start_date')); ?>" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]">
                             <?php $__errorArgs = ['start_date'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -109,7 +107,7 @@ unset($__errorArgs, $__bag); ?>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Date de fin *</label>
-                            <input type="datetime-local" name="end_date" value="<?php echo e(old('end_date')); ?>" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input type="datetime-local" name="end_date" value="<?php echo e(old('end_date')); ?>" required class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]">
                             <?php $__errorArgs = ['end_date'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -124,11 +122,11 @@ unset($__errorArgs, $__bag); ?>
 
                 <!-- Type d'événement -->
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Type d'événement</h2>
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Type d'événement</h2>
                     <div class="space-y-4">
                         <div>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="is_virtual" id="is_virtual" value="1" <?php echo e(old('is_virtual') ? 'checked' : ''); ?> class="mr-2 w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                            <label class="flex items-center min-h-[44px]">
+                                <input type="checkbox" name="is_virtual" id="is_virtual" value="1" <?php echo e(old('is_virtual') ? 'checked' : ''); ?> class="mr-2 w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded min-w-[20px] min-h-[20px]">
                                 <span class="text-sm font-medium text-gray-700">Événement virtuel (visioconférence)</span>
                             </label>
                             <p class="text-xs text-gray-500 mt-1 ml-7">Cochez cette case si votre événement se déroule en ligne</p>
@@ -138,11 +136,11 @@ unset($__errorArgs, $__bag); ?>
 
                 <!-- Configuration virtuelle (masqué par défaut) -->
                 <div id="virtual-config" class="hidden">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Configuration de la visioconférence</h2>
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Configuration de la visioconférence</h2>
                     <div class="space-y-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Plateforme *</label>
-                            <select name="platform_type" id="platform_type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <select name="platform_type" id="platform_type" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]">
                                 <option value="">Sélectionner une plateforme</option>
                                 <option value="google_meet" <?php echo e(old('platform_type') == 'google_meet' ? 'selected' : ''); ?>>Google Meet</option>
                                 <option value="zoom" <?php echo e(old('platform_type') == 'zoom' ? 'selected' : ''); ?>>Zoom</option>
@@ -162,7 +160,7 @@ unset($__errorArgs, $__bag); ?>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Lien de la visioconférence *</label>
-                            <input type="url" name="meeting_link" id="meeting_link" value="<?php echo e(old('meeting_link')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="https://meet.google.com/xxx-xxxx-xxx ou https://zoom.us/j/xxxxx">
+                            <input type="url" name="meeting_link" id="meeting_link" value="<?php echo e(old('meeting_link')); ?>" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="https://meet.google.com/xxx-xxxx-xxx ou https://zoom.us/j/xxxxx">
                             <?php $__errorArgs = ['meeting_link'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -190,7 +188,7 @@ unset($__errorArgs, $__bag); ?>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Mot de passe (optionnel)</label>
-                                <input type="text" name="meeting_password" id="meeting_password" value="<?php echo e(old('meeting_password')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Mot de passe de la réunion">
+                                <input type="text" name="meeting_password" id="meeting_password" value="<?php echo e(old('meeting_password')); ?>" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Mot de passe de la réunion">
                                 <?php $__errorArgs = ['meeting_password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -204,7 +202,7 @@ unset($__errorArgs, $__bag); ?>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Instructions d'accès (optionnel)</label>
-                            <textarea name="virtual_access_instructions" id="virtual_access_instructions" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Instructions spéciales pour les participants (ex: Activer la caméra, utiliser un nom spécifique, etc.)"><?php echo e(old('virtual_access_instructions')); ?></textarea>
+                            <textarea name="virtual_access_instructions" id="virtual_access_instructions" rows="3" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[90px]" placeholder="Instructions spéciales pour les participants (ex: Activer la caméra, utiliser un nom spécifique, etc.)"><?php echo e(old('virtual_access_instructions')); ?></textarea>
                             <?php $__errorArgs = ['virtual_access_instructions'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -219,11 +217,11 @@ unset($__errorArgs, $__bag); ?>
 
                 <!-- Lieu (masqué si virtuel) -->
                 <div id="venue-section">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Lieu</h2>
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Lieu</h2>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nom du lieu</label>
-                            <input type="text" name="venue_name" id="venue_name" value="<?php echo e(old('venue_name')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Stade de l'Amitié">
+                            <input type="text" name="venue_name" id="venue_name" value="<?php echo e(old('venue_name')); ?>" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Stade de l'Amitié">
                             <?php $__errorArgs = ['venue_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -236,10 +234,10 @@ unset($__errorArgs, $__bag); ?>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-                            <div class="flex gap-2">
-                                <input type="text" name="venue_address" id="venue_address" value="<?php echo e(old('venue_address')); ?>" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Rue 123, Quartier...">
-                                <button type="button" id="geocodeBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                                    <i class="fas fa-search-location"></i> Localiser
+                            <div class="flex flex-col sm:flex-row gap-2 w-full">
+                                <input type="text" name="venue_address" id="venue_address" value="<?php echo e(old('venue_address')); ?>" class="flex-1 min-w-0 w-full sm:w-auto px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Rue 123, Quartier...">
+                                <button type="button" id="geocodeBtn" class="w-full sm:w-auto sm:flex-shrink-0 px-3 sm:px-4 lg:px-5 py-2 sm:py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition font-medium text-xs sm:text-sm min-h-[44px] flex items-center justify-center whitespace-nowrap shadow-sm hover:shadow-md">
+                                    <i class="fas fa-search-location text-xs sm:text-sm mr-1.5 sm:mr-2"></i><span class="hidden sm:inline">Localiser</span><span class="sm:hidden">Loc.</span>
                                 </button>
                             </div>
                             <p class="text-sm text-gray-500 mt-1">Saisissez l'adresse et cliquez sur "Localiser" pour afficher sur la carte</p>
@@ -253,10 +251,10 @@ endif;
 unset($__errorArgs, $__bag); ?>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Ville</label>
-                                <input type="text" name="venue_city" id="venue_city" value="<?php echo e(old('venue_city')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Cotonou">
+                                <input type="text" name="venue_city" id="venue_city" value="<?php echo e(old('venue_city')); ?>" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Cotonou">
                                 <?php $__errorArgs = ['venue_city'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -269,7 +267,7 @@ unset($__errorArgs, $__bag); ?>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Pays</label>
-                                <input type="text" name="venue_country" id="venue_country" value="<?php echo e(old('venue_country')); ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Bénin">
+                                <input type="text" name="venue_country" id="venue_country" value="<?php echo e(old('venue_country')); ?>" class="w-full px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Bénin">
                                 <?php $__errorArgs = ['venue_country'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -283,13 +281,13 @@ unset($__errorArgs, $__bag); ?>
 
                         <!-- Carte OpenStreetMap -->
                         <div>
-                            <div class="flex items-center justify-between mb-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-2">
                                 <label class="block text-sm font-medium text-gray-700">Localisation sur la carte</label>
-                                <button type="button" id="geolocateBtn" class="px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2">
-                                    <i class="fas fa-crosshairs"></i> Ma localisation
+                                <button type="button" id="geolocateBtn" class="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 transition font-medium min-h-[40px] sm:min-h-[44px] flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto shadow-sm hover:shadow-md">
+                                    <i class="fas fa-crosshairs text-xs sm:text-sm"></i><span class="hidden sm:inline">Ma localisation</span><span class="sm:hidden">Ma loc.</span>
                                 </button>
                             </div>
-                            <div id="map" class="w-full h-64 rounded-lg border border-gray-300"></div>
+                            <div id="map" class="w-full h-48 sm:h-64 rounded-lg border border-gray-300"></div>
                             <p class="text-sm text-gray-500 mt-2">Saisissez une adresse et cliquez sur "Localiser", utilisez "Ma localisation", ou cliquez directement sur la carte</p>
                             <input type="hidden" name="venue_latitude" id="venue_latitude" value="<?php echo e(old('venue_latitude')); ?>">
                             <input type="hidden" name="venue_longitude" id="venue_longitude" value="<?php echo e(old('venue_longitude')); ?>">
@@ -314,11 +312,11 @@ unset($__errorArgs, $__bag); ?>
                 </div>
             </div>
 
-            <div class="mt-8 flex items-center gap-4">
-                <button type="submit" class="bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">
-                    <i class="fas fa-save mr-2"></i>Créer l'événement
+            <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4">
+                <button type="submit" class="bg-indigo-600 text-white px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition font-semibold text-xs sm:text-sm lg:text-base min-h-[40px] sm:min-h-[44px] flex items-center justify-center shadow-md hover:shadow-lg">
+                    <i class="fas fa-save text-xs sm:text-sm mr-1.5 sm:mr-2"></i>Créer l'événement
                 </button>
-                <a href="<?php echo e(route('organizer.events.index')); ?>" class="text-gray-600 hover:text-gray-800">
+                <a href="<?php echo e(route('organizer.events.index')); ?>" class="text-gray-600 hover:text-gray-800 active:text-gray-900 text-center sm:text-left py-2.5 sm:py-0 text-xs sm:text-sm min-h-[40px] sm:min-h-[44px] flex items-center justify-center sm:justify-start">
                     Annuler
                 </a>
             </div>
@@ -326,7 +324,7 @@ unset($__errorArgs, $__bag); ?>
     </div>
 
     <!-- Note importante -->
-    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+    <div class="mt-4 sm:mt-6 bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
         <div class="flex items-start">
             <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
             <div class="text-sm text-blue-800">

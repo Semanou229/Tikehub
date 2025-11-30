@@ -23,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
         
         // Configurer Carbon pour utiliser le français
         \Carbon\Carbon::setLocale('fr');
+        
+        // Charger les helpers
+        require_once app_path('Helpers/PlatformHelper.php');
     }
 }
 

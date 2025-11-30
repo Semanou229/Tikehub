@@ -1,14 +1,14 @@
 <?php $__env->startSection('title', 'Pipeline CRM'); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="p-6">
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Pipeline CRM</h1>
-        <p class="text-gray-600 mt-1">Gérez vos relations avec un système Kanban</p>
+<div class="p-3 sm:p-4 lg:p-6">
+    <div class="mb-4 sm:mb-6">
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">Pipeline CRM</h1>
+        <p class="text-sm sm:text-base text-gray-600 mt-1">Gérez vos relations avec un système Kanban</p>
     </div>
 
     <!-- Statistiques -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
         <?php
             $stageLabels = [
                 'prospect' => 'Prospect',
@@ -18,9 +18,9 @@
             ];
         ?>
         <?php $__currentLoopData = ['prospect', 'confirmed', 'partner', 'closed']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stage): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="text-sm text-gray-600 mb-1"><?php echo e($stageLabels[$stage]); ?></div>
-                <div class="text-3xl font-bold text-blue-600"><?php echo e($stats[$stage]); ?></div>
+            <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                <div class="text-xs sm:text-sm text-gray-600 mb-1"><?php echo e($stageLabels[$stage]); ?></div>
+                <div class="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600"><?php echo e($stats[$stage]); ?></div>
             </div>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>

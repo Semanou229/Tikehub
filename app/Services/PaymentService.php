@@ -41,7 +41,7 @@ class PaymentService
             }
 
             $totalAmount = max(0, $originalAmount - $discountAmount);
-            $commissionRate = config('platform.commission_rate', 5);
+            $commissionRate = get_commission_rate();
             $platformCommission = ($totalAmount * $commissionRate) / 100;
             $organizerAmount = $totalAmount - $platformCommission;
 
@@ -181,7 +181,7 @@ class PaymentService
             }
 
             $totalAmount = max(0, $originalAmount - $discountAmount);
-            $commissionRate = config('platform.commission_rate', 5);
+            $commissionRate = get_commission_rate();
             $platformCommission = ($totalAmount * $commissionRate) / 100;
             $organizerAmount = $totalAmount - $platformCommission;
 
