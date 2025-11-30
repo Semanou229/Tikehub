@@ -94,10 +94,10 @@
             {{ $events->links() }}
         </div>
     @else
-        <div class="bg-white rounded-lg shadow-md p-12 text-center">
-            <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
-            <p class="text-gray-500 mb-4">Aucun événement créé pour le moment</p>
-            <a href="{{ route('events.create') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
+        <div class="bg-white rounded-lg shadow-md p-6 sm:p-8 lg:p-12 text-center">
+            <i class="fas fa-calendar-times text-4xl sm:text-5xl lg:text-6xl text-gray-300 mb-3 sm:mb-4"></i>
+            <p class="text-sm sm:text-base text-gray-500 mb-3 sm:mb-4">Aucun événement créé pour le moment</p>
+            <a href="{{ route('events.create') }}" class="inline-block bg-indigo-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition text-sm sm:text-base font-medium min-h-[44px] flex items-center justify-center mx-auto">
                 <i class="fas fa-plus mr-2"></i>Créer mon premier événement
             </a>
         </div>

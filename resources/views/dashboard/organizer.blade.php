@@ -4,40 +4,40 @@
 
 @section('content')
 <!-- Bannière de bienvenue -->
-<div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 mb-6">
-    <div class="flex items-center justify-between">
-        <div>
-            <div class="flex items-center mb-4">
-                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-3">
-                    <i class="fas fa-ticket-alt text-white text-2xl"></i>
+<div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex-1">
+            <div class="flex items-center mb-3 sm:mb-4">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg flex items-center justify-center mr-2 sm:mr-3">
+                    <i class="fas fa-ticket-alt text-white text-xl sm:text-2xl"></i>
                 </div>
-                <span class="text-2xl font-bold text-white">Tikehub</span>
+                <span class="text-xl sm:text-2xl font-bold text-white">Tikehub</span>
             </div>
-            <h1 class="text-3xl font-bold text-white mb-2">Bienvenue, {{ auth()->user()->name }}</h1>
-            <p class="text-indigo-100">Voici un aperçu de votre espace organisateur</p>
-            <div class="flex gap-3 mt-4">
-                <span class="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-white">
+            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2">Bienvenue, {{ auth()->user()->name }}</h1>
+            <p class="text-sm sm:text-base text-indigo-100">Voici un aperçu de votre espace organisateur</p>
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-3 sm:mt-4">
+                <span class="bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm text-white truncate">
                     {{ auth()->user()->email }}
                 </span>
-                <span class="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-white flex items-center gap-2">
+                <span class="bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm text-white flex items-center gap-2">
                     <i class="fas fa-wallet"></i>
-                    {{ number_format($stats['total_revenue'], 0, ',', ' ') }} XOF disponible
+                    <span class="whitespace-nowrap">{{ number_format($stats['total_revenue'], 0, ',', ' ') }} XOF disponible</span>
                 </span>
             </div>
         </div>
-        <div class="hidden md:block">
-            <div class="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center">
-                <i class="fas fa-chart-line text-white text-4xl opacity-50"></i>
+        <div class="hidden md:block flex-shrink-0">
+            <div class="w-20 h-20 lg:w-24 lg:h-24 bg-white/10 rounded-full flex items-center justify-center">
+                <i class="fas fa-chart-line text-white text-3xl lg:text-4xl opacity-50"></i>
             </div>
         </div>
     </div>
 </div>
 
-<div class="p-6">
+<div class="p-3 sm:p-4 lg:p-6">
     <!-- Cartes de statistiques -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <!-- Événements actifs -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <p class="text-sm text-gray-600 mb-1">Événements actifs</p>
@@ -54,7 +54,7 @@
         </div>
 
         <!-- Concours actifs -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <p class="text-sm text-gray-600 mb-1">Concours actifs</p>
@@ -71,7 +71,7 @@
         </div>
 
         <!-- Total dépensé / Revenus -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <p class="text-sm text-gray-600 mb-1">Total revenus</p>
@@ -135,7 +135,7 @@
     <!-- Graphiques et tableaux -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- Revenus (6 derniers mois) -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-800">Revenus (6 derniers mois)</h2>
                 <i class="fas fa-chart-line text-indigo-600"></i>
@@ -146,7 +146,7 @@
         </div>
 
         <!-- Répartition des revenus -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-800">Répartition des revenus</h2>
                 <i class="fas fa-chart-pie text-purple-600"></i>
@@ -237,7 +237,7 @@
     <!-- Concours et Collectes -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Derniers concours -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-800">Mes Concours ({{ $contests->count() }})</h2>
                 <a href="{{ route('contests.create') }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm">
@@ -320,7 +320,7 @@
         </div>
 
         <!-- Dernières collectes -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-800">Mes Collectes</h2>
                 <a href="{{ route('fundraisings.create') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">

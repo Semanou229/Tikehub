@@ -1,7 +1,7 @@
 <?php $__env->startSection('title', $event->title . ' - Tikehub'); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-8">
     <!-- Header avec date en rouge -->
     <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6 border border-gray-200">
         <div class="flex flex-col md:flex-row">
@@ -182,8 +182,8 @@
             </div>
 
             <!-- Informations sur le billet -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-bold mb-4 pb-2 border-b-2 border-red-600">Informations sur le billet</h2>
+            <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                <h2 class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 pb-2 border-b-2 border-red-600">Informations sur le billet</h2>
                 
                 <?php if($event->ticketTypes->count() > 0): ?>
                     <?php
@@ -194,22 +194,22 @@
                     <?php if($hasAvailableTickets && auth()->check()): ?>
                         <!-- Panier flottant -->
                         <div id="ticket-cart" class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-red-600 shadow-2xl z-50 transform translate-y-full transition-transform duration-300">
-                            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex-1">
-                                        <div class="text-sm text-gray-600 mb-1">
+                            <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-4">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-xs sm:text-sm text-gray-600 mb-1">
                                             <span id="cart-total-items">0</span> billet(s) sélectionné(s)
                                         </div>
-                                        <div class="text-2xl font-bold text-red-600">
+                                        <div class="text-xl sm:text-2xl font-bold text-red-600">
                                             <span id="cart-total-price">0</span> XOF
                                         </div>
                                     </div>
-                                    <form id="checkout-form" method="POST" action="<?php echo e(route('tickets.checkout', $event)); ?>" class="ml-4">
+                                    <form id="checkout-form" method="POST" action="<?php echo e(route('tickets.checkout', $event)); ?>" class="sm:ml-4 w-full sm:w-auto">
                                         <?php echo csrf_field(); ?>
                                         <input type="hidden" name="tickets" id="tickets-data">
                                         <button type="submit" 
                                                 id="checkout-btn"
-                                                class="bg-red-600 text-white px-8 py-3 rounded-lg hover:bg-red-700 transition font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                                class="w-full sm:w-auto bg-red-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg hover:bg-red-700 active:bg-red-800 transition font-semibold text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] flex items-center justify-center"
                                                 disabled>
                                             <i class="fas fa-ticket-alt mr-2"></i>Réserver
                                         </button>
@@ -218,24 +218,24 @@
                             </div>
                         </div>
                     <?php elseif($hasAvailableTickets && !auth()->check()): ?>
-                        <div class="flex items-center justify-between mb-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                             <span class="font-semibold text-gray-700">Billets</span>
-                            <a href="<?php echo e(route('login')); ?>" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition font-semibold">
+                            <a href="<?php echo e(route('login')); ?>" class="bg-red-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-red-700 active:bg-red-800 transition font-semibold text-sm sm:text-base text-center min-h-[44px] flex items-center justify-center">
                                 <i class="fas fa-ticket-alt mr-2"></i>Réserver maintenant
                             </a>
                         </div>
                     <?php else: ?>
-                        <div class="flex items-center justify-between mb-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                             <span class="font-semibold text-gray-700">Billets</span>
-                            <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm">
+                            <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm text-center">
                                 Réservation en ligne fermée
                             </span>
                         </div>
                     <?php endif; ?>
                 <?php else: ?>
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                         <span class="font-semibold text-gray-700">Billets</span>
-                        <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm">
+                        <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm text-center">
                             Aucun billet disponible
                         </span>
                     </div>
@@ -243,17 +243,17 @@
 
                 <!-- Liste des types de billets -->
                 <?php if($event->ticketTypes->count() > 0): ?>
-                    <div class="mt-6 space-y-4">
+                    <div class="mt-4 sm:mt-6 space-y-4">
                         <?php $__currentLoopData = $event->ticketTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ticketType): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <?php
                                 $urgencyBadges = $ticketType->getUrgencyBadges();
                             ?>
-                            <div class="border border-gray-200 rounded-lg p-4 hover:border-red-500 transition relative">
-                                <div class="flex justify-between items-start">
-                                    <div class="flex-1">
+                            <div class="border border-gray-200 rounded-lg p-3 sm:p-4 hover:border-red-500 transition relative">
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+                                    <div class="flex-1 min-w-0">
                                         <!-- Badges d'urgence en haut à gauche -->
                                         <?php if(count($urgencyBadges) > 0): ?>
-                                            <div class="flex flex-wrap gap-2 mb-2">
+                                            <div class="flex flex-wrap gap-1.5 sm:gap-2 mb-2">
                                                 <?php $__currentLoopData = $urgencyBadges; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $badge): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold 
                                                         <?php if($badge['color'] === 'red'): ?> bg-red-100 text-red-700 border border-red-300
@@ -261,21 +261,20 @@
                                                         <?php else: ?> bg-yellow-100 text-yellow-700 border border-yellow-300
                                                         <?php endif; ?>
                                                         animate-pulse">
-                                                        <i class="fas fa-<?php echo e($badge['icon']); ?>"></i>
-                                                        <?php echo e($badge['text']); ?>
-
+                                                        <i class="fas fa-<?php echo e($badge['icon']); ?> text-xs"></i>
+                                                        <span class="whitespace-nowrap"><?php echo e($badge['text']); ?></span>
                                                     </span>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </div>
                                         <?php endif; ?>
                                         
-                                        <h3 class="font-semibold text-lg mb-1"><?php echo e($ticketType->name); ?></h3>
+                                        <h3 class="font-semibold text-base sm:text-lg mb-1"><?php echo e($ticketType->name); ?></h3>
                                         <?php if($ticketType->description): ?>
-                                            <p class="text-gray-600 text-sm mb-2"><?php echo e($ticketType->description); ?></p>
+                                            <p class="text-gray-600 text-xs sm:text-sm mb-2"><?php echo e($ticketType->description); ?></p>
                                         <?php endif; ?>
-                                        <div class="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
+                                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
                                             <span class="flex items-center">
-                                                <i class="fas fa-ticket-alt mr-1"></i>
+                                                <i class="fas fa-ticket-alt mr-1 text-xs"></i>
                                                 <?php echo e($ticketType->available_quantity); ?> disponible(s)
                                             </span>
                                             <?php if($ticketType->quantity > 0): ?>
@@ -283,35 +282,35 @@
                                                     $percentageSold = ($ticketType->sold_quantity / $ticketType->quantity) * 100;
                                                 ?>
                                                 <span class="flex items-center">
-                                                    <i class="fas fa-chart-line mr-1"></i>
+                                                    <i class="fas fa-chart-line mr-1 text-xs"></i>
                                                     <?php echo e(number_format($percentageSold, 0)); ?>% vendu
                                                 </span>
                                             <?php endif; ?>
                                             <?php if($ticketType->start_sale_date && $ticketType->end_sale_date): ?>
-                                                <span>
+                                                <span class="block sm:inline">
                                                     Du <?php echo e($ticketType->start_sale_date->format('d/m/Y')); ?> au <?php echo e($ticketType->end_sale_date->format('d/m/Y')); ?>
 
                                                 </span>
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                    <div class="text-right ml-4">
-                                        <div class="text-2xl font-bold text-red-600 mb-3">
+                                    <div class="flex flex-col sm:flex-col sm:text-right items-end sm:items-end justify-end gap-3 sm:gap-3 sm:ml-4 flex-shrink-0 w-full sm:w-auto">
+                                        <div class="text-lg sm:text-2xl font-bold text-red-600 whitespace-nowrap w-full sm:w-auto text-right">
                                             <?php echo e(number_format($ticketType->price, 0, ',', ' ')); ?> XOF
                                         </div>
                                         <?php if($ticketType->isOnSale()): ?>
                                             <?php if(auth()->check()): ?>
                                                 <!-- Sélecteur de quantité -->
-                                                <div class="flex items-center justify-end gap-2 mb-2">
+                                                <div class="flex items-center gap-2 justify-end w-full sm:w-auto">
                                                     <button type="button" 
-                                                            class="ticket-decrease bg-gray-200 hover:bg-gray-300 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed" 
+                                                            class="ticket-decrease bg-gray-200 hover:bg-gray-300 active:bg-gray-400 text-gray-700 w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0" 
                                                             data-ticket-type-id="<?php echo e($ticketType->id); ?>"
                                                             data-price="<?php echo e($ticketType->price); ?>"
                                                             data-max="<?php echo e($ticketType->available_quantity); ?>">
                                                         <i class="fas fa-minus text-xs"></i>
                                                     </button>
                                                     <input type="number" 
-                                                           class="ticket-quantity w-12 text-center border border-gray-300 rounded py-1 text-sm font-semibold" 
+                                                           class="ticket-quantity w-16 sm:w-14 text-center border border-gray-300 rounded py-2 sm:py-1.5 text-sm font-semibold flex-shrink-0" 
                                                            data-ticket-type-id="<?php echo e($ticketType->id); ?>"
                                                            data-price="<?php echo e($ticketType->price); ?>"
                                                            value="0" 
@@ -319,7 +318,7 @@
                                                            max="<?php echo e($ticketType->available_quantity); ?>"
                                                            readonly>
                                                     <button type="button" 
-                                                            class="ticket-increase bg-red-600 hover:bg-red-700 text-white w-8 h-8 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed" 
+                                                            class="ticket-increase bg-red-600 hover:bg-red-700 active:bg-red-800 text-white w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0" 
                                                             data-ticket-type-id="<?php echo e($ticketType->id); ?>"
                                                             data-price="<?php echo e($ticketType->price); ?>"
                                                             data-max="<?php echo e($ticketType->available_quantity); ?>">
@@ -327,7 +326,7 @@
                                                     </button>
                                                 </div>
                                             <?php else: ?>
-                                                <a href="<?php echo e(route('login')); ?>" class="mt-2 inline-block bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
+                                                <a href="<?php echo e(route('login')); ?>" class="w-full sm:w-auto mt-0 sm:mt-2 inline-block bg-red-600 text-white px-4 py-2.5 sm:py-2 rounded-lg hover:bg-red-700 active:bg-red-800 transition text-xs sm:text-sm font-semibold min-h-[44px] flex items-center justify-center">
                                                     <i class="fas fa-shopping-cart mr-1"></i>Acheter
                                                 </a>
                                             <?php endif; ?>
@@ -447,10 +446,10 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="space-y-6 sticky self-start" style="top: 100px;">
+        <div class="space-y-4 sm:space-y-6 lg:sticky lg:self-start relative lg:top-20" style="z-index: 10;">
             <!-- Organisateur -->
-            <div class="bg-gray-100 rounded-lg p-6">
-                <div class="bg-white rounded-lg p-4">
+            <div class="bg-gray-100 rounded-lg p-4 sm:p-6">
+                <div class="bg-white rounded-lg p-3 sm:p-4">
                     <div class="flex items-center mb-4">
                         <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-3">
                             <?php echo e(strtoupper(substr($event->organizer->name, 0, 2))); ?>
@@ -500,7 +499,7 @@
                         </div>
                     <?php endif; ?>
                     
-                    <button onclick="contactOrganizer('<?php echo e($event->organizer->email); ?>')" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-2">
+                    <button onclick="contactOrganizer('<?php echo e($event->organizer->email); ?>')" class="w-full bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 active:bg-red-800 transition flex items-center justify-center gap-2 min-h-[44px] text-sm sm:text-base font-medium">
                         <i class="fas fa-envelope"></i>
                         <span>Envoyer un message</span>
                     </button>
