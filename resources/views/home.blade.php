@@ -535,66 +535,72 @@ document.addEventListener('DOMContentLoaded', function() {
     // Hero Content Types Slider
     const heroSlideItems = document.querySelectorAll('.hero-slide-item');
     const heroSlideDots = document.querySelectorAll('.hero-slide-dot');
-    let currentHeroSlide = 0;
-    let heroSlideInterval;
     
-    if (heroSlideItems.length <= 1) return;
-    
-    function showHeroSlide(index) {
-        heroSlideItems.forEach((slide, i) => {
-            if (i === index) {
-                slide.classList.remove('opacity-0', 'translate-x-full', '-translate-x-full', 'z-0');
-                slide.classList.add('opacity-100', 'translate-x-0', 'z-10');
-            } else {
-                slide.classList.remove('opacity-100', 'translate-x-0', 'z-10');
-                if (i < index) {
-                    slide.classList.add('opacity-0', '-translate-x-full', 'z-0');
+    if (heroSlideItems.length > 1) {
+        let currentHeroSlide = 0;
+        let heroSlideInterval;
+        
+        function showHeroSlide(index) {
+            heroSlideItems.forEach((slide, i) => {
+                if (i === index) {
+                    slide.style.opacity = '1';
+                    slide.style.transform = 'translateX(0)';
+                    slide.style.zIndex = '10';
                 } else {
-                    slide.classList.add('opacity-0', 'translate-x-full', 'z-0');
+                    slide.style.opacity = '0';
+                    slide.style.zIndex = '0';
+                    if (i < index) {
+                        slide.style.transform = 'translateX(-100%)';
+                    } else {
+                        slide.style.transform = 'translateX(100%)';
+                    }
                 }
-            }
+            });
+            
+            heroSlideDots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.add('bg-cyan-400', 'w-8');
+                    dot.classList.remove('bg-white/30', 'w-2');
+                } else {
+                    dot.classList.add('bg-white/30', 'w-2');
+                    dot.classList.remove('bg-cyan-400', 'w-8');
+                }
+            });
+            
+            currentHeroSlide = index;
+        }
+        
+        function nextHeroSlide() {
+            const nextIndex = (currentHeroSlide + 1) % heroSlideItems.length;
+            showHeroSlide(nextIndex);
+        }
+        
+        function startHeroSlideRotation() {
+            if (heroSlideInterval) clearInterval(heroSlideInterval);
+            heroSlideInterval = setInterval(nextHeroSlide, 4000); // Change every 4 seconds
+        }
+        
+        // Click on dots to navigate
+        heroSlideDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                clearInterval(heroSlideInterval);
+                showHeroSlide(index);
+                startHeroSlideRotation();
+            });
         });
         
-        heroSlideDots.forEach((dot, i) => {
-            if (i === index) {
-                dot.classList.add('bg-cyan-400', 'w-8');
-                dot.classList.remove('bg-white/30', 'w-2');
-            } else {
-                dot.classList.add('bg-white/30', 'w-2');
-                dot.classList.remove('bg-cyan-400', 'w-8');
-            }
-        });
+        // Initialize hero slides
+        showHeroSlide(0);
+        startHeroSlideRotation();
         
-        currentHeroSlide = index;
-    }
-    
-    function nextHeroSlide() {
-        const nextIndex = (currentHeroSlide + 1) % heroSlideItems.length;
-        showHeroSlide(nextIndex);
-    }
-    
-    function startHeroSlideRotation() {
-        heroSlideInterval = setInterval(nextHeroSlide, 4000); // Change every 4 seconds
-    }
-    
-    // Click on dots to navigate
-    heroSlideDots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            clearInterval(heroSlideInterval);
-            showHeroSlide(index);
-            startHeroSlideRotation();
-        });
-    });
-    
-    // Initialize hero slides
-    showHeroSlide(0);
-    startHeroSlideRotation();
-    
-    // Pause hero slide rotation on hover
-    const heroSliderContainer = document.querySelector('.relative.z-10');
-    if (heroSliderContainer) {
-        heroSliderContainer.addEventListener('mouseenter', () => clearInterval(heroSlideInterval));
-        heroSliderContainer.addEventListener('mouseleave', startHeroSlideRotation);
+        // Pause hero slide rotation on hover
+        const heroSliderContainer = document.querySelector('.relative.z-10');
+        if (heroSliderContainer) {
+            heroSliderContainer.addEventListener('mouseenter', () => {
+                if (heroSlideInterval) clearInterval(heroSlideInterval);
+            });
+            heroSliderContainer.addEventListener('mouseleave', startHeroSlideRotation);
+        }
     }
 });
 </script>
