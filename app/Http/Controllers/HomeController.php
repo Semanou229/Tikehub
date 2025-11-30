@@ -72,7 +72,65 @@ class HomeController extends Controller
         // Récupérer le pourcentage de commission dynamique
         $commissionRate = get_commission_rate();
         
-        return view('home', compact('upcomingEvents', 'popularEvents', 'activeContests', 'activeFundraisings', 'stats', 'commissionRate'));
+        // Événements pour le slider Hero (mélange d'événements, concours et collectes)
+        $heroItems = collect();
+        
+        // Ajouter des événements
+        foreach ($upcomingEvents->take(3) as $event) {
+            $heroItems->push([
+                'type' => 'event',
+                'id' => $event->id,
+                'title' => $event->title,
+                'description' => \Illuminate\Support\Str::limit($event->description, 150),
+                'image' => $event->cover_image,
+                'category' => $event->category,
+                'date' => $event->start_date,
+                'location' => $event->venue_city,
+                'url' => route('events.show', $event),
+                'is_virtual' => $event->is_virtual,
+                'is_free' => $event->is_free,
+            ]);
+        }
+        
+        // Ajouter des concours
+        foreach ($activeContests->take(2) as $contest) {
+            $heroItems->push([
+                'type' => 'contest',
+                'id' => $contest->id,
+                'title' => $contest->name,
+                'description' => \Illuminate\Support\Str::limit($contest->description, 150),
+                'image' => $contest->cover_image,
+                'category' => 'Concours',
+                'date' => $contest->end_date,
+                'location' => null,
+                'url' => route('contests.show', $contest),
+                'price_per_vote' => $contest->price_per_vote,
+                'votes_count' => $contest->votes_count ?? 0,
+            ]);
+        }
+        
+        // Ajouter des collectes
+        foreach ($activeFundraisings->take(2) as $fundraising) {
+            $heroItems->push([
+                'type' => 'fundraising',
+                'id' => $fundraising->id,
+                'title' => $fundraising->name,
+                'description' => \Illuminate\Support\Str::limit($fundraising->description, 150),
+                'image' => $fundraising->cover_image,
+                'category' => 'Collecte',
+                'date' => $fundraising->end_date,
+                'location' => null,
+                'url' => route('fundraisings.show', $fundraising),
+                'current_amount' => $fundraising->current_amount,
+                'goal_amount' => $fundraising->goal_amount,
+                'progress' => $fundraising->progress_percentage,
+            ]);
+        }
+        
+        // Mélanger et prendre 6 items
+        $heroItems = $heroItems->shuffle()->take(6);
+        
+        return view('home', compact('upcomingEvents', 'popularEvents', 'activeContests', 'activeFundraisings', 'stats', 'commissionRate', 'heroItems'));
     }
 }
 

@@ -79,167 +79,304 @@
 @section('title', 'Tikehub - Plateforme de Billetterie en Ligne pour l\'Afrique | Événements, Concours & Collectes')
 
 @section('content')
-<!-- Hero Section -->
-<section class="bg-white py-12 sm:py-16 lg:py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <!-- Left Side: Text and Search Form -->
-            <div class="order-2 lg:order-1">
-                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
-                    Réservez et vendez vos billets<br>
-                    <span class="text-indigo-600">en toute simplicité en Afrique</span>
-                </h1>
-                <p class="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed">
-                    Bienvenue sur la billetterie en ligne qui connecte l'Afrique aux plus grands événements
-                </p>
-                
-                <!-- Search Form -->
-                <form action="{{ route('events.index') }}" method="GET" class="mb-4">
-                    <div class="flex flex-col sm:flex-row gap-2 sm:gap-0 shadow-lg rounded-lg overflow-hidden">
-                        <!-- Location Input -->
-                        <div class="flex-1 relative">
-                            <input 
-                                type="text" 
-                                name="location" 
-                                value="{{ request('location') }}"
-                                placeholder="Où ...?" 
-                                class="w-full bg-red-600 text-white placeholder-white placeholder-opacity-80 px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-red-700 min-h-[44px] sm:min-h-[56px]"
-                            >
-                            <i class="fas fa-map-marker-alt absolute right-4 top-1/2 transform -translate-y-1/2 text-white opacity-80"></i>
-                        </div>
-                        
-                        <!-- Category Select -->
-                        <div class="flex-1 relative">
-                            <select 
-                                name="category" 
-                                class="w-full bg-white text-gray-700 px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base border-l border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none min-h-[44px] sm:min-h-[56px]"
-                            >
-                                <option value="">Sélectionner la catégorie</option>
-                                <option value="Musique" {{ request('category') == 'Musique' ? 'selected' : '' }}>Musique</option>
-                                <option value="Sport" {{ request('category') == 'Sport' ? 'selected' : '' }}>Sport</option>
-                                <option value="Culture" {{ request('category') == 'Culture' ? 'selected' : '' }}>Culture</option>
-                                <option value="Art" {{ request('category') == 'Art' ? 'selected' : '' }}>Art</option>
-                                <option value="Business" {{ request('category') == 'Business' ? 'selected' : '' }}>Business</option>
-                                <option value="Éducation" {{ request('category') == 'Éducation' ? 'selected' : '' }}>Éducation</option>
-                                <option value="Santé" {{ request('category') == 'Santé' ? 'selected' : '' }}>Santé</option>
-                                <option value="Technologie" {{ request('category') == 'Technologie' ? 'selected' : '' }}>Technologie</option>
-                                <option value="Gastronomie" {{ request('category') == 'Gastronomie' ? 'selected' : '' }}>Gastronomie</option>
-                                <option value="Divertissement" {{ request('category') == 'Divertissement' ? 'selected' : '' }}>Divertissement</option>
-                                <option value="Famille" {{ request('category') == 'Famille' ? 'selected' : '' }}>Famille</option>
-                                <option value="Mode" {{ request('category') == 'Mode' ? 'selected' : '' }}>Mode</option>
-                                <option value="Autre" {{ request('category') == 'Autre' ? 'selected' : '' }}>Autre</option>
-                            </select>
-                            <i class="fas fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                        </div>
-                        
-                        <!-- Search Button -->
-                        <button 
-                            type="submit" 
-                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 sm:px-8 py-3 sm:py-4 transition duration-300 min-h-[44px] sm:min-h-[56px] flex items-center justify-center"
-                        >
-                            <i class="fas fa-search text-lg sm:text-xl"></i>
-                        </button>
-                    </div>
-                </form>
-                
-                <!-- Quick Links -->
-                <div class="flex flex-wrap gap-4 sm:gap-6">
-                    <a href="{{ route('events.index', ['location' => 'nearby']) }}" class="flex items-center text-gray-700 hover:text-indigo-600 transition text-sm sm:text-base">
-                        <i class="fas fa-paper-plane mr-2 text-indigo-600"></i>
-                        <span>Près de moi</span>
-                    </a>
-                    <a href="{{ route('events.index') }}" class="flex items-center text-gray-700 hover:text-indigo-600 transition text-sm sm:text-base">
-                        <i class="fas fa-search mr-2 text-indigo-600"></i>
-                        <span>Recherche avancée</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Right Side: Event Images -->
-            <div class="order-1 lg:order-2 grid grid-cols-2 gap-3 sm:gap-4">
-                @php
-                    $heroEvents = $upcomingEvents->take(3)->merge($popularEvents->take(3))->unique('id')->take(3);
-                @endphp
-                
-                @if($heroEvents->count() > 0)
-                    @foreach($heroEvents as $index => $event)
-                        @if($index === 0)
-                            <!-- Large Image (Top Left) -->
-                            <div class="col-span-2 row-span-1">
-                                <a href="{{ route('events.show', $event) }}" class="block relative h-48 sm:h-64 lg:h-80 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 group">
-                                    @if($event->cover_image)
-                                        <img src="{{ asset('storage/' . $event->cover_image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                    @else
-                                        <div class="w-full h-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
-                                            <i class="fas fa-calendar-alt text-6xl sm:text-7xl text-white opacity-50"></i>
-                                        </div>
-                                    @endif
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                                    <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
-                                        <h3 class="text-white font-semibold text-sm sm:text-base lg:text-lg line-clamp-2">{{ $event->title }}</h3>
-                                        <p class="text-white text-xs sm:text-sm opacity-90 mt-1">{{ $event->venue_city ?? 'Événement' }}</p>
-                                    </div>
-                                </a>
-                            </div>
-                        @elseif($index === 1)
-                            <!-- Medium Vertical Image (Top Right) -->
-                            <div class="col-span-1 row-span-2">
-                                <a href="{{ route('events.show', $event) }}" class="block relative h-full min-h-[200px] sm:min-h-[300px] rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 group">
-                                    @if($event->cover_image)
-                                        <img src="{{ asset('storage/' . $event->cover_image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                    @else
-                                        <div class="w-full h-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
-                                            <i class="fas fa-music text-5xl sm:text-6xl text-white opacity-50"></i>
-                                        </div>
-                                    @endif
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                                    <div class="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                                        <h3 class="text-white font-semibold text-xs sm:text-sm line-clamp-2">{{ $event->title }}</h3>
-                                        <p class="text-white text-xs opacity-90 mt-1">{{ $event->venue_city ?? 'Événement' }}</p>
-                                    </div>
-                                </a>
-                            </div>
+<!-- Hero Section with Slider -->
+<section class="relative bg-gray-900 overflow-hidden">
+    <!-- Slider Container -->
+    <div class="hero-slider relative h-[500px] sm:h-[600px] lg:h-[700px]">
+        @if($heroItems->count() > 0)
+            @foreach($heroItems as $index => $item)
+                <div class="hero-slide absolute inset-0 transition-opacity duration-1000 ease-in-out {{ $index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}" data-slide="{{ $index }}">
+                    <div class="relative w-full h-full">
+                        @if($item['image'])
+                            <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
                         @else
-                            <!-- Small Horizontal Image (Bottom Right) -->
-                            <div class="col-span-1 row-span-1">
-                                <a href="{{ route('events.show', $event) }}" class="block relative h-32 sm:h-40 lg:h-48 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 group">
-                                    @if($event->cover_image)
-                                        <img src="{{ asset('storage/' . $event->cover_image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                    @else
-                                        <div class="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
-                                            <i class="fas fa-fire text-4xl sm:text-5xl text-white opacity-50"></i>
-                                        </div>
-                                    @endif
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                                    <div class="absolute bottom-0 left-0 right-0 p-2 sm:p-3">
-                                        <h3 class="text-white font-semibold text-xs sm:text-sm line-clamp-1">{{ $event->title }}</h3>
-                                    </div>
-                                </a>
+                            <div class="w-full h-full bg-gradient-to-br 
+                                @if($item['type'] === 'event') from-indigo-600 to-purple-600
+                                @elseif($item['type'] === 'contest') from-purple-600 to-pink-600
+                                @else from-red-600 to-orange-600
+                                @endif flex items-center justify-center">
+                                <i class="fas 
+                                    @if($item['type'] === 'event') fa-calendar-alt
+                                    @elseif($item['type'] === 'contest') fa-trophy
+                                    @else fa-heart
+                                    @endif text-9xl text-white opacity-30"></i>
                             </div>
                         @endif
-                    @endforeach
-                @else
-                    <!-- Fallback Images -->
-                    <div class="col-span-2 row-span-1">
-                        <div class="h-48 sm:h-64 lg:h-80 rounded-lg bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center shadow-lg">
-                            <i class="fas fa-calendar-alt text-6xl sm:text-7xl text-white opacity-50"></i>
+                        <!-- Overlay Gradient -->
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30"></div>
+                        
+                        <!-- Content -->
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                                <div class="max-w-2xl">
+                                    <!-- Badge Type -->
+                                    <div class="mb-4 inline-block">
+                                        <span class="px-4 py-2 rounded-full text-sm font-semibold
+                                            @if($item['type'] === 'event') bg-indigo-600 text-white
+                                            @elseif($item['type'] === 'contest') bg-purple-600 text-white
+                                            @else bg-red-600 text-white
+                                            @endif">
+                                            @if($item['type'] === 'event')
+                                                <i class="fas fa-calendar-alt mr-2"></i>Événement
+                                            @elseif($item['type'] === 'contest')
+                                                <i class="fas fa-trophy mr-2"></i>Concours
+                                            @else
+                                                <i class="fas fa-heart mr-2"></i>Collecte
+                                            @endif
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Title -->
+                                    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight animate-fade-in-up">
+                                        {{ $item['title'] }}
+                                    </h1>
+                                    
+                                    <!-- Description -->
+                                    <p class="text-lg sm:text-xl md:text-2xl text-gray-200 mb-6 sm:mb-8 leading-relaxed line-clamp-2 animate-fade-in-up animation-delay-200">
+                                        {{ $item['description'] }}
+                                    </p>
+                                    
+                                    <!-- Info -->
+                                    <div class="flex flex-wrap items-center gap-4 sm:gap-6 mb-6 sm:mb-8 text-white animate-fade-in-up animation-delay-400">
+                                        @if($item['date'])
+                                            <div class="flex items-center">
+                                                <i class="fas fa-calendar-alt mr-2 text-indigo-400"></i>
+                                                <span class="text-sm sm:text-base">{{ $item['date']->translatedFormat('d F Y') }}</span>
+                                            </div>
+                                        @endif
+                                        @if($item['location'])
+                                            <div class="flex items-center">
+                                                <i class="fas fa-map-marker-alt mr-2 text-indigo-400"></i>
+                                                <span class="text-sm sm:text-base">{{ $item['location'] }}</span>
+                                            </div>
+                                        @endif
+                                        @if(isset($item['price_per_vote']))
+                                            <div class="flex items-center">
+                                                <i class="fas fa-vote-yea mr-2 text-purple-400"></i>
+                                                <span class="text-sm sm:text-base">{{ number_format($item['price_per_vote'], 0, ',', ' ') }} XOF/vote</span>
+                                            </div>
+                                        @endif
+                                        @if(isset($item['progress']))
+                                            <div class="flex items-center">
+                                                <i class="fas fa-chart-line mr-2 text-red-400"></i>
+                                                <span class="text-sm sm:text-base">{{ number_format($item['progress'], 0) }}% collecté</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    
+                                    <!-- CTA Button -->
+                                    <a href="{{ $item['url'] }}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition duration-300 shadow-lg hover:shadow-xl min-h-[44px] flex items-center justify-center animate-fade-in-up animation-delay-600">
+                                        <span>
+                                            @if($item['type'] === 'event')
+                                                Voir l'événement
+                                            @elseif($item['type'] === 'contest')
+                                                Voir le concours
+                                            @else
+                                                Contribuer
+                                            @endif
+                                        </span>
+                                        <i class="fas fa-arrow-right ml-2"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-span-1 row-span-2">
-                        <div class="h-full min-h-[200px] sm:min-h-[300px] rounded-lg bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center shadow-lg">
-                            <i class="fas fa-music text-5xl sm:text-6xl text-white opacity-50"></i>
-                        </div>
+                </div>
+            @endforeach
+        @else
+            <!-- Fallback -->
+            <div class="hero-slide absolute inset-0 opacity-100 z-10">
+                <div class="relative w-full h-full bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center">
+                    <div class="text-center text-white">
+                        <i class="fas fa-calendar-alt text-9xl opacity-30 mb-8"></i>
+                        <h1 class="text-5xl md:text-6xl font-bold mb-4">Découvrez les événements</h1>
+                        <p class="text-xl md:text-2xl mb-8">Rejoignez la communauté Tikehub</p>
                     </div>
-                    <div class="col-span-1 row-span-1">
-                        <div class="h-32 sm:h-40 lg:h-48 rounded-lg bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg">
-                            <i class="fas fa-fire text-4xl sm:text-5xl text-white opacity-50"></i>
-                        </div>
-                    </div>
-                @endif
+                </div>
             </div>
-        </div>
+        @endif
     </div>
+    
+    <!-- Navigation Arrows -->
+    @if($heroItems->count() > 1)
+        <button id="hero-prev" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 sm:p-4 rounded-full transition duration-300 z-20 min-w-[44px] min-h-[44px] flex items-center justify-center">
+            <i class="fas fa-chevron-left text-lg sm:text-xl"></i>
+        </button>
+        <button id="hero-next" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 sm:p-4 rounded-full transition duration-300 z-20 min-w-[44px] min-h-[44px] flex items-center justify-center">
+            <i class="fas fa-chevron-right text-lg sm:text-xl"></i>
+        </button>
+    @endif
+    
+    <!-- Dots Navigation -->
+    @if($heroItems->count() > 1)
+        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+            @foreach($heroItems as $index => $item)
+                <button class="hero-dot w-3 h-3 rounded-full transition-all duration-300 {{ $index === 0 ? 'bg-white w-8' : 'bg-white/50' }}" data-slide="{{ $index }}"></button>
+            @endforeach
+        </div>
+    @endif
 </section>
+
+@push('styles')
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 0;
+    }
+    
+    .animation-delay-200 {
+        animation-delay: 0.2s;
+    }
+    
+    .animation-delay-400 {
+        animation-delay: 0.4s;
+    }
+    
+    .animation-delay-600 {
+        animation-delay: 0.6s;
+    }
+    
+    .hero-slide {
+        will-change: opacity;
+    }
+    
+    .hero-slide.active {
+        opacity: 1 !important;
+        z-index: 10 !important;
+    }
+    
+    .hero-dot.active {
+        background-color: white !important;
+        width: 2rem !important;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.hero-dot');
+    const prevBtn = document.getElementById('hero-prev');
+    const nextBtn = document.getElementById('hero-next');
+    let currentSlide = 0;
+    let slideInterval;
+    
+    if (slides.length <= 1) return;
+    
+    function showSlide(index) {
+        // Remove active class from all slides and dots
+        slides.forEach((slide, i) => {
+            if (i === index) {
+                slide.classList.add('opacity-100', 'z-10');
+                slide.classList.remove('opacity-0', 'z-0');
+            } else {
+                slide.classList.add('opacity-0', 'z-0');
+                slide.classList.remove('opacity-100', 'z-10');
+            }
+        });
+        
+        dots.forEach((dot, i) => {
+            if (i === index) {
+                dot.classList.add('bg-white', 'w-8');
+                dot.classList.remove('bg-white/50', 'w-3');
+            } else {
+                dot.classList.add('bg-white/50', 'w-3');
+                dot.classList.remove('bg-white', 'w-8');
+            }
+        });
+        
+        // Re-animate content
+        const activeSlide = slides[index];
+        const animatedElements = activeSlide.querySelectorAll('.animate-fade-in-up');
+        animatedElements.forEach(el => {
+            el.style.animation = 'none';
+            setTimeout(() => {
+                el.style.animation = '';
+            }, 10);
+        });
+    }
+    
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+    
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(currentSlide);
+    }
+    
+    function startAutoSlide() {
+        slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+    }
+    
+    function stopAutoSlide() {
+        clearInterval(slideInterval);
+    }
+    
+    // Event listeners
+    if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); stopAutoSlide(); startAutoSlide(); });
+    if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); stopAutoSlide(); startAutoSlide(); });
+    
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentSlide = index;
+            showSlide(currentSlide);
+            stopAutoSlide();
+            startAutoSlide();
+        });
+    });
+    
+    // Pause on hover
+    const slider = document.querySelector('.hero-slider');
+    if (slider) {
+        slider.addEventListener('mouseenter', stopAutoSlide);
+        slider.addEventListener('mouseleave', startAutoSlide);
+    }
+    
+    // Start auto-slide
+    startAutoSlide();
+    
+    // Touch swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    slider.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    slider.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+    
+    function handleSwipe() {
+        if (touchEndX < touchStartX - 50) {
+            nextSlide();
+            stopAutoSlide();
+            startAutoSlide();
+        }
+        if (touchEndX > touchStartX + 50) {
+            prevSlide();
+            stopAutoSlide();
+            startAutoSlide();
+        }
+    }
+});
+</script>
+@endpush
 
 <!-- Statistiques -->
 <section class="py-12 bg-gray-50">
