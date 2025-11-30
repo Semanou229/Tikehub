@@ -86,67 +86,76 @@
         <div class="absolute inset-0" style="background-image: radial-gradient(circle, rgba(99, 102, 241, 0.3) 1px, transparent 1px); background-size: 30px 30px;"></div>
     </div>
     
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
             <!-- Left Side: Content -->
             <div class="text-white z-10">
                 <!-- Badge -->
-                <div class="mb-4 sm:mb-6">
+                <div class="mb-3 sm:mb-4">
                     <span class="inline-block px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
                         BILLETTERIE, CONCOURS & COLLECTES
                     </span>
                 </div>
                 
                 <!-- Main Title -->
-                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 leading-tight">
                     Plus facile, plus puissant,<br>
                     <span class="text-cyan-400">moins cher</span>
                 </h1>
                 
                 <!-- Description -->
-                <p class="text-lg sm:text-xl md:text-2xl text-gray-300 mb-6 sm:mb-8 leading-relaxed max-w-xl">
+                <p class="text-base sm:text-lg md:text-xl text-gray-300 mb-4 sm:mb-6 leading-relaxed max-w-xl">
                     La plateforme complète pour créer, gérer et vendre vos événements, organiser des concours avec votes payants et lancer des collectes de fonds en Afrique.
                 </p>
                 
-                <!-- Three Content Types -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                    <!-- Événements -->
-                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/15 transition">
-                        <div class="flex items-center mb-2 sm:mb-3">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
-                                <i class="fas fa-calendar-alt text-white text-lg sm:text-xl"></i>
+                <!-- Three Content Types - Animated Rotator -->
+                <div class="relative h-32 sm:h-36 mb-4 sm:mb-6 overflow-hidden">
+                    <div id="content-types-rotator" class="relative h-full">
+                        <!-- Événements -->
+                        <div class="content-type-card absolute inset-0 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 transition-all duration-500 ease-in-out" data-type="event">
+                            <div class="flex items-center mb-2">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 animate-pulse">
+                                    <i class="fas fa-calendar-alt text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <h3 class="text-base sm:text-lg font-bold text-white">Événements</h3>
                             </div>
-                            <h3 class="text-base sm:text-lg font-bold text-white">Événements</h3>
+                            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                                Créez et vendez des billets pour vos événements avec notre système de billetterie sécurisé
+                            </p>
                         </div>
-                        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                            Créez et vendez des billets pour vos événements avec notre système de billetterie sécurisé
-                        </p>
+                        
+                        <!-- Concours -->
+                        <div class="content-type-card absolute inset-0 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 transition-all duration-500 ease-in-out opacity-0 translate-x-full" data-type="contest">
+                            <div class="flex items-center mb-2">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 animate-pulse">
+                                    <i class="fas fa-trophy text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <h3 class="text-base sm:text-lg font-bold text-white">Concours</h3>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                                Organisez des concours avec votes payants et suivez les résultats en temps réel
+                            </p>
+                        </div>
+                        
+                        <!-- Collectes -->
+                        <div class="content-type-card absolute inset-0 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 transition-all duration-500 ease-in-out opacity-0 translate-x-full" data-type="fundraising">
+                            <div class="flex items-center mb-2">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 animate-pulse">
+                                    <i class="fas fa-heart text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <h3 class="text-base sm:text-lg font-bold text-white">Collectes</h3>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                                Lancez des collectes de fonds pour vos causes et suivez les dons en temps réel
+                            </p>
+                        </div>
                     </div>
                     
-                    <!-- Concours -->
-                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/15 transition">
-                        <div class="flex items-center mb-2 sm:mb-3">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
-                                <i class="fas fa-trophy text-white text-lg sm:text-xl"></i>
-                            </div>
-                            <h3 class="text-base sm:text-lg font-bold text-white">Concours</h3>
-                        </div>
-                        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                            Organisez des concours avec votes payants et suivez les résultats en temps réel
-                        </p>
-                    </div>
-                    
-                    <!-- Collectes -->
-                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/15 transition">
-                        <div class="flex items-center mb-2 sm:mb-3">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
-                                <i class="fas fa-heart text-white text-lg sm:text-xl"></i>
-                            </div>
-                            <h3 class="text-base sm:text-lg font-bold text-white">Collectes</h3>
-                        </div>
-                        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                            Lancez des collectes de fonds pour vos causes et suivez les dons en temps réel
-                        </p>
+                    <!-- Dots Indicator -->
+                    <div class="flex justify-center gap-2 mt-3">
+                        <button class="type-dot w-2 h-2 rounded-full bg-cyan-400 transition-all duration-300" data-index="0"></button>
+                        <button class="type-dot w-2 h-2 rounded-full bg-white/30 transition-all duration-300" data-index="1"></button>
+                        <button class="type-dot w-2 h-2 rounded-full bg-white/30 transition-all duration-300" data-index="2"></button>
                     </div>
                 </div>
                 
@@ -260,37 +269,41 @@
             </div>
         </div>
         
-        <!-- Categories Section -->
-        <div class="mt-12 sm:mt-16 lg:mt-20 pt-8 sm:pt-12 border-t border-white/10">
-            <div class="text-center mb-6 sm:mb-8">
-                <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Explorez par catégorie</h2>
-                <p class="text-gray-300 text-sm sm:text-base">Découvrez nos événements selon vos centres d'intérêt</p>
+        <!-- Categories Section - Animated Carousel -->
+        <div class="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
+            <div class="text-center mb-4 sm:mb-6">
+                <h2 class="text-xl sm:text-2xl font-bold text-white mb-2">Explorez par catégorie</h2>
+                <p class="text-gray-300 text-xs sm:text-sm">Découvrez nos événements selon vos centres d'intérêt</p>
             </div>
             
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-                @php
-                    $categories = [
-                        ['name' => 'Concert', 'icon' => 'fa-music', 'color' => 'indigo'],
-                        ['name' => 'Sport', 'icon' => 'fa-futbol', 'color' => 'green'],
-                        ['name' => 'Culture', 'icon' => 'fa-theater-masks', 'color' => 'purple'],
-                        ['name' => 'Business', 'icon' => 'fa-briefcase', 'color' => 'blue'],
-                        ['name' => 'Éducation', 'icon' => 'fa-graduation-cap', 'color' => 'yellow'],
-                        ['name' => 'Autre', 'icon' => 'fa-star', 'color' => 'gray'],
-                    ];
-                @endphp
-                
-                @foreach($categories as $category)
-                    <a href="{{ route('events.index', ['category' => $category['name']]) }}" class="group bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/20 hover:border-cyan-500/50 transition duration-300 text-center">
-                        <div class="mb-3 flex justify-center">
-                            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-{{ $category['color'] }}-500/20 group-hover:bg-{{ $category['color'] }}-500/30 rounded-lg flex items-center justify-center transition">
-                                <i class="fas {{ $category['icon'] }} text-{{ $category['color'] }}-400 text-xl sm:text-2xl group-hover:scale-110 transition-transform"></i>
+            <div class="relative overflow-hidden">
+                <div id="categories-carousel" class="flex gap-3 sm:gap-4 animate-scroll">
+                    @php
+                        $categories = [
+                            ['name' => 'Concert', 'icon' => 'fa-music', 'color' => 'indigo'],
+                            ['name' => 'Sport', 'icon' => 'fa-futbol', 'color' => 'green'],
+                            ['name' => 'Culture', 'icon' => 'fa-theater-masks', 'color' => 'purple'],
+                            ['name' => 'Business', 'icon' => 'fa-briefcase', 'color' => 'blue'],
+                            ['name' => 'Éducation', 'icon' => 'fa-graduation-cap', 'color' => 'yellow'],
+                            ['name' => 'Autre', 'icon' => 'fa-star', 'color' => 'gray'],
+                        ];
+                        // Duplicate for seamless loop
+                        $categories = array_merge($categories, $categories);
+                    @endphp
+                    
+                    @foreach($categories as $index => $category)
+                        <a href="{{ route('events.index', ['category' => $category['name']]) }}" class="group bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/20 hover:border-cyan-500/50 transition duration-300 text-center flex-shrink-0 min-w-[120px] sm:min-w-[140px] animate-float" style="animation-delay: {{ $index * 0.1 }}s;">
+                            <div class="mb-3 flex justify-center">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-{{ $category['color'] }}-500/20 group-hover:bg-{{ $category['color'] }}-500/30 rounded-lg flex items-center justify-center transition group-hover:scale-110">
+                                    <i class="fas {{ $category['icon'] }} text-{{ $category['color'] }}-400 text-xl sm:text-2xl transition-transform"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div class="text-white font-semibold text-sm sm:text-base group-hover:text-cyan-400 transition">
-                            {{ $category['name'] }}
-                        </div>
-                    </a>
-                @endforeach
+                            <div class="text-white font-semibold text-sm sm:text-base group-hover:text-cyan-400 transition">
+                                {{ $category['name'] }}
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>
@@ -303,7 +316,145 @@
         margin-top: 0 !important;
         padding-top: 0 !important;
     }
+    
+    /* Content Types Rotator Animation */
+    .content-type-card {
+        transform: translateX(0);
+    }
+    
+    .content-type-card.hidden {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    
+    .content-type-card.active {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    .content-type-card.next {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    
+    .type-dot.active {
+        background-color: rgb(34, 211, 238) !important;
+        width: 1.5rem !important;
+    }
+    
+    /* Categories Carousel Animation */
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+    
+    .animate-scroll {
+        animation: scroll 30s linear infinite;
+        width: fit-content;
+    }
+    
+    .animate-scroll:hover {
+        animation-play-state: paused;
+    }
+    
+    /* Float Animation for Categories */
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+    
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    /* Pause animation on hover */
+    #categories-carousel:hover .animate-float {
+        animation-play-state: paused;
+    }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Content Types Rotator
+    const contentCards = document.querySelectorAll('.content-type-card');
+    const typeDots = document.querySelectorAll('.type-dot');
+    let currentTypeIndex = 0;
+    let typeInterval;
+    
+    function showContentType(index) {
+        contentCards.forEach((card, i) => {
+            card.classList.remove('active', 'hidden', 'next');
+            if (i === index) {
+                card.classList.add('active');
+                card.style.opacity = '1';
+                card.style.transform = 'translateX(0)';
+            } else if (i < index) {
+                card.classList.add('hidden');
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(-100%)';
+            } else {
+                card.classList.add('next');
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(100%)';
+            }
+        });
+        
+        typeDots.forEach((dot, i) => {
+            if (i === index) {
+                dot.classList.add('active');
+                dot.style.backgroundColor = 'rgb(34, 211, 238)';
+                dot.style.width = '1.5rem';
+            } else {
+                dot.classList.remove('active');
+                dot.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                dot.style.width = '0.5rem';
+            }
+        });
+        
+        currentTypeIndex = index;
+    }
+    
+    function nextContentType() {
+        const nextIndex = (currentTypeIndex + 1) % contentCards.length;
+        showContentType(nextIndex);
+    }
+    
+    // Auto-rotate content types every 4 seconds
+    function startTypeRotation() {
+        typeInterval = setInterval(nextContentType, 4000);
+    }
+    
+    // Click on dots to navigate
+    typeDots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            clearInterval(typeInterval);
+            showContentType(index);
+            startTypeRotation();
+        });
+    });
+    
+    // Initialize
+    showContentType(0);
+    startTypeRotation();
+    
+    // Pause on hover
+    const rotator = document.getElementById('content-types-rotator');
+    if (rotator) {
+        rotator.addEventListener('mouseenter', () => clearInterval(typeInterval));
+        rotator.addEventListener('mouseleave', startTypeRotation);
+    }
+});
+</script>
 @endpush
 
 <!-- Statistiques -->
