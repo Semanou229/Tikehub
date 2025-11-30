@@ -40,6 +40,13 @@
             order: 3 !important;
             flex-shrink: 0;
         }
+        /* Masquer toute barre de navigation fixée en bas */
+        nav.fixed.bottom-0,
+        .bottom-nav,
+        nav[class*="bottom"],
+        nav[class*="fixed"][class*="bottom"] {
+            display: none !important;
+        }
     </style>
     @stack('styles')
 </head>
