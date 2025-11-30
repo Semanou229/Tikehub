@@ -35,6 +35,7 @@
             order: 2 !important;
             flex: 1;
             position: relative;
+            margin-top: 0 !important;
         }
         footer {
             order: 3 !important;
@@ -46,6 +47,19 @@
         nav[class*="bottom"],
         nav[class*="fixed"][class*="bottom"] {
             display: none !important;
+        }
+        /* S'assurer que la navigation principale reste en haut */
+        body > nav:first-of-type {
+            position: relative !important;
+            top: 0 !important;
+            bottom: auto !important;
+            order: 1 !important;
+        }
+        /* Empêcher le menu mobile de s'afficher en bas */
+        #mobile-menu {
+            position: relative !important;
+            top: auto !important;
+            bottom: auto !important;
         }
     </style>
     @stack('styles')
