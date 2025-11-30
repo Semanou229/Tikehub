@@ -85,8 +85,8 @@
                     <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Type d'événement</h2>
                     <div class="space-y-4">
                         <div>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="is_virtual" id="is_virtual" value="1" {{ old('is_virtual') ? 'checked' : '' }} class="mr-2 w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                            <label class="flex items-center min-h-[44px]">
+                                <input type="checkbox" name="is_virtual" id="is_virtual" value="1" {{ old('is_virtual') ? 'checked' : '' }} class="mr-2 w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded min-w-[20px] min-h-[20px]">
                                 <span class="text-sm font-medium text-gray-700">Événement virtuel (visioconférence)</span>
                             </label>
                             <p class="text-xs text-gray-500 mt-1 ml-7">Cochez cette case si votre événement se déroule en ligne</p>
