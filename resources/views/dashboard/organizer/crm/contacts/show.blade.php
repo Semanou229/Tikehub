@@ -3,19 +3,19 @@
 @section('title', $contact->full_name)
 
 @section('content')
-<div class="p-6">
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800">{{ $contact->full_name }}</h1>
+<div class="p-3 sm:p-4 lg:p-6">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <div class="flex-1 min-w-0">
+            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 break-words">{{ $contact->full_name }}</h1>
             @if($contact->company)
-                <p class="text-gray-600 mt-1">{{ $contact->company }}</p>
+                <p class="text-sm sm:text-base text-gray-600 mt-1 break-words">{{ $contact->company }}</p>
             @endif
         </div>
-        <div class="flex gap-3">
-            <a href="{{ route('organizer.crm.contacts.edit', $contact) }}" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+            <a href="{{ route('organizer.crm.contacts.edit', $contact) }}" class="bg-indigo-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition text-sm sm:text-base font-medium min-h-[44px] flex items-center justify-center">
                 <i class="fas fa-edit mr-2"></i>Modifier
             </a>
-            <a href="{{ route('organizer.crm.contacts.index') }}" class="text-gray-600 hover:text-gray-800 px-6 py-3">
+            <a href="{{ route('organizer.crm.contacts.index') }}" class="text-gray-600 hover:text-gray-800 active:text-gray-900 px-4 sm:px-6 py-2.5 sm:py-3 min-h-[44px] flex items-center justify-center">
                 <i class="fas fa-arrow-left mr-2"></i>Retour
             </a>
         </div>
