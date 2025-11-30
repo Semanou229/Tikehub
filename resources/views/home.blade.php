@@ -234,8 +234,9 @@
                         }
                     @endphp
                     
-                    @foreach($sliderItems as $index => $item)
-                        <div class="hero-slide-item absolute inset-0 transition-all duration-700 ease-in-out {{ $index === 0 ? 'opacity-100 translate-x-0 z-10' : 'opacity-0 translate-x-full z-0' }}" data-slide-index="{{ $index }}">
+                    @if($sliderItems->count() > 0)
+                        @foreach($sliderItems as $index => $item)
+                            <div class="hero-slide-item absolute inset-0 transition-all duration-700 ease-in-out {{ $index === 0 ? 'opacity-100 translate-x-0 z-10' : 'opacity-0 translate-x-full z-0' }}" data-slide-index="{{ $index }}" style="{{ $index === 0 ? 'opacity: 1; transform: translateX(0); z-index: 10;' : 'opacity: 0; transform: translateX(100%); z-index: 0;' }}">
                             <a href="{{ $item['url'] ?? '#' }}" class="block h-full">
                                 <div class="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-6 sm:p-8 h-full flex flex-col hover:bg-white/15 transition duration-300">
                                     @if(isset($item['image']) && $item['image'])
@@ -304,15 +305,24 @@
                                     </div>
                                 </div>
                             </a>
+                            </div>
+                        @endforeach
+                    @else
+                        <!-- Fallback si aucun élément -->
+                        <div class="hero-slide-item absolute inset-0 opacity-100 translate-x-0 z-10" data-slide-index="0">
+                            <div class="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-6 sm:p-8 h-full flex flex-col items-center justify-center">
+                                <i class="fas fa-calendar-alt text-5xl text-white opacity-30 mb-4"></i>
+                                <p class="text-white text-center">Aucun contenu disponible</p>
+                            </div>
                         </div>
-                    @endforeach
+                    @endif
                 </div>
                 
                 <!-- Slider Navigation Dots -->
                 @if($sliderItems->count() > 1)
-                    <div class="flex justify-center gap-2 mt-4">
+                    <div class="flex justify-center gap-2 mt-4" id="hero-slider-dots">
                         @foreach($sliderItems as $index => $item)
-                            <button class="hero-slide-dot w-2 h-2 rounded-full transition-all duration-300 {{ $index === 0 ? 'bg-cyan-400 w-8' : 'bg-white/30' }}" data-slide-index="{{ $index }}"></button>
+                            <button type="button" class="hero-slide-dot rounded-full transition-all duration-300 h-2 {{ $index === 0 ? 'bg-cyan-400 w-8' : 'bg-white/30 w-2' }}" data-slide-index="{{ $index }}" aria-label="Slide {{ $index + 1 }}"></button>
                         @endforeach
                     </div>
                 @endif
