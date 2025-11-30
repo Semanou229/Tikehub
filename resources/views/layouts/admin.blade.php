@@ -63,6 +63,15 @@
                         </span>
                     @endif
                 </a>
+                <a href="{{ route('admin.support.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.support.*') ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                    <i class="fas fa-headset w-5 mr-3"></i>
+                    <span>Support Client</span>
+                    @if(\App\Models\SupportTicket::whereIn('status', ['open', 'in_progress'])->count() > 0)
+                        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                            {{ \App\Models\SupportTicket::whereIn('status', ['open', 'in_progress'])->count() }}
+                        </span>
+                    @endif
+                </a>
                 <a href="{{ route('admin.payments.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.payments.*') ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-money-bill-wave w-5 mr-3"></i>
                     <span>Paiements</span>

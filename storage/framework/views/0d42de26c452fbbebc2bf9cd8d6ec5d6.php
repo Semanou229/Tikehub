@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Mon Tableau de Bord'); ?>
 
 <?php $__env->startSection('content'); ?>

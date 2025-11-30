@@ -18,10 +18,16 @@
         </div>
     </div>
 
-    <!-- Filtres -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <form method="GET" action="<?php echo e(route('fundraisings.index')); ?>" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Layout avec sidebar de filtres -->
+    <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Sidebar des filtres (sticky) -->
+        <aside class="lg:w-80 flex-shrink-0">
+            <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-filter mr-2 text-green-600"></i>Filtres
+                </h2>
+                <form method="GET" action="<?php echo e(route('fundraisings.index')); ?>" class="space-y-4">
+                    <div class="space-y-4">
                 <!-- Montant objectif minimum -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Objectif min (XOF)</label>
@@ -87,27 +93,30 @@
                         <option value="end_date" <?php echo e(request('sort') == 'end_date' ? 'selected' : ''); ?>>Fin proche</option>
                     </select>
                 </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2 pt-4 border-t border-gray-200">
+                        <button type="submit" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                            <i class="fas fa-filter mr-2"></i>Appliquer les filtres
+                        </button>
+                        <a href="<?php echo e(route('fundraisings.index')); ?>" class="w-full text-center text-sm text-gray-600 hover:text-green-600 py-2">
+                            <i class="fas fa-redo mr-1"></i>Réinitialiser
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Contenu principal -->
+        <div class="flex-1 min-w-0">
+            <!-- Résultats -->
+            <div class="mb-4 text-sm text-gray-600">
+                <i class="fas fa-info-circle mr-2"></i>
+                <?php echo e($fundraisings->total()); ?> collecte(s) trouvée(s)
             </div>
 
-            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
-                <a href="<?php echo e(route('fundraisings.index')); ?>" class="text-sm text-gray-600 hover:text-green-600">
-                    <i class="fas fa-redo mr-1"></i>Réinitialiser
-                </a>
-                <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
-                    <i class="fas fa-filter mr-2"></i>Filtrer
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Résultats -->
-    <div class="mb-4 text-sm text-gray-600">
-        <i class="fas fa-info-circle mr-2"></i>
-        <?php echo e($fundraisings->total()); ?> collecte(s) trouvée(s)
-    </div>
-
-    <!-- Grille de collectes -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Grille de collectes -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <?php $__empty_1 = true; $__currentLoopData = $fundraisings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fundraising): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-200">
                 <a href="<?php echo e(route('fundraisings.show', $fundraising)); ?>">
@@ -172,13 +181,15 @@
         <?php endif; ?>
     </div>
 
-    <!-- Pagination -->
-    <?php if($fundraisings->hasPages()): ?>
-        <div class="mt-8">
-            <?php echo e($fundraisings->links()); ?>
+            <!-- Pagination -->
+            <?php if($fundraisings->hasPages()): ?>
+                <div class="mt-8">
+                    <?php echo e($fundraisings->links()); ?>
 
+                </div>
+            <?php endif; ?>
         </div>
-    <?php endif; ?>
+    </div>
 </div>
 <?php $__env->stopSection(); ?>
 

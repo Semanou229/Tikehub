@@ -263,4 +263,5 @@ document.getElementById('discount_type').addEventListener('change', function() {
 <?php $__env->stopSection(); ?>
 
 
+
 <?php echo $__env->make('layouts.dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\adoun\Music\Tikehub\resources\views/dashboard/organizer/promo-codes/create.blade.php ENDPATH**/ ?>

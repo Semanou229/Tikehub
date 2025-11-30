@@ -95,6 +95,17 @@ Route::middleware('auth')->group(function () {
         Route::post('/withdrawals/{withdrawal}/approve', [\App\Http\Controllers\Admin\WithdrawalController::class, 'approve'])->name('withdrawals.approve');
         Route::post('/withdrawals/{withdrawal}/reject', [\App\Http\Controllers\Admin\WithdrawalController::class, 'reject'])->name('withdrawals.reject');
         Route::post('/withdrawals/{withdrawal}/complete', [\App\Http\Controllers\Admin\WithdrawalController::class, 'complete'])->name('withdrawals.complete');
+        
+        // Support client (Admin)
+        Route::prefix('support')->name('support.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\SupportTicketController::class, 'index'])->name('index');
+            Route::get('/{ticket}', [\App\Http\Controllers\Admin\SupportTicketController::class, 'show'])->name('show');
+            Route::post('/{ticket}/assign', [\App\Http\Controllers\Admin\SupportTicketController::class, 'assign'])->name('assign');
+            Route::post('/{ticket}/status', [\App\Http\Controllers\Admin\SupportTicketController::class, 'updateStatus'])->name('status');
+            Route::post('/{ticket}/priority', [\App\Http\Controllers\Admin\SupportTicketController::class, 'updatePriority'])->name('priority');
+            Route::post('/{ticket}/reply', [\App\Http\Controllers\Admin\SupportTicketController::class, 'reply'])->name('reply');
+            Route::delete('/{ticket}', [\App\Http\Controllers\Admin\SupportTicketController::class, 'destroy'])->name('destroy');
+        });
     });
 
     // Événements (création, édition, publication - nécessitent auth)
@@ -124,6 +135,16 @@ Route::middleware('auth')->group(function () {
         // Profil
         Route::get('/profile', [\App\Http\Controllers\Buyer\ProfileController::class, 'index'])->name('profile');
         Route::put('/profile', [\App\Http\Controllers\Buyer\ProfileController::class, 'update'])->name('profile.update');
+    });
+
+    // Support client (Clients et Organisateurs)
+    Route::prefix('support')->name('support.')->group(function () {
+        Route::get('/tickets', [\App\Http\Controllers\Support\SupportTicketController::class, 'index'])->name('tickets.index');
+        Route::get('/tickets/create', [\App\Http\Controllers\Support\SupportTicketController::class, 'create'])->name('tickets.create');
+        Route::post('/tickets', [\App\Http\Controllers\Support\SupportTicketController::class, 'store'])->name('tickets.store');
+        Route::get('/tickets/{ticket}', [\App\Http\Controllers\Support\SupportTicketController::class, 'show'])->name('tickets.show');
+        Route::post('/tickets/{ticket}/reply', [\App\Http\Controllers\Support\SupportTicketController::class, 'reply'])->name('tickets.reply');
+        Route::post('/tickets/{ticket}/close', [\App\Http\Controllers\Support\SupportTicketController::class, 'close'])->name('tickets.close');
     });
 
     // Paiements
