@@ -98,10 +98,10 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-                            <div class="flex gap-2">
-                                <input type="text" name="venue_address" id="venue_address" value="{{ old('venue_address', $event->venue_address) }}" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Rue 123, Quartier...">
-                                <button type="button" id="geocodeBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                                    <i class="fas fa-search-location"></i> Localiser
+                            <div class="flex flex-col sm:flex-row gap-2 w-full">
+                                <input type="text" name="venue_address" id="venue_address" value="{{ old('venue_address', $event->venue_address) }}" class="flex-1 min-w-0 w-full sm:w-auto px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base min-h-[44px]" placeholder="Ex: Rue 123, Quartier...">
+                                <button type="button" id="geocodeBtn" class="w-full sm:w-auto sm:flex-shrink-0 px-3 sm:px-4 lg:px-5 py-2 sm:py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition font-medium text-xs sm:text-sm min-h-[44px] flex items-center justify-center whitespace-nowrap shadow-sm hover:shadow-md">
+                                    <i class="fas fa-search-location text-xs sm:text-sm mr-1.5 sm:mr-2"></i><span class="hidden sm:inline">Localiser</span><span class="sm:hidden">Loc.</span>
                                 </button>
                             </div>
                             <p class="text-sm text-gray-500 mt-1">Saisissez l'adresse et cliquez sur "Localiser" pour afficher sur la carte</p>
@@ -124,10 +124,10 @@
 
                         <!-- Carte OpenStreetMap -->
                         <div>
-                            <div class="flex items-center justify-between mb-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-2">
                                 <label class="block text-sm font-medium text-gray-700">Localisation sur la carte</label>
-                                <button type="button" id="geolocateBtn" class="px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2">
-                                    <i class="fas fa-crosshairs"></i> Ma localisation
+                                <button type="button" id="geolocateBtn" class="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 transition font-medium min-h-[40px] sm:min-h-[44px] flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto shadow-sm hover:shadow-md">
+                                    <i class="fas fa-crosshairs text-xs sm:text-sm"></i><span class="hidden sm:inline">Ma localisation</span><span class="sm:hidden">Ma loc.</span>
                                 </button>
                             </div>
                             <div id="map" class="w-full h-64 rounded-lg border border-gray-300"></div>
@@ -141,11 +141,11 @@
                 </div>
             </div>
 
-            <div class="mt-8 flex items-center gap-4">
-                <button type="submit" class="bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 transition font-semibold">
-                    <i class="fas fa-save mr-2"></i>Enregistrer les modifications
+            <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4">
+                <button type="submit" class="bg-indigo-600 text-white px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition font-semibold text-xs sm:text-sm lg:text-base min-h-[40px] sm:min-h-[44px] flex items-center justify-center shadow-md hover:shadow-lg">
+                    <i class="fas fa-save text-xs sm:text-sm mr-1.5 sm:mr-2"></i>Enregistrer les modifications
                 </button>
-                <a href="{{ route('organizer.events.index') }}" class="text-gray-600 hover:text-gray-800">
+                <a href="{{ route('organizer.events.index') }}" class="text-gray-600 hover:text-gray-800 active:text-gray-900 text-center sm:text-left py-2.5 sm:py-0 text-xs sm:text-sm min-h-[40px] sm:min-h-[44px] flex items-center justify-center sm:justify-start">
                     Annuler
                 </a>
             </div>
