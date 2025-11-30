@@ -41,7 +41,7 @@
         /* Main avec padding pour la navigation fixe */
         body > main {
             margin-top: 80px !important;
-            padding-top: 1rem !important;
+            padding-top: 2rem !important;
             padding-bottom: 0 !important;
             order: 2 !important;
             flex: 1;
