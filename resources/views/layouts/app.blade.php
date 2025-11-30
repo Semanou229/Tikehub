@@ -31,15 +31,18 @@
             width: 100% !important;
             z-index: 1000 !important;
             background: white !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;
+            border-bottom: 2px solid #e5e7eb !important;
             order: 1 !important;
         }
         /* Main avec padding pour la navigation fixe */
         body > main {
             margin-top: 80px !important;
             padding-top: 0 !important;
+            padding-bottom: 0 !important;
             order: 2 !important;
             flex: 1;
+            min-height: auto !important;
         }
         /* Footer */
         body > footer {
@@ -55,13 +58,15 @@
             width: 100% !important;
             z-index: 1000 !important;
             background: white !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;
+            border-bottom: 2px solid #e5e7eb !important;
         }
         /* Main */
         main {
             margin-top: 80px !important;
             padding-top: 0 !important;
-            min-height: calc(100vh - 80px);
+            padding-bottom: 0 !important;
+            min-height: auto !important;
         }
         /* Masquer toute barre de navigation fixée en bas */
         nav.fixed.bottom-0,
@@ -195,7 +200,7 @@
     </script>
     @endpush
 
-    <main class="py-4" style="order: 2 !important; flex: 1 !important; position: relative !important;">
+    <main class="py-4" style="order: 2 !important; flex: 1 !important; position: relative !important; min-height: auto !important; padding-bottom: 1rem !important;">
         @if(session('success'))
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
@@ -219,7 +224,7 @@
         @yield('content')
     </main>
 
-    <footer class="bg-gray-800 text-white mt-12" style="order: 3 !important; flex-shrink: 0 !important;">
+    <footer class="bg-gray-800 text-white mt-4" style="order: 3 !important; flex-shrink: 0 !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <p class="text-center">&copy; {{ date('Y') }} Tikehub. Tous droits réservés.</p>
         </div>
