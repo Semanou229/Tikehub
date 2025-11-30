@@ -318,20 +318,22 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($upcomingEvents as $event)
-                <a href="{{ route('events.show', $event) }}" class="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-                    @if($event->cover_image)
-                        <img src="{{ asset('storage/' . $event->cover_image) }}" alt="{{ $event->title }}" class="w-full h-48 object-cover">
-                    @else
-                        <div class="w-full h-48 bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
-                            <i class="fas fa-calendar-alt text-6xl text-white opacity-50"></i>
-                        </div>
-                    @endif
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-indigo-200">
+                    <a href="{{ route('events.show', $event) }}" class="block">
+                        @if($event->cover_image)
+                            <img src="{{ asset('storage/' . $event->cover_image) }}" alt="{{ $event->title ?? 'Événement' }}" class="w-full h-48 object-cover">
+                        @else
+                            <div class="w-full h-48 bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                                <i class="fas fa-calendar-alt text-6xl text-white opacity-50"></i>
+                            </div>
+                        @endif
+                    </a>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-3 py-1 rounded-full">
-                                {{ $event->category }}
+                                <i class="fas fa-calendar-check mr-1"></i> À venir
                             </span>
-                            <div class="flex gap-2">
+                            <div class="flex items-center gap-2">
                                 @if($event->is_virtual)
                                     <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
                                         <i class="fas fa-video mr-1"></i>Virtuel
@@ -344,22 +346,53 @@
                                 @endif
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition">{{ $event->title }}</h3>
-                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
-                        <div class="flex items-center text-sm text-gray-500 mb-4">
-                            <i class="fas fa-calendar mr-2"></i>
-                            <span>{{ $event->start_date->translatedFormat('d/m/Y H:i') }}</span>
-                            @if($event->venue_city)
-                                <span class="mx-2">•</span>
-                                <i class="fas fa-map-marker-alt mr-2"></i>
-                                <span>{{ $event->venue_city }}</span>
-                            @endif
-                        </div>
-                        <span class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
+                        <a href="{{ route('events.show', $event) }}" class="block">
+                            <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition">{{ $event->title ?? 'Sans titre' }}</h3>
+                        </a>
+                        @if($event->description)
+                            <p class="text-gray-600 text-sm mb-2 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
+                        @endif
+                        @if($event->start_date)
+                            <div class="flex items-center text-sm text-gray-500 mb-2">
+                                <i class="fas fa-calendar mr-2"></i>
+                                <span>{{ $event->start_date->translatedFormat('d/m/Y H:i') }}</span>
+                                @if($event->venue_city)
+                                    <span class="mx-2">•</span>
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    <span>{{ $event->venue_city }}</span>
+                                @endif
+                            </div>
+                        @endif
+                        @if($event->organizer)
+                            <div class="flex items-center text-sm text-gray-600 mb-2">
+                                <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
+                                <span>Par</span>
+                                <a href="{{ route('organizer.profile.show', $event->organizer) }}" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline" onclick="event.stopPropagation()">
+                                    {{ $event->organizer->name }}
+                                </a>
+                            </div>
+                        @endif
+                        @php
+                            $minPrice = $event->ticketTypes()->where('is_active', true)->min('price') ?? 0;
+                        @endphp
+                        @if($minPrice > 0)
+                            <div class="mb-4">
+                                <span class="text-lg font-bold text-indigo-600">
+                                    À partir de {{ number_format($minPrice, 0, ',', ' ') }} XOF
+                                </span>
+                            </div>
+                        @elseif($event->is_free)
+                            <div class="mb-4">
+                                <span class="text-lg font-bold text-green-600">
+                                    Gratuit
+                                </span>
+                            </div>
+                        @endif
+                        <a href="{{ route('events.show', $event) }}" class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
                             Voir l'événement
-                        </span>
+                        </a>
                     </div>
-                </a>
+                </div>
             @endforeach
         </div>
     </div>
