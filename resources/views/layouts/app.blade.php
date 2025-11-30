@@ -29,7 +29,7 @@
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
-            z-index: 1000 !important;
+            z-index: 9999 !important;
             background: #ffffff !important;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
             border-bottom: 3px solid #d1d5db !important;
@@ -59,7 +59,7 @@
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
-            z-index: 1000 !important;
+            z-index: 9999 !important;
             background: #ffffff !important;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
             border-bottom: 3px solid #d1d5db !important;
@@ -91,7 +91,7 @@
     @stack('styles')
 </head>
 <body class="bg-gray-50">
-    <nav class="bg-white shadow-lg border-b border-gray-200" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 1000 !important; background: #ffffff !important; opacity: 1 !important; box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important; border-bottom: 3px solid #d1d5db !important;">
+    <nav class="bg-white shadow-lg border-b border-gray-200" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 9999 !important; background: #ffffff !important; opacity: 1 !important; box-shadow: 0 2px 10px rgba(0,0,0,0.25) !important; border-bottom: 3px solid #9ca3af !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
