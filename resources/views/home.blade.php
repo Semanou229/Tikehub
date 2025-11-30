@@ -293,56 +293,58 @@
                 @endif
             </div>
         </div>
+    </div>
+</section>
+
+<!-- Categories Section - Animated Carousel -->
+<section class="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-6 sm:mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Explorez par catégorie</h2>
+            <p class="text-gray-300 text-sm sm:text-base">Découvrez nos événements selon vos centres d'intérêt</p>
+        </div>
         
-        <!-- Categories Section - Animated Carousel -->
-        <div class="mt-auto pt-4 sm:pt-6 border-t border-white/10 flex-shrink-0">
-            <div class="text-center mb-3 sm:mb-4">
-                <h2 class="text-lg sm:text-xl font-bold text-white mb-1">Explorez par catégorie</h2>
-                <p class="text-gray-300 text-xs">Découvrez nos événements selon vos centres d'intérêt</p>
-            </div>
-            
-            <div class="relative overflow-hidden">
-                <div class="categories-wrapper">
-                    <div id="categories-carousel" class="flex gap-3 sm:gap-4">
-                        @php
-                            $categories = [
-                                ['name' => 'Concert', 'icon' => 'fa-music', 'color' => 'indigo'],
-                                ['name' => 'Sport', 'icon' => 'fa-futbol', 'color' => 'green'],
-                                ['name' => 'Culture', 'icon' => 'fa-theater-masks', 'color' => 'purple'],
-                                ['name' => 'Business', 'icon' => 'fa-briefcase', 'color' => 'blue'],
-                                ['name' => 'Éducation', 'icon' => 'fa-graduation-cap', 'color' => 'yellow'],
-                                ['name' => 'Autre', 'icon' => 'fa-star', 'color' => 'gray'],
-                            ];
-                        @endphp
-                        
-                        <!-- First set -->
+        <div class="relative overflow-hidden">
+            <div class="categories-wrapper">
+                <div id="categories-carousel" class="flex gap-3 sm:gap-4">
+                    @php
+                        $categories = [
+                            ['name' => 'Concert', 'icon' => 'fa-music', 'color' => 'indigo'],
+                            ['name' => 'Sport', 'icon' => 'fa-futbol', 'color' => 'green'],
+                            ['name' => 'Culture', 'icon' => 'fa-theater-masks', 'color' => 'purple'],
+                            ['name' => 'Business', 'icon' => 'fa-briefcase', 'color' => 'blue'],
+                            ['name' => 'Éducation', 'icon' => 'fa-graduation-cap', 'color' => 'yellow'],
+                            ['name' => 'Autre', 'icon' => 'fa-star', 'color' => 'gray'],
+                        ];
+                    @endphp
+                    
+                    <!-- First set -->
                     @foreach($categories as $index => $category)
-                        <a href="{{ route('events.index', ['category' => $category['name']]) }}" class="category-item group bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/20 hover:bg-white/20 hover:border-cyan-500/50 transition duration-300 text-center flex-shrink-0 min-w-[100px] sm:min-w-[120px] animate-float" style="animation-delay: {{ $index * 0.1 }}s;">
-                            <div class="mb-2 flex justify-center">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-{{ $category['color'] }}-500/20 group-hover:bg-{{ $category['color'] }}-500/30 rounded-lg flex items-center justify-center transition group-hover:scale-110">
-                                    <i class="fas {{ $category['icon'] }} text-{{ $category['color'] }}-400 text-lg sm:text-xl transition-transform"></i>
+                        <a href="{{ route('events.index', ['category' => $category['name']]) }}" class="category-item group bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/20 hover:border-cyan-500/50 transition duration-300 text-center flex-shrink-0 min-w-[120px] sm:min-w-[140px] animate-float" style="animation-delay: {{ $index * 0.1 }}s;">
+                            <div class="mb-3 flex justify-center">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-{{ $category['color'] }}-500/20 group-hover:bg-{{ $category['color'] }}-500/30 rounded-lg flex items-center justify-center transition group-hover:scale-110">
+                                    <i class="fas {{ $category['icon'] }} text-{{ $category['color'] }}-400 text-xl sm:text-2xl transition-transform"></i>
                                 </div>
                             </div>
-                            <div class="text-white font-semibold text-xs sm:text-sm group-hover:text-cyan-400 transition">
+                            <div class="text-white font-semibold text-sm sm:text-base group-hover:text-cyan-400 transition">
                                 {{ $category['name'] }}
                             </div>
                         </a>
                     @endforeach
-                        
-                        <!-- Duplicate set for seamless loop -->
-                        @foreach($categories as $index => $category)
-                            <a href="{{ route('events.index', ['category' => $category['name']]) }}" class="category-item group bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/20 hover:border-cyan-500/50 transition duration-300 text-center flex-shrink-0 min-w-[120px] sm:min-w-[140px] animate-float" style="animation-delay: {{ ($index + 6) * 0.1 }}s;">
-                                <div class="mb-3 flex justify-center">
-                                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-{{ $category['color'] }}-500/20 group-hover:bg-{{ $category['color'] }}-500/30 rounded-lg flex items-center justify-center transition group-hover:scale-110">
-                                        <i class="fas {{ $category['icon'] }} text-{{ $category['color'] }}-400 text-xl sm:text-2xl transition-transform"></i>
-                                    </div>
+                    
+                    <!-- Duplicate set for seamless loop -->
+                    @foreach($categories as $index => $category)
+                        <a href="{{ route('events.index', ['category' => $category['name']]) }}" class="category-item group bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/20 hover:border-cyan-500/50 transition duration-300 text-center flex-shrink-0 min-w-[120px] sm:min-w-[140px] animate-float" style="animation-delay: {{ ($index + 6) * 0.1 }}s;">
+                            <div class="mb-3 flex justify-center">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-{{ $category['color'] }}-500/20 group-hover:bg-{{ $category['color'] }}-500/30 rounded-lg flex items-center justify-center transition group-hover:scale-110">
+                                    <i class="fas {{ $category['icon'] }} text-{{ $category['color'] }}-400 text-xl sm:text-2xl transition-transform"></i>
                                 </div>
-                                <div class="text-white font-semibold text-sm sm:text-base group-hover:text-cyan-400 transition">
-                                    {{ $category['name'] }}
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
+                            </div>
+                            <div class="text-white font-semibold text-sm sm:text-base group-hover:text-cyan-400 transition">
+                                {{ $category['name'] }}
+                            </div>
+                        </a>
+                    @endforeach
                 </div>
             </div>
         </div>
