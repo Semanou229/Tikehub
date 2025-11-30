@@ -176,96 +176,121 @@
                 </div>
             </div>
             
-            <!-- Right Side: Visual Cards -->
+            <!-- Right Side: Visual Cards - Animated Rotator -->
             <div class="relative z-10">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div class="relative h-[400px] sm:h-[450px] lg:h-[500px] overflow-hidden">
                     @php
-                        $sampleItems = $heroItems->take(3);
-                        if ($sampleItems->isEmpty()) {
-                            $sampleItems = collect([
-                                ['type' => 'event', 'title' => 'Concert de Jazz', 'location' => 'Cotonou', 'date' => now()->addDays(7)],
-                                ['type' => 'contest', 'title' => 'Concours de Talents', 'location' => 'Lomé', 'date' => now()->addDays(14)],
-                                ['type' => 'fundraising', 'title' => 'Collecte Solidaire', 'location' => 'Abidjan', 'date' => now()->addDays(21)],
+                        // Préparer tous les items pour la rotation
+                        $allHeroItems = $heroItems;
+                        if ($allHeroItems->isEmpty()) {
+                            $allHeroItems = collect([
+                                ['type' => 'event', 'title' => 'Concert de Jazz', 'location' => 'Cotonou', 'date' => now()->addDays(7), 'image' => null],
+                                ['type' => 'contest', 'title' => 'Concours de Talents', 'location' => 'Lomé', 'date' => now()->addDays(14), 'image' => null],
+                                ['type' => 'fundraising', 'title' => 'Collecte Solidaire', 'location' => 'Abidjan', 'date' => now()->addDays(21), 'image' => null],
                             ]);
+                        }
+                        // Grouper par 3 pour chaque slide
+                        $slides = $allHeroItems->chunk(3);
+                        if ($slides->isEmpty()) {
+                            $slides = collect([collect([
+                                ['type' => 'event', 'title' => 'Concert de Jazz', 'location' => 'Cotonou', 'date' => now()->addDays(7), 'image' => null],
+                                ['type' => 'contest', 'title' => 'Concours de Talents', 'location' => 'Lomé', 'date' => now()->addDays(14), 'image' => null],
+                                ['type' => 'fundraising', 'title' => 'Collecte Solidaire', 'location' => 'Abidjan', 'date' => now()->addDays(21), 'image' => null],
+                            ])]);
                         }
                     @endphp
                     
-                    @foreach($sampleItems->take(3) as $index => $item)
-                        <div class="bg-white rounded-xl shadow-2xl overflow-hidden hover:shadow-cyan-500/20 transition duration-300 {{ $index === 0 ? 'sm:col-span-2' : '' }}">
-                            @if(isset($item['image']) && $item['image'])
-                                <div class="relative h-32 sm:h-40 lg:h-48 overflow-hidden">
-                                    <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                </div>
-                            @else
-                                <div class="relative h-32 sm:h-40 lg:h-48 overflow-hidden bg-gradient-to-br 
-                                    @if($item['type'] === 'event') from-indigo-500 to-purple-600
-                                    @elseif($item['type'] === 'contest') from-purple-500 to-pink-600
-                                    @else from-red-500 to-orange-600
-                                    @endif">
-                                    <div class="absolute inset-0 flex items-center justify-center">
-                                        <i class="fas 
-                                            @if($item['type'] === 'event') fa-calendar-alt
-                                            @elseif($item['type'] === 'contest') fa-trophy
-                                            @else fa-heart
-                                            @endif text-6xl sm:text-7xl text-white opacity-30"></i>
-                                    </div>
-                                </div>
-                            @endif
-                            
-                            <div class="p-4 sm:p-6">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="px-3 py-1 rounded-full text-xs font-semibold
-                                        @if($item['type'] === 'event') bg-indigo-100 text-indigo-800
-                                        @elseif($item['type'] === 'contest') bg-purple-100 text-purple-800
-                                        @else bg-red-100 text-red-800
-                                        @endif">
-                                        @if($item['type'] === 'event')
-                                            <i class="fas fa-calendar-alt mr-1"></i>Événement
-                                        @elseif($item['type'] === 'contest')
-                                            <i class="fas fa-trophy mr-1"></i>Concours
+                    @foreach($slides as $slideIndex => $slideItems)
+                        <div class="visual-slide absolute inset-0 transition-all duration-700 ease-in-out {{ $slideIndex === 0 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full' }}" data-slide="{{ $slideIndex }}">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 h-full">
+                                @foreach($slideItems->take(3) as $index => $item)
+                                    <div class="bg-white rounded-xl shadow-2xl overflow-hidden hover:shadow-cyan-500/20 transition duration-300 {{ $index === 0 ? 'sm:col-span-2' : '' }}">
+                                        @if(isset($item['image']) && $item['image'])
+                                            <div class="relative h-32 sm:h-40 lg:h-48 overflow-hidden">
+                                                <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                            </div>
                                         @else
-                                            <i class="fas fa-heart mr-1"></i>Collecte
+                                            <div class="relative h-32 sm:h-40 lg:h-48 overflow-hidden bg-gradient-to-br 
+                                                @if($item['type'] === 'event') from-indigo-500 to-purple-600
+                                                @elseif($item['type'] === 'contest') from-purple-500 to-pink-600
+                                                @else from-red-500 to-orange-600
+                                                @endif">
+                                                <div class="absolute inset-0 flex items-center justify-center">
+                                                    <i class="fas 
+                                                        @if($item['type'] === 'event') fa-calendar-alt
+                                                        @elseif($item['type'] === 'contest') fa-trophy
+                                                        @else fa-heart
+                                                        @endif text-6xl sm:text-7xl text-white opacity-30"></i>
+                                                </div>
+                                            </div>
                                         @endif
-                                    </span>
-                                </div>
-                                
-                                <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2">
-                                    {{ $item['title'] ?? 'Exemple d\'événement' }}
-                                </h3>
-                                
-                                <div class="flex items-center text-sm text-gray-600 mb-3">
-                                    @if(isset($item['location']) && $item['location'])
-                                        <i class="fas fa-map-marker-alt mr-2 text-indigo-600"></i>
-                                        <span>{{ $item['location'] }}</span>
-                                        <span class="mx-2">•</span>
-                                    @endif
-                                    @if(isset($item['date']))
-                                        <i class="fas fa-calendar mr-2 text-indigo-600"></i>
-                                        <span>{{ is_object($item['date']) ? $item['date']->format('d/m/Y') : date('d/m/Y', strtotime($item['date'])) }}</span>
-                                    @endif
-                                </div>
-                                
-                                @if($index === 0)
-                                    <!-- Table preview for first card -->
-                                    <div class="border-t border-gray-200 pt-3 mt-3">
-                                        <div class="text-xs text-gray-500 mb-2">Billets disponibles</div>
-                                        <div class="space-y-2">
-                                            <div class="flex justify-between text-sm">
-                                                <span class="text-gray-700">VIP</span>
-                                                <span class="font-semibold text-gray-900">15 000 XOF</span>
+                                        
+                                        <div class="p-4 sm:p-6">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                                    @if($item['type'] === 'event') bg-indigo-100 text-indigo-800
+                                                    @elseif($item['type'] === 'contest') bg-purple-100 text-purple-800
+                                                    @else bg-red-100 text-red-800
+                                                    @endif">
+                                                    @if($item['type'] === 'event')
+                                                        <i class="fas fa-calendar-alt mr-1"></i>Événement
+                                                    @elseif($item['type'] === 'contest')
+                                                        <i class="fas fa-trophy mr-1"></i>Concours
+                                                    @else
+                                                        <i class="fas fa-heart mr-1"></i>Collecte
+                                                    @endif
+                                                </span>
                                             </div>
-                                            <div class="flex justify-between text-sm">
-                                                <span class="text-gray-700">Standard</span>
-                                                <span class="font-semibold text-gray-900">5 000 XOF</span>
+                                            
+                                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                                                {{ $item['title'] ?? 'Exemple d\'événement' }}
+                                            </h3>
+                                            
+                                            <div class="flex items-center text-sm text-gray-600 mb-3">
+                                                @if(isset($item['location']) && $item['location'])
+                                                    <i class="fas fa-map-marker-alt mr-2 text-indigo-600"></i>
+                                                    <span>{{ $item['location'] }}</span>
+                                                    <span class="mx-2">•</span>
+                                                @endif
+                                                @if(isset($item['date']))
+                                                    <i class="fas fa-calendar mr-2 text-indigo-600"></i>
+                                                    <span>{{ is_object($item['date']) ? $item['date']->format('d/m/Y') : (isset($item['date']) ? date('d/m/Y', strtotime($item['date'])) : '') }}</span>
+                                                @endif
                                             </div>
+                                            
+                                            @if($index === 0 && $item['type'] === 'event')
+                                                <!-- Table preview for first event card -->
+                                                <div class="border-t border-gray-200 pt-3 mt-3">
+                                                    <div class="text-xs text-gray-500 mb-2">Billets disponibles</div>
+                                                    <div class="space-y-2">
+                                                        <div class="flex justify-between text-sm">
+                                                            <span class="text-gray-700">VIP</span>
+                                                            <span class="font-semibold text-gray-900">15 000 XOF</span>
+                                                        </div>
+                                                        <div class="flex justify-between text-sm">
+                                                            <span class="text-gray-700">Standard</span>
+                                                            <span class="font-semibold text-gray-900">5 000 XOF</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
-                                @endif
+                                @endforeach
                             </div>
                         </div>
                     @endforeach
                 </div>
+                
+                <!-- Visual Cards Navigation Dots -->
+                @if($slides->count() > 1)
+                    <div class="flex justify-center gap-2 mt-4">
+                        @foreach($slides as $index => $slide)
+                            <button class="visual-dot w-2 h-2 rounded-full transition-all duration-300 {{ $index === 0 ? 'bg-cyan-400 w-8' : 'bg-white/30' }}" data-visual-slide="{{ $index }}"></button>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
         
@@ -478,6 +503,71 @@ document.addEventListener('DOMContentLoaded', function() {
     if (rotator) {
         rotator.addEventListener('mouseenter', () => clearInterval(typeInterval));
         rotator.addEventListener('mouseleave', startTypeRotation);
+    }
+    
+    // Visual Cards Rotator
+    const visualSlides = document.querySelectorAll('.visual-slide');
+    const visualDots = document.querySelectorAll('.visual-dot');
+    let currentVisualSlide = 0;
+    let visualInterval;
+    
+    if (visualSlides.length <= 1) return;
+    
+    function showVisualSlide(index) {
+        visualSlides.forEach((slide, i) => {
+            if (i === index) {
+                slide.classList.remove('opacity-0', 'translate-x-full', '-translate-x-full');
+                slide.classList.add('opacity-100', 'translate-x-0');
+            } else {
+                slide.classList.remove('opacity-100', 'translate-x-0');
+                if (i < index) {
+                    slide.classList.add('opacity-0', '-translate-x-full');
+                } else {
+                    slide.classList.add('opacity-0', 'translate-x-full');
+                }
+            }
+        });
+        
+        visualDots.forEach((dot, i) => {
+            if (i === index) {
+                dot.classList.add('bg-cyan-400', 'w-8');
+                dot.classList.remove('bg-white/30', 'w-2');
+            } else {
+                dot.classList.add('bg-white/30', 'w-2');
+                dot.classList.remove('bg-cyan-400', 'w-8');
+            }
+        });
+        
+        currentVisualSlide = index;
+    }
+    
+    function nextVisualSlide() {
+        const nextIndex = (currentVisualSlide + 1) % visualSlides.length;
+        showVisualSlide(nextIndex);
+    }
+    
+    function startVisualRotation() {
+        visualInterval = setInterval(nextVisualSlide, 5000); // Change every 5 seconds
+    }
+    
+    // Click on dots to navigate
+    visualDots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            clearInterval(visualInterval);
+            showVisualSlide(index);
+            startVisualRotation();
+        });
+    });
+    
+    // Initialize visual slides
+    showVisualSlide(0);
+    startVisualRotation();
+    
+    // Pause visual rotation on hover
+    const visualContainer = document.querySelector('.relative.z-10');
+    if (visualContainer) {
+        visualContainer.addEventListener('mouseenter', () => clearInterval(visualInterval));
+        visualContainer.addEventListener('mouseleave', startVisualRotation);
     }
 });
 </script>
