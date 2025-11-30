@@ -292,7 +292,7 @@
                                         </div>
                                     </div>
                                     <div class="flex sm:flex-col sm:text-right items-center sm:items-end justify-between sm:justify-start gap-3 sm:gap-0 sm:ml-4 flex-shrink-0">
-                                        <div class="text-xl sm:text-2xl font-bold text-red-600">
+                                        <div class="text-lg sm:text-2xl font-bold text-red-600 whitespace-nowrap">
                                             {{ number_format($ticketType->price, 0, ',', ' ') }} XOF
                                         </div>
                                         @if($ticketType->isOnSale())
