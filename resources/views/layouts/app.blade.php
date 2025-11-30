@@ -240,7 +240,7 @@
         @yield('content')
     </main>
 
-    <footer class="bg-gray-800 text-white mt-4" style="order: 3 !important; flex-shrink: 0 !important;">
+    <footer class="bg-gray-800 text-white mt-0" style="order: 3 !important; flex-shrink: 0 !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <p class="text-center">&copy; {{ date('Y') }} Tikehub. Tous droits réservés.</p>
         </div>
