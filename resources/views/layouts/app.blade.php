@@ -30,10 +30,11 @@
             right: 0 !important;
             width: 100% !important;
             z-index: 1000 !important;
-            background: white !important;
+            background: #ffffff !important;
             box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;
             border-bottom: 2px solid #e5e7eb !important;
             order: 1 !important;
+            opacity: 1 !important;
         }
         /* Main avec padding pour la navigation fixe */
         body > main {
@@ -57,9 +58,10 @@
             right: 0 !important;
             width: 100% !important;
             z-index: 1000 !important;
-            background: white !important;
+            background: #ffffff !important;
             box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;
             border-bottom: 2px solid #e5e7eb !important;
+            opacity: 1 !important;
         }
         /* Main */
         main {
@@ -85,7 +87,7 @@
     @stack('styles')
 </head>
 <body class="bg-gray-50">
-    <nav class="bg-white shadow-lg border-b border-gray-200" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 1000 !important; background: white !important;">
+    <nav class="bg-white shadow-lg border-b border-gray-200" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 1000 !important; background: #ffffff !important; opacity: 1 !important; box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
