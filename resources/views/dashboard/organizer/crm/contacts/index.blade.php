@@ -34,15 +34,15 @@
     </div>
 
     <!-- Filtres -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <form method="GET" action="{{ route('organizer.crm.contacts.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="bg-white rounded-lg shadow-md p-3 sm:p-4 lg:p-6 mb-4 sm:mb-6">
+        <form method="GET" action="{{ route('organizer.crm.contacts.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Recherche</label>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nom, email, téléphone..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">Recherche</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nom, email, téléphone..." class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 min-h-[44px]">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
-                <select name="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">Catégorie</label>
+                <select name="category" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 min-h-[44px]">
                     <option value="">Toutes</option>
                     @foreach(['participant', 'sponsor', 'staff', 'press', 'vip', 'partner', 'prospect'] as $cat)
                         <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>{{ ucfirst($cat) }}</option>
@@ -50,20 +50,20 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Pipeline</label>
-                <select name="pipeline_stage" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">Pipeline</label>
+                <select name="pipeline_stage" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 min-h-[44px]">
                     <option value="">Tous</option>
                     @foreach(['prospect', 'confirmed', 'partner', 'closed'] as $stage)
                         <option value="{{ $stage }}" {{ request('pipeline_stage') == $stage ? 'selected' : '' }}>{{ ucfirst($stage) }}</option>
                     @endforeach
                 </select>
             </div>
-            <div class="flex items-end gap-2">
-                <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition w-full">
-                    <i class="fas fa-search mr-2"></i>Filtrer
+            <div class="flex items-end gap-2 sm:gap-2">
+                <button type="submit" class="flex-1 bg-indigo-600 text-white px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition font-medium text-xs sm:text-sm min-h-[44px] flex items-center justify-center shadow-sm hover:shadow-md">
+                    <i class="fas fa-search text-xs sm:text-sm mr-1.5 sm:mr-2"></i><span class="hidden sm:inline">Filtrer</span><span class="sm:hidden">Filt.</span>
                 </button>
-                <a href="{{ route('organizer.crm.contacts.index') }}" class="bg-gray-200 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-300 transition">
-                    <i class="fas fa-times"></i>
+                <a href="{{ route('organizer.crm.contacts.index') }}" class="bg-gray-200 text-gray-700 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg hover:bg-gray-300 active:bg-gray-400 transition min-w-[44px] min-h-[44px] flex items-center justify-center">
+                    <i class="fas fa-times text-xs sm:text-sm"></i>
                 </a>
             </div>
         </form>
@@ -71,76 +71,80 @@
 
     <!-- Liste des contacts -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contact</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Catégorie</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pipeline</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Assigné à</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($contacts as $contact)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4">
-                            <div class="font-semibold text-gray-900">{{ $contact->full_name }}</div>
-                            <div class="text-sm text-gray-500">
-                                @if($contact->email)
-                                    <i class="fas fa-envelope mr-1"></i>{{ $contact->email }}
-                                @endif
-                                @if($contact->phone)
-                                    <span class="ml-3"><i class="fas fa-phone mr-1"></i>{{ $contact->phone }}</span>
-                                @endif
-                            </div>
-                            @if($contact->company)
-                                <div class="text-xs text-gray-400 mt-1">{{ $contact->company }}</div>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                                {{ ucfirst($contact->category) }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                                {{ $contact->pipeline_stage === 'prospect' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                {{ $contact->pipeline_stage === 'confirmed' ? 'bg-green-100 text-green-800' : '' }}
-                                {{ $contact->pipeline_stage === 'partner' ? 'bg-purple-100 text-purple-800' : '' }}
-                                {{ $contact->pipeline_stage === 'closed' ? 'bg-gray-100 text-gray-800' : '' }}">
-                                {{ ucfirst($contact->pipeline_stage) }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-500">
-                            {{ $contact->assignedUser->name ?? 'Non assigné' }}
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <a href="{{ route('organizer.crm.contacts.show', $contact) }}" class="text-indigo-600 hover:text-indigo-900" title="Voir">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{{ route('organizer.crm.contacts.edit', $contact) }}" class="text-gray-600 hover:text-gray-900" title="Modifier">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
                     <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-gray-500">
-                            <i class="fas fa-address-book text-4xl mb-3 text-gray-300"></i>
-                            <p>Aucun contact trouvé</p>
-                        </td>
+                        <th class="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Contact</th>
+                        <th class="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Catégorie</th>
+                        <th class="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Pipeline</th>
+                        <th class="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap hidden md:table-cell">Assigné à</th>
+                        <th class="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Actions</th>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($contacts as $contact)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
+                                <div class="font-semibold text-sm sm:text-base text-gray-900 break-words">{{ $contact->full_name }}</div>
+                                <div class="text-xs sm:text-sm text-gray-500 mt-1">
+                                    @if($contact->email)
+                                        <div class="flex items-center"><i class="fas fa-envelope mr-1 text-xs"></i><span class="truncate max-w-[200px] sm:max-w-none">{{ $contact->email }}</span></div>
+                                    @endif
+                                    @if($contact->phone)
+                                        <div class="flex items-center mt-1"><i class="fas fa-phone mr-1 text-xs"></i><span>{{ $contact->phone }}</span></div>
+                                    @endif
+                                </div>
+                                @if($contact->company)
+                                    <div class="text-xs text-gray-400 mt-1 truncate max-w-[200px] sm:max-w-none">{{ $contact->company }}</div>
+                                @endif
+                            </td>
+                            <td class="px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 whitespace-nowrap">
+                                    {{ ucfirst($contact->category) }}
+                                </span>
+                            </td>
+                            <td class="px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap
+                                    {{ $contact->pipeline_stage === 'prospect' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                    {{ $contact->pipeline_stage === 'confirmed' ? 'bg-green-100 text-green-800' : '' }}
+                                    {{ $contact->pipeline_stage === 'partner' ? 'bg-purple-100 text-purple-800' : '' }}
+                                    {{ $contact->pipeline_stage === 'closed' ? 'bg-gray-100 text-gray-800' : '' }}">
+                                    {{ ucfirst($contact->pipeline_stage) }}
+                                </span>
+                            </td>
+                            <td class="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-500 hidden md:table-cell">
+                                <span class="truncate max-w-[150px] block">{{ $contact->assignedUser->name ?? 'Non assigné' }}</span>
+                            </td>
+                            <td class="px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
+                                <div class="flex items-center gap-2 sm:gap-3">
+                                    <a href="{{ route('organizer.crm.contacts.show', $contact) }}" class="text-indigo-600 hover:text-indigo-900 min-w-[32px] min-h-[32px] flex items-center justify-center" title="Voir">
+                                        <i class="fas fa-eye text-sm sm:text-base"></i>
+                                    </a>
+                                    <a href="{{ route('organizer.crm.contacts.edit', $contact) }}" class="text-gray-600 hover:text-gray-900 min-w-[32px] min-h-[32px] flex items-center justify-center" title="Modifier">
+                                        <i class="fas fa-edit text-sm sm:text-base"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-3 sm:px-6 py-8 sm:py-12 text-center text-gray-500">
+                                <i class="fas fa-address-book text-3xl sm:text-4xl mb-3 text-gray-300"></i>
+                                <p class="text-sm sm:text-base">Aucun contact trouvé</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
     @if($contacts->hasPages())
-        <div class="mt-4">
-            {{ $contacts->links() }}
+        <div class="mt-4 sm:mt-6 overflow-x-auto">
+            <div class="min-w-fit">
+                {{ $contacts->links() }}
+            </div>
         </div>
     @endif
 </div>
