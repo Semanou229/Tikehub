@@ -39,36 +39,36 @@
 
                 <!-- Prix maximum par vote -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Prix max/vote (XOF)</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Prix max/vote (XOF)</label>
                     <input type="number" name="price_max" value="{{ request('price_max') }}" placeholder="∞" min="0"
                            class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 min-h-[44px]">
                 </div>
 
                 <!-- Date de fin (début) -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Fin après le</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Fin après le</label>
                     <input type="date" name="end_date_from" value="{{ request('end_date_from') }}" 
                            class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 min-h-[44px]">
                 </div>
 
                 <!-- Date de fin (fin) -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Fin avant le</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Fin avant le</label>
                     <input type="date" name="end_date_to" value="{{ request('end_date_to') }}" 
                            class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 min-h-[44px]">
                 </div>
 
                 <!-- Nombre minimum de votes -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Min votes</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Min votes</label>
                     <input type="number" name="min_votes" value="{{ request('min_votes') }}" placeholder="0" min="0"
                            class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 min-h-[44px]">
                 </div>
 
                 <!-- Organisateur -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Organisateur</label>
-                    <select name="organizer" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Organisateur</label>
+                    <select name="organizer" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 min-h-[44px]">
                         <option value="">Tous les organisateurs</option>
                         @foreach($organizers ?? [] as $organizer)
                             <option value="{{ $organizer->id }}" {{ request('organizer') == $organizer->id ? 'selected' : '' }}>{{ $organizer->name }}</option>
@@ -78,8 +78,8 @@
 
                 <!-- Tri -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Trier par</label>
-                    <select name="sort" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Trier par</label>
+                    <select name="sort" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 min-h-[44px]">
                         <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Plus populaires</option>
                         <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Prix (croissant)</option>
                         <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Prix (décroissant)</option>
@@ -88,11 +88,11 @@
                 </div>
                     </div>
 
-                    <div class="flex flex-col gap-2 pt-4 border-t border-gray-200">
-                        <button type="submit" class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                    <div class="flex flex-col gap-2 pt-3 sm:pt-4 border-t border-gray-200">
+                        <button type="submit" class="w-full bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 active:bg-purple-800 transition min-h-[44px] text-sm sm:text-base font-medium">
                             <i class="fas fa-filter mr-2"></i>Appliquer les filtres
                         </button>
-                        <a href="{{ route('contests.index') }}" class="w-full text-center text-sm text-gray-600 hover:text-purple-600 py-2">
+                        <a href="{{ route('contests.index') }}" class="w-full text-center text-xs sm:text-sm text-gray-600 hover:text-purple-600 py-2 min-h-[44px] flex items-center justify-center">
                             <i class="fas fa-redo mr-1"></i>Réinitialiser
                         </a>
                     </div>

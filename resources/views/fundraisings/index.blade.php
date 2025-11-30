@@ -39,42 +39,42 @@
 
                 <!-- Montant objectif maximum -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Objectif max (XOF)</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Objectif max (XOF)</label>
                     <input type="number" name="goal_max" value="{{ request('goal_max') }}" placeholder="∞" min="0"
                            class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 min-h-[44px]">
                 </div>
 
                 <!-- Progression minimum -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Progression min (%)</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Progression min (%)</label>
                     <input type="number" name="progress_min" value="{{ request('progress_min') }}" placeholder="0" min="0" max="100"
                            class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 min-h-[44px]">
                 </div>
 
                 <!-- Progression maximum -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Progression max (%)</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Progression max (%)</label>
                     <input type="number" name="progress_max" value="{{ request('progress_max') }}" placeholder="100" min="0" max="100"
                            class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 min-h-[44px]">
                 </div>
 
                 <!-- Date de fin (début) -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Fin après le</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Fin après le</label>
                     <input type="date" name="end_date_from" value="{{ request('end_date_from') }}" 
                            class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 min-h-[44px]">
                 </div>
 
                 <!-- Date de fin (fin) -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Fin avant le</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Fin avant le</label>
                     <input type="date" name="end_date_to" value="{{ request('end_date_to') }}" 
                            class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 min-h-[44px]">
                 </div>
 
                 <!-- Organisateur -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Organisateur</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Organisateur</label>
                     <select name="organizer" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         <option value="">Tous les organisateurs</option>
                         @foreach($organizers ?? [] as $organizer)
@@ -85,7 +85,7 @@
 
                 <!-- Tri -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Trier par</label>
+                    <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Trier par</label>
                     <select name="sort" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         <option value="progress" {{ request('sort') == 'progress' ? 'selected' : '' }}>Progression</option>
                         <option value="goal_asc" {{ request('sort') == 'goal_asc' ? 'selected' : '' }}>Objectif (croissant)</option>
