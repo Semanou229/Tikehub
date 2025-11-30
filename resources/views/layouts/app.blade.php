@@ -20,39 +20,48 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            padding-top: 0 !important;
         }
-        /* S'assurer que la structure est correcte */
-        body > nav {
-            order: 1 !important;
-            position: relative !important;
-            top: 0 !important;
-            bottom: auto !important;
-        }
-        body > main {
-            order: 2 !important;
-        }
-        body > footer {
-            order: 3 !important;
-        }
-        nav {
-            position: relative !important;
+        /* Navigation fixée en haut */
+        body > nav:first-of-type {
+            position: fixed !important;
             top: 0 !important;
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
-            order: 1 !important;
-            flex-shrink: 0;
             z-index: 1000 !important;
+            background: white !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            order: 1 !important;
         }
-        main {
+        /* Main avec padding pour la navigation fixe */
+        body > main {
+            margin-top: 80px !important;
+            padding-top: 0 !important;
             order: 2 !important;
             flex: 1;
-            position: relative;
-            margin-top: 0 !important;
         }
-        footer {
+        /* Footer */
+        body > footer {
             order: 3 !important;
             flex-shrink: 0;
+        }
+        /* Navigation */
+        nav {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            background: white !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        /* Main */
+        main {
+            margin-top: 80px !important;
+            padding-top: 0 !important;
+            min-height: calc(100vh - 80px);
         }
         /* Masquer toute barre de navigation fixée en bas */
         nav.fixed.bottom-0,
@@ -60,13 +69,6 @@
         nav[class*="bottom"],
         nav[class*="fixed"][class*="bottom"] {
             display: none !important;
-        }
-        /* S'assurer que la navigation principale reste en haut */
-        body > nav:first-of-type {
-            position: relative !important;
-            top: 0 !important;
-            bottom: auto !important;
-            order: 1 !important;
         }
         /* Empêcher le menu mobile de s'afficher en bas */
         #mobile-menu {
@@ -78,7 +80,7 @@
     @stack('styles')
 </head>
 <body class="bg-gray-50">
-    <nav class="bg-white shadow-lg border-b border-gray-200" style="position: relative !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 1000 !important; order: 1 !important; flex-shrink: 0 !important;">
+    <nav class="bg-white shadow-lg border-b border-gray-200" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 1000 !important; background: white !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
