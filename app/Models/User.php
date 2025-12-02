@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use App\Notifications\VerifyEmailNotification;
 
 class User extends Authenticatable
 {
@@ -160,5 +161,39 @@ class User extends Authenticatable
     public function supportMessages()
     {
         return $this->hasMany(SupportMessage::class, 'user_id');
+    }
+
+    /**
+     * Get the email address that should be used for verification.
+     */
+    public function getEmailForVerification()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Determine if the user has verified their email address.
+     */
+    public function hasVerifiedEmail()
+    {
+        return !is_null($this->email_verified_at);
+    }
+
+    /**
+     * Mark the given user's email as verified.
+     */
+    public function markEmailAsVerified()
+    {
+        return $this->forceFill([
+            'email_verified_at' => $this->freshTimestamp(),
+        ])->save();
+    }
+
+    /**
+     * Send the email verification notification.
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailNotification());
     }
 }

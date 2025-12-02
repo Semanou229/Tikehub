@@ -26,9 +26,17 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'register']);
 });
 
+// Vérification d'email
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'verify'])
+    ->middleware(['signed'])->name('verification.verify');
+Route::post('/email/verification-notification', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'resend'])
+    ->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Routes Admin
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
@@ -125,59 +133,66 @@ Route::middleware('auth')->group(function () {
         Route::delete('/contact-messages/{message}', [\App\Http\Controllers\Admin\ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
     });
 
-    // Événements (création, édition, publication - nécessitent auth)
-    // Route explicite pour create AVANT les routes avec paramètres pour éviter les conflits
-    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
-    Route::post('/events', [EventController::class, 'store'])->name('events.store');
-    Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
-    Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
-    Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
-    Route::post('/events/{event}/publish', [EventController::class, 'publish'])->name('events.publish');
-
-    // Billets
-    Route::get('/events/{event}/tickets', [TicketController::class, 'index'])->name('tickets.index');
-    Route::post('/events/{event}/tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
-    Route::post('/tickets/purchase', [TicketController::class, 'purchase'])->name('tickets.purchase');
-    Route::post('/tickets/validate-promo', [TicketController::class, 'validatePromoCode'])->name('tickets.validate-promo');
-    Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
-    Route::get('/tickets/{ticket}/download', [TicketController::class, 'download'])->name('tickets.download');
-
-    // Routes Buyer Dashboard
-    Route::prefix('buyer')->name('buyer.')->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\Buyer\DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/tickets', [\App\Http\Controllers\Buyer\DashboardController::class, 'tickets'])->name('tickets');
-        Route::get('/payments', [\App\Http\Controllers\Buyer\DashboardController::class, 'payments'])->name('payments');
-        Route::get('/virtual-events', [\App\Http\Controllers\Buyer\DashboardController::class, 'virtualEvents'])->name('virtual-events');
+    // Routes nécessitant la vérification d'email (protection contre les bots)
+    Route::middleware('verified')->group(function () {
+        // Dashboard principal
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         
-        // Profil
-        Route::get('/profile', [\App\Http\Controllers\Buyer\ProfileController::class, 'index'])->name('profile');
-        Route::put('/profile', [\App\Http\Controllers\Buyer\ProfileController::class, 'update'])->name('profile.update');
+        // Événements (création, édition, publication - nécessitent auth + vérification email)
+        Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+        Route::post('/events', [EventController::class, 'store'])->name('events.store');
+        Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
+        Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
+        Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
+        Route::post('/events/{event}/publish', [EventController::class, 'publish'])->name('events.publish');
+
+        // Billets (achats nécessitent vérification email)
+        Route::get('/events/{event}/tickets', [TicketController::class, 'index'])->name('tickets.index');
+        Route::post('/events/{event}/tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
+        Route::post('/tickets/purchase', [TicketController::class, 'purchase'])->name('tickets.purchase');
+        Route::post('/tickets/validate-promo', [TicketController::class, 'validatePromoCode'])->name('tickets.validate-promo');
+        Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+        Route::get('/tickets/{ticket}/download', [TicketController::class, 'download'])->name('tickets.download');
+
+        // Routes Buyer Dashboard (nécessitent vérification email)
+        Route::prefix('buyer')->name('buyer.')->group(function () {
+            Route::get('/dashboard', [\App\Http\Controllers\Buyer\DashboardController::class, 'index'])->name('dashboard');
+            Route::get('/tickets', [\App\Http\Controllers\Buyer\DashboardController::class, 'tickets'])->name('tickets');
+            Route::get('/payments', [\App\Http\Controllers\Buyer\DashboardController::class, 'payments'])->name('payments');
+            Route::get('/virtual-events', [\App\Http\Controllers\Buyer\DashboardController::class, 'virtualEvents'])->name('virtual-events');
+            
+            // Profil
+            Route::get('/profile', [\App\Http\Controllers\Buyer\ProfileController::class, 'index'])->name('profile');
+            Route::put('/profile', [\App\Http\Controllers\Buyer\ProfileController::class, 'update'])->name('profile.update');
+        });
+
+        // Support client (nécessite vérification email)
+        Route::prefix('support')->name('support.')->group(function () {
+            Route::get('/tickets', [\App\Http\Controllers\Support\SupportTicketController::class, 'index'])->name('tickets.index');
+            Route::get('/tickets/create', [\App\Http\Controllers\Support\SupportTicketController::class, 'create'])->name('tickets.create');
+            Route::post('/tickets', [\App\Http\Controllers\Support\SupportTicketController::class, 'store'])->name('tickets.store');
+            Route::get('/tickets/{ticket}', [\App\Http\Controllers\Support\SupportTicketController::class, 'show'])->name('tickets.show');
+            Route::post('/tickets/{ticket}/reply', [\App\Http\Controllers\Support\SupportTicketController::class, 'reply'])->name('tickets.reply');
+            Route::post('/tickets/{ticket}/close', [\App\Http\Controllers\Support\SupportTicketController::class, 'close'])->name('tickets.close');
+        });
+
+        // Paiements (nécessitent vérification email)
+        Route::get('/payments/{payment}/return', [PaymentController::class, 'return'])->name('payments.return');
+
+        // Concours (création nécessite vérification email)
+        Route::resource('contests', \App\Http\Controllers\ContestController::class)->except(['index', 'show']);
+        Route::post('/contests/{contest}/publish', [\App\Http\Controllers\ContestController::class, 'publish'])->name('contests.publish');
+        Route::post('/contests/{contest}/candidates/{candidate}/vote', [\App\Http\Controllers\ContestController::class, 'vote'])->name('contests.vote');
+
+        // Collectes de fonds (création nécessite vérification email)
+        Route::resource('fundraisings', \App\Http\Controllers\FundraisingController::class)->except(['index', 'show']);
+        Route::post('/fundraisings/{fundraising}/publish', [\App\Http\Controllers\FundraisingController::class, 'publish'])->name('fundraisings.publish');
+        Route::post('/fundraisings/{fundraising}/donate', [\App\Http\Controllers\FundraisingController::class, 'donate'])->name('fundraisings.donate');
     });
 
-    // Support client (Clients et Organisateurs)
-    Route::prefix('support')->name('support.')->group(function () {
-        Route::get('/tickets', [\App\Http\Controllers\Support\SupportTicketController::class, 'index'])->name('tickets.index');
-        Route::get('/tickets/create', [\App\Http\Controllers\Support\SupportTicketController::class, 'create'])->name('tickets.create');
-        Route::post('/tickets', [\App\Http\Controllers\Support\SupportTicketController::class, 'store'])->name('tickets.store');
-        Route::get('/tickets/{ticket}', [\App\Http\Controllers\Support\SupportTicketController::class, 'show'])->name('tickets.show');
-        Route::post('/tickets/{ticket}/reply', [\App\Http\Controllers\Support\SupportTicketController::class, 'reply'])->name('tickets.reply');
-        Route::post('/tickets/{ticket}/close', [\App\Http\Controllers\Support\SupportTicketController::class, 'close'])->name('tickets.close');
-    });
-
-    // Paiements
-    Route::get('/payments/{payment}/return', [PaymentController::class, 'return'])->name('payments.return');
+    // Paiements (callbacks et webhooks - pas besoin de vérification email)
     Route::post('/payments/callback', [PaymentController::class, 'callback'])->name('payments.callback');
     Route::post('/webhook', [PaymentController::class, 'webhook'])->name('payments.webhook');
-
-    // Concours
-    Route::resource('contests', \App\Http\Controllers\ContestController::class)->except(['index', 'show']);
-    Route::post('/contests/{contest}/publish', [\App\Http\Controllers\ContestController::class, 'publish'])->name('contests.publish');
-    Route::post('/contests/{contest}/candidates/{candidate}/vote', [\App\Http\Controllers\ContestController::class, 'vote'])->name('contests.vote');
-
-    // Collectes de fonds
-    Route::resource('fundraisings', \App\Http\Controllers\FundraisingController::class)->except(['index', 'show']);
-    Route::post('/fundraisings/{fundraising}/publish', [\App\Http\Controllers\FundraisingController::class, 'publish'])->name('fundraisings.publish');
-    Route::post('/fundraisings/{fundraising}/donate', [\App\Http\Controllers\FundraisingController::class, 'donate'])->name('fundraisings.donate');
     
     // Signalements (nécessitent une authentification)
     Route::post('/events/{event}/report', [\App\Http\Controllers\ContentActionController::class, 'reportEvent'])->name('events.report');
