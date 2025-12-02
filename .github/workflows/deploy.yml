@@ -1,0 +1,71 @@
+name: Déploiement Automatique
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+
+      - name: Configuration PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, bcmath, pdo, pdo_mysql, fileinfo, gd, zip
+          coverage: none
+
+      - name: Installation des dépendances Composer
+        run: |
+          composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      - name: Configuration de l'environnement
+        run: |
+          cp .env.example .env || true
+          php artisan key:generate --force || true
+
+      - name: Cache des dépendances
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.composer/cache
+            vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Nettoyage des caches Laravel
+        run: |
+          php artisan config:clear || true
+          php artisan cache:clear || true
+          php artisan route:clear || true
+          php artisan view:clear || true
+
+      - name: Optimisation Laravel
+        run: |
+          php artisan config:cache || true
+          php artisan route:cache || true
+          php artisan view:cache || true
+
+      - name: Vérification de la syntaxe PHP
+        run: |
+          find . -type f -name "*.php" -not -path "./vendor/*" -exec php -l {} \;
+
+      - name: Notification de succès
+        if: success()
+        run: |
+          echo "✅ Déploiement réussi !"
+          echo "Les modifications ont été déployées avec succès."
+
+      - name: Notification d'échec
+        if: failure()
+        run: |
+          echo "❌ Échec du déploiement !"
+          exit 1
+
