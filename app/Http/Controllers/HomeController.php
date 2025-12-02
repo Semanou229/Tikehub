@@ -72,65 +72,72 @@ class HomeController extends Controller
         // Récupérer le pourcentage de commission dynamique
         $commissionRate = get_commission_rate();
         
-        // Événements pour le slider Hero (mélange d'événements, concours et collectes)
-        $heroItems = collect();
+        // Créer une collection pour le slider Hero qui alterne entre événements, concours et collectes
+        $heroSliderItems = collect();
         
-        // Ajouter des événements
-        foreach ($upcomingEvents->take(3) as $event) {
-            $heroItems->push([
+        // Préparer les collections avec tous les éléments disponibles
+        $eventsForSlider = $upcomingEvents->map(function ($event) {
+            return [
                 'type' => 'event',
                 'id' => $event->id,
                 'title' => $event->title,
-                'description' => \Illuminate\Support\Str::limit($event->description, 150),
-                'image' => $event->cover_image,
-                'category' => $event->category,
                 'date' => $event->start_date,
                 'location' => $event->venue_city,
+                'image' => $event->cover_image,
                 'url' => route('events.show', $event),
-                'is_virtual' => $event->is_virtual,
-                'is_free' => $event->is_free,
-            ]);
-        }
+            ];
+        })->values();
         
-        // Ajouter des concours
-        foreach ($activeContests->take(2) as $contest) {
-            $heroItems->push([
+        $contestsForSlider = $activeContests->map(function ($contest) {
+            return [
                 'type' => 'contest',
                 'id' => $contest->id,
                 'title' => $contest->name,
-                'description' => \Illuminate\Support\Str::limit($contest->description, 150),
-                'image' => $contest->cover_image,
-                'category' => 'Concours',
                 'date' => $contest->end_date,
                 'location' => null,
+                'image' => $contest->cover_image,
                 'url' => route('contests.show', $contest),
                 'price_per_vote' => $contest->price_per_vote,
-                'votes_count' => $contest->votes_count ?? 0,
-            ]);
-        }
+            ];
+        })->values();
         
-        // Ajouter des collectes
-        foreach ($activeFundraisings->take(2) as $fundraising) {
-            $heroItems->push([
+        $fundraisingsForSlider = $activeFundraisings->map(function ($fundraising) {
+            return [
                 'type' => 'fundraising',
                 'id' => $fundraising->id,
                 'title' => $fundraising->name,
-                'description' => \Illuminate\Support\Str::limit($fundraising->description, 150),
-                'image' => $fundraising->cover_image,
-                'category' => 'Collecte',
                 'date' => $fundraising->end_date,
                 'location' => null,
+                'image' => $fundraising->cover_image,
                 'url' => route('fundraisings.show', $fundraising),
-                'current_amount' => $fundraising->current_amount,
-                'goal_amount' => $fundraising->goal_amount,
                 'progress' => $fundraising->progress_percentage,
-            ]);
+            ];
+        })->values();
+        
+        // Alterner entre les types : événement, concours, collecte, événement, etc.
+        $maxItems = max($eventsForSlider->count(), $contestsForSlider->count(), $fundraisingsForSlider->count());
+        
+        for ($i = 0; $i < $maxItems; $i++) {
+            // Ajouter un événement
+            if (isset($eventsForSlider[$i])) {
+                $heroSliderItems->push($eventsForSlider[$i]);
+            }
+            
+            // Ajouter un concours
+            if (isset($contestsForSlider[$i])) {
+                $heroSliderItems->push($contestsForSlider[$i]);
+            }
+            
+            // Ajouter une collecte
+            if (isset($fundraisingsForSlider[$i])) {
+                $heroSliderItems->push($fundraisingsForSlider[$i]);
+            }
         }
         
-        // Mélanger et prendre 6 items
-        $heroItems = $heroItems->shuffle()->take(6);
+        // Limiter à 12 items maximum pour éviter un slider trop long
+        $heroSliderItems = $heroSliderItems->take(12);
         
-        return view('home', compact('upcomingEvents', 'popularEvents', 'activeContests', 'activeFundraisings', 'stats', 'commissionRate', 'heroItems'));
+        return view('home', compact('upcomingEvents', 'popularEvents', 'activeContests', 'activeFundraisings', 'stats', 'commissionRate', 'heroSliderItems'));
     }
 }
 

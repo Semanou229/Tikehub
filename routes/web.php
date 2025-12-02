@@ -106,6 +106,23 @@ Route::middleware('auth')->group(function () {
             Route::post('/{ticket}/reply', [\App\Http\Controllers\Admin\SupportTicketController::class, 'reply'])->name('reply');
             Route::delete('/{ticket}', [\App\Http\Controllers\Admin\SupportTicketController::class, 'destroy'])->name('destroy');
         });
+        
+        // Gestion du Blog
+        Route::resource('blog-categories', \App\Http\Controllers\Admin\BlogCategoryController::class);
+        Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
+        
+        // Gestion des FAQs
+        Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
+        
+        // Gestion des informations de contact
+        Route::get('/contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->name('contact-info.edit');
+        Route::put('/contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->name('contact-info.update');
+        
+        // Gestion des messages de contact
+        Route::get('/contact-messages', [\App\Http\Controllers\Admin\ContactMessageController::class, 'index'])->name('contact-messages.index');
+        Route::get('/contact-messages/{message}', [\App\Http\Controllers\Admin\ContactMessageController::class, 'show'])->name('contact-messages.show');
+        Route::post('/contact-messages/{message}/read', [\App\Http\Controllers\Admin\ContactMessageController::class, 'markAsRead'])->name('contact-messages.read');
+        Route::delete('/contact-messages/{message}', [\App\Http\Controllers\Admin\ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
     });
 
     // Événements (création, édition, publication - nécessitent auth)
@@ -314,4 +331,15 @@ Route::get('/virtual-events/qr/{token}', [\App\Http\Controllers\VirtualEventCont
 
 // Profil public de l'organisateur (doit être APRÈS les routes protégées pour éviter les conflits)
 Route::get('/organizer/{organizer}', [\App\Http\Controllers\Public\OrganizerProfileController::class, 'show'])->name('organizer.profile.show');
+
+// Pages statiques
+Route::get('/comment-ca-marche', [\App\Http\Controllers\PageController::class, 'howItWorks'])->name('how-it-works');
+Route::get('/faq', [\App\Http\Controllers\PageController::class, 'faq'])->name('faq');
+Route::get('/contact', [\App\Http\Controllers\PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [\App\Http\Controllers\PageController::class, 'submitContact'])->name('contact.submit');
+
+// Blog public
+Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{blog:slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
+Route::get('/blog/category/{category:slug}', [\App\Http\Controllers\BlogController::class, 'category'])->name('blog.category');
 

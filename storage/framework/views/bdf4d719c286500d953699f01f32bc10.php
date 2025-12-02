@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('title', 'Connexion - Tikehub')
 
-@section('content')
+<?php $__env->startSection('title', 'Connexion - Tikehub'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-4 sm:py-8 px-3 sm:px-4 lg:px-8">
     <div class="max-w-md w-full">
         <!-- Tabs Navigation -->
@@ -28,29 +28,36 @@
                     <p class="text-sm sm:text-base text-gray-600">Connectez-vous à votre compte Tikehub</p>
                 </div>
 
-                @if($errors->any())
+                <?php if($errors->any()): ?>
                     <div class="bg-red-100 border border-red-400 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded mb-4 text-sm">
                         <ul class="list-disc list-inside">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
+                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <li><?php echo e($error); ?></li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </ul>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                <form method="POST" action="{{ route('login') }}" class="space-y-4 sm:space-y-5">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('login')); ?>" class="space-y-4 sm:space-y-5">
+                    <?php echo csrf_field(); ?>
                     
                     <div>
                         <label for="login-email" class="block text-sm font-semibold text-gray-700 mb-2">
                             <i class="fas fa-envelope mr-2 text-indigo-600"></i>Email
                         </label>
-                        <input type="email" name="email" id="login-email" value="{{ old('email') }}" required
+                        <input type="email" name="email" id="login-email" value="<?php echo e(old('email')); ?>" required
                             class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition text-base"
                             placeholder="votre@email.com">
-                        @error('email')
-                            <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
-                        @enderror
+                        <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <p class="text-red-500 text-xs sm:text-sm mt-1"><?php echo e($message); ?></p>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div>
@@ -65,9 +72,16 @@
                                 <i class="fas fa-eye" id="login-password-icon"></i>
                             </button>
                         </div>
-                        @error('password')
-                            <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
-                        @enderror
+                        <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <p class="text-red-500 text-xs sm:text-sm mt-1"><?php echo e($message); ?></p>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
@@ -107,53 +121,74 @@
                     <p class="text-sm sm:text-base text-gray-600">Rejoignez Tikehub et commencez dès aujourd'hui</p>
                 </div>
 
-                @if($errors->any())
+                <?php if($errors->any()): ?>
                     <div class="bg-red-100 border border-red-400 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded mb-4 text-sm">
                         <ul class="list-disc list-inside">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
+                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <li><?php echo e($error); ?></li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </ul>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                <form method="POST" action="{{ route('register') }}" class="space-y-4 sm:space-y-5">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('register')); ?>" class="space-y-4 sm:space-y-5">
+                    <?php echo csrf_field(); ?>
                     
                     <div>
                         <label for="register-name" class="block text-sm font-semibold text-gray-700 mb-2">
                             <i class="fas fa-user mr-2 text-indigo-600"></i>Nom complet
                         </label>
-                        <input type="text" name="name" id="register-name" value="{{ old('name') }}" required
+                        <input type="text" name="name" id="register-name" value="<?php echo e(old('name')); ?>" required
                             class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition text-base"
                             placeholder="Votre nom complet">
-                        @error('name')
-                            <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
-                        @enderror
+                        <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <p class="text-red-500 text-xs sm:text-sm mt-1"><?php echo e($message); ?></p>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div>
                         <label for="register-email" class="block text-sm font-semibold text-gray-700 mb-2">
                             <i class="fas fa-envelope mr-2 text-indigo-600"></i>Email
                         </label>
-                        <input type="email" name="email" id="register-email" value="{{ old('email') }}" required
+                        <input type="email" name="email" id="register-email" value="<?php echo e(old('email')); ?>" required
                             class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition text-base"
                             placeholder="votre@email.com">
-                        @error('email')
-                            <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
-                        @enderror
+                        <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <p class="text-red-500 text-xs sm:text-sm mt-1"><?php echo e($message); ?></p>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div>
                         <label for="register-phone" class="block text-sm font-semibold text-gray-700 mb-2">
                             <i class="fas fa-phone mr-2 text-indigo-600"></i>Téléphone <span class="text-gray-400 text-xs">(optionnel)</span>
                         </label>
-                        <input type="tel" name="phone" id="register-phone" value="{{ old('phone') }}"
+                        <input type="tel" name="phone" id="register-phone" value="<?php echo e(old('phone')); ?>"
                             class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition text-base"
                             placeholder="+229 XX XX XX XX">
-                        @error('phone')
-                            <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
-                        @enderror
+                        <?php $__errorArgs = ['phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <p class="text-red-500 text-xs sm:text-sm mt-1"><?php echo e($message); ?></p>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div>
@@ -168,9 +203,16 @@
                                 <i class="fas fa-eye" id="register-password-icon"></i>
                             </button>
                         </div>
-                        @error('password')
-                            <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
-                        @enderror
+                        <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <p class="text-red-500 text-xs sm:text-sm mt-1"><?php echo e($message); ?></p>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div>
@@ -192,24 +234,31 @@
                             <i class="fas fa-user-tag mr-2 text-indigo-600"></i>Type de compte
                         </label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                            <label class="flex items-start sm:items-center p-3 sm:p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition {{ old('role', 'buyer') === 'buyer' ? 'border-indigo-500 bg-indigo-50' : '' }}">
-                                <input type="radio" name="role" value="buyer" {{ old('role', 'buyer') === 'buyer' ? 'checked' : '' }} class="mt-1 sm:mt-0 mr-2 sm:mr-3 text-indigo-600 focus:ring-indigo-500 flex-shrink-0">
+                            <label class="flex items-start sm:items-center p-3 sm:p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition <?php echo e(old('role', 'buyer') === 'buyer' ? 'border-indigo-500 bg-indigo-50' : ''); ?>">
+                                <input type="radio" name="role" value="buyer" <?php echo e(old('role', 'buyer') === 'buyer' ? 'checked' : ''); ?> class="mt-1 sm:mt-0 mr-2 sm:mr-3 text-indigo-600 focus:ring-indigo-500 flex-shrink-0">
                                 <div>
                                     <div class="font-semibold text-sm sm:text-base text-gray-800">Acheteur</div>
                                     <div class="text-xs text-gray-500">Acheter des billets</div>
                                 </div>
                             </label>
-                            <label class="flex items-start sm:items-center p-3 sm:p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition {{ old('role') === 'organizer' ? 'border-indigo-500 bg-indigo-50' : '' }}">
-                                <input type="radio" name="role" value="organizer" {{ old('role') === 'organizer' ? 'checked' : '' }} class="mt-1 sm:mt-0 mr-2 sm:mr-3 text-indigo-600 focus:ring-indigo-500 flex-shrink-0">
+                            <label class="flex items-start sm:items-center p-3 sm:p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition <?php echo e(old('role') === 'organizer' ? 'border-indigo-500 bg-indigo-50' : ''); ?>">
+                                <input type="radio" name="role" value="organizer" <?php echo e(old('role') === 'organizer' ? 'checked' : ''); ?> class="mt-1 sm:mt-0 mr-2 sm:mr-3 text-indigo-600 focus:ring-indigo-500 flex-shrink-0">
                                 <div>
                                     <div class="font-semibold text-sm sm:text-base text-gray-800">Organisateur</div>
                                     <div class="text-xs text-gray-500">Créer des événements</div>
                                 </div>
                             </label>
                         </div>
-                        @error('role')
-                            <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
-                        @enderror
+                        <?php $__errorArgs = ['role'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <p class="text-red-500 text-xs sm:text-sm mt-1"><?php echo e($message); ?></p>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 sm:py-3.5 px-4 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-base min-h-[48px] flex items-center justify-center">
@@ -230,7 +279,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     function switchToRegister() {
         document.getElementById('login-tab').classList.remove('active', 'bg-gradient-to-r', 'from-indigo-600', 'to-purple-600', 'text-white', 'shadow-md');
@@ -280,11 +329,13 @@
         });
 
         // Si on vient de la page register avec des erreurs, afficher le formulaire d'inscription
-        @if(old('name') || old('email') || old('phone'))
+        <?php if(old('name') || old('email') || old('phone')): ?>
             switchToRegister();
-        @endif
+        <?php endif; ?>
     });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\adoun\Videos\Mon Tikehub\resources\views/auth/login.blade.php ENDPATH**/ ?>

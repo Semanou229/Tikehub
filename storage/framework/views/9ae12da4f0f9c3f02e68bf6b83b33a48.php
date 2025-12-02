@@ -1,8 +1,6 @@
-@extends('layouts.app')
-
-@push('head')
+<?php $__env->startPush('head'); ?>
 <!-- SEO Meta Tags optimisés pour l'Afrique -->
-<meta name="description" content="Tikehub - Plateforme de billetterie en ligne pour événements, concours et collectes de fonds en Afrique. Créez, gérez et vendez vos billets facilement avec notre CRM intégré. Paiements sécurisés via Moneroo. Commission transparente de {{ $commissionRate }}%.">
+<meta name="description" content="Tikehub - Plateforme de billetterie en ligne pour événements, concours et collectes de fonds en Afrique. Créez, gérez et vendez vos billets facilement avec notre CRM intégré. Paiements sécurisés via Moneroo. Commission transparente de <?php echo e($commissionRate); ?>%.">
 <meta name="keywords" content="billetterie en ligne, événements Afrique, vente de billets, gestion d'événements, CRM événements, concours en ligne, collectes de fonds, paiements mobiles Afrique, Moneroo, XOF, Bénin, Côte d'Ivoire, Sénégal, Togo, Burkina Faso">
 <meta name="author" content="Tikehub">
 <meta name="robots" content="index, follow">
@@ -14,19 +12,19 @@
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{ url('/') }}">
+<meta property="og:url" content="<?php echo e(url('/')); ?>">
 <meta property="og:title" content="Tikehub - Plateforme de Billetterie en Ligne pour l'Afrique">
-<meta property="og:description" content="Créez, gérez et vendez vos billets d'événements facilement. CRM intégré, paiements sécurisés, concours et collectes de fonds. Commission transparente de {{ $commissionRate }}%.">
-<meta property="og:image" content="{{ asset('images/og-image.jpg') }}">
+<meta property="og:description" content="Créez, gérez et vendez vos billets d'événements facilement. CRM intégré, paiements sécurisés, concours et collectes de fonds. Commission transparente de <?php echo e($commissionRate); ?>%.">
+<meta property="og:image" content="<?php echo e(asset('images/og-image.jpg')); ?>">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="Tikehub">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="{{ url('/') }}">
+<meta property="twitter:url" content="<?php echo e(url('/')); ?>">
 <meta property="twitter:title" content="Tikehub - Plateforme de Billetterie en Ligne pour l'Afrique">
 <meta property="twitter:description" content="Créez, gérez et vendez vos billets d'événements facilement. CRM intégré, paiements sécurisés, concours et collectes de fonds.">
-<meta property="twitter:image" content="{{ asset('images/og-image.jpg') }}">
+<meta property="twitter:image" content="<?php echo e(asset('images/og-image.jpg')); ?>">
 
 <!-- Structured Data JSON-LD -->
 <script type="application/ld+json">
@@ -34,8 +32,8 @@
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "Tikehub",
-  "url": "{{ url('/') }}",
-  "logo": "{{ asset('images/logo.png') }}",
+  "url": "<?php echo e(url('/')); ?>",
+  "logo": "<?php echo e(asset('images/logo.png')); ?>",
   "description": "Plateforme de billetterie en ligne pour événements, concours et collectes de fonds en Afrique",
   "address": {
     "@type": "PostalAddress",
@@ -54,9 +52,9 @@
   ],
   "offers": {
     "@type": "Offer",
-    "price": "{{ $commissionRate }}",
+    "price": "<?php echo e($commissionRate); ?>",
     "priceCurrency": "XOF",
-    "description": "Commission de {{ $commissionRate }}% sur les ventes"
+    "description": "Commission de <?php echo e($commissionRate); ?>% sur les ventes"
   }
 }
 </script>
@@ -66,19 +64,19 @@
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "Tikehub",
-  "url": "{{ url('/') }}",
+  "url": "<?php echo e(url('/')); ?>",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "{{ url('/events?search={search_term_string}') }}",
+    "target": "<?php echo e(url('/events?search={search_term_string}')); ?>",
     "query-input": "required name=search_term_string"
   }
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('title', 'Tikehub - Plateforme de Billetterie en Ligne pour l\'Afrique | Événements, Concours & Collectes')
+<?php $__env->startSection('title', 'Tikehub - Plateforme de Billetterie en Ligne pour l\'Afrique | Événements, Concours & Collectes'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Hero Section -->
 <section class="relative bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 overflow-hidden" style="margin-top: 0 !important; padding-top: 0 !important; position: relative; z-index: 1;">
     <!-- Background Pattern -->
@@ -161,25 +159,25 @@
                 
                 <!-- CTA Buttons -->
                 <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                    <a href="{{ route('register') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition duration-300 shadow-lg hover:shadow-xl min-h-[40px] sm:min-h-[44px] flex items-center justify-center">
+                    <a href="<?php echo e(route('register')); ?>" class="bg-cyan-500 hover:bg-cyan-600 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition duration-300 shadow-lg hover:shadow-xl min-h-[40px] sm:min-h-[44px] flex items-center justify-center">
                         <i class="fas fa-plus-circle mr-2 text-xs sm:text-sm"></i>Créer une billetterie
                     </a>
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition duration-300 border-2 border-cyan-500/50 min-h-[40px] sm:min-h-[44px] flex items-center justify-center">
+                    <?php if(auth()->guard()->check()): ?>
+                        <a href="<?php echo e(route('dashboard')); ?>" class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition duration-300 border-2 border-cyan-500/50 min-h-[40px] sm:min-h-[44px] flex items-center justify-center">
                             <i class="fas fa-tachometer-alt mr-2 text-xs sm:text-sm"></i>Mon tableau de bord
                         </a>
-                    @else
-                        <a href="{{ route('login') }}" class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition duration-300 border-2 border-cyan-500/50 min-h-[40px] sm:min-h-[44px] flex items-center justify-center">
+                    <?php else: ?>
+                        <a href="<?php echo e(route('login')); ?>" class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition duration-300 border-2 border-cyan-500/50 min-h-[40px] sm:min-h-[44px] flex items-center justify-center">
                             <i class="fas fa-sign-in-alt mr-2 text-xs sm:text-sm"></i>Connexion
                         </a>
-                    @endauth
+                    <?php endif; ?>
                 </div>
             </div>
             
             <!-- Right Side: Content Types Slider -->
             <div class="relative z-10">
                 <div class="relative h-[280px] sm:h-[320px] lg:h-[360px] overflow-hidden rounded-xl" id="hero-slider-container">
-                    @php
+                    <?php
                         // Utiliser les items du slider préparés dans le contrôleur
                         $sliderItems = $heroSliderItems ?? collect();
                         
@@ -191,82 +189,83 @@
                                 ['type' => 'fundraising', 'title' => 'Collecte Solidaire', 'date' => now()->addDays(21), 'location' => null, 'image' => null, 'url' => '#'],
                             ]);
                         }
-                    @endphp
+                    ?>
                     
-                    @if($sliderItems->count() > 0)
-                        @foreach($sliderItems as $index => $item)
-                            <div class="hero-slide-item absolute inset-0 transition-all duration-700 ease-in-out {{ $index === 0 ? 'opacity-100 translate-x-0 z-10' : ($index === 1 ? 'opacity-30 translate-x-full z-5' : 'opacity-0 translate-x-full z-0') }}" data-slide-index="{{ $index }}">
-                                <a href="{{ $item['url'] ?? '#' }}" class="block h-full">
+                    <?php if($sliderItems->count() > 0): ?>
+                        <?php $__currentLoopData = $sliderItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div class="hero-slide-item absolute inset-0 transition-all duration-700 ease-in-out <?php echo e($index === 0 ? 'opacity-100 translate-x-0 z-10' : ($index === 1 ? 'opacity-30 translate-x-full z-5' : 'opacity-0 translate-x-full z-0')); ?>" data-slide-index="<?php echo e($index); ?>">
+                                <a href="<?php echo e($item['url'] ?? '#'); ?>" class="block h-full">
                                     <div class="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-6 sm:p-8 h-full flex flex-col hover:bg-white/15 transition duration-300">
-                                        @if(isset($item['image']) && $item['image'])
+                                        <?php if(isset($item['image']) && $item['image']): ?>
                                             <div class="relative h-32 sm:h-36 lg:h-40 mb-4 rounded-lg overflow-hidden">
-                                                <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
+                                                <img src="<?php echo e(asset('storage/' . $item['image'])); ?>" alt="<?php echo e($item['title']); ?>" class="w-full h-full object-cover">
                                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                             </div>
-                                        @else
+                                        <?php else: ?>
                                             <div class="relative h-32 sm:h-36 lg:h-40 mb-4 rounded-lg overflow-hidden bg-gradient-to-br 
-                                                @if($item['type'] === 'event') from-indigo-500 to-purple-600
-                                                @elseif($item['type'] === 'contest') from-purple-500 to-pink-600
-                                                @else from-red-500 to-orange-600
-                                                @endif flex items-center justify-center">
+                                                <?php if($item['type'] === 'event'): ?> from-indigo-500 to-purple-600
+                                                <?php elseif($item['type'] === 'contest'): ?> from-purple-500 to-pink-600
+                                                <?php else: ?> from-red-500 to-orange-600
+                                                <?php endif; ?> flex items-center justify-center">
                                                 <i class="fas 
-                                                    @if($item['type'] === 'event') fa-calendar-alt
-                                                    @elseif($item['type'] === 'contest') fa-trophy
-                                                    @else fa-heart
-                                                    @endif text-5xl sm:text-6xl text-white opacity-30"></i>
+                                                    <?php if($item['type'] === 'event'): ?> fa-calendar-alt
+                                                    <?php elseif($item['type'] === 'contest'): ?> fa-trophy
+                                                    <?php else: ?> fa-heart
+                                                    <?php endif; ?> text-5xl sm:text-6xl text-white opacity-30"></i>
                                             </div>
-                                        @endif
+                                        <?php endif; ?>
                                         
                                         <div class="flex-1 flex flex-col">
                                             <div class="mb-3">
                                                 <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold
-                                                    @if($item['type'] === 'event') bg-indigo-500/30 text-indigo-200 border border-indigo-400/30
-                                                    @elseif($item['type'] === 'contest') bg-purple-500/30 text-purple-200 border border-purple-400/30
-                                                    @else bg-red-500/30 text-red-200 border border-red-400/30
-                                                    @endif">
-                                                    @if($item['type'] === 'event')
+                                                    <?php if($item['type'] === 'event'): ?> bg-indigo-500/30 text-indigo-200 border border-indigo-400/30
+                                                    <?php elseif($item['type'] === 'contest'): ?> bg-purple-500/30 text-purple-200 border border-purple-400/30
+                                                    <?php else: ?> bg-red-500/30 text-red-200 border border-red-400/30
+                                                    <?php endif; ?>">
+                                                    <?php if($item['type'] === 'event'): ?>
                                                         <i class="fas fa-calendar-alt mr-1"></i>Événement
-                                                    @elseif($item['type'] === 'contest')
+                                                    <?php elseif($item['type'] === 'contest'): ?>
                                                         <i class="fas fa-trophy mr-1"></i>Concours
-                                                    @else
+                                                    <?php else: ?>
                                                         <i class="fas fa-heart mr-1"></i>Collecte
-                                                    @endif
+                                                    <?php endif; ?>
                                                 </span>
                                             </div>
                                             
                                             <h3 class="text-lg sm:text-xl font-bold text-white mb-3 line-clamp-2">
-                                                {{ $item['title'] }}
+                                                <?php echo e($item['title']); ?>
+
                                             </h3>
                                             
                                             <div class="flex items-center text-sm text-gray-300 mb-3">
-                                                @if(isset($item['date']))
+                                                <?php if(isset($item['date'])): ?>
                                                     <i class="fas fa-calendar mr-2 text-cyan-400"></i>
-                                                    <span>{{ is_object($item['date']) ? $item['date']->format('d/m/Y') : date('d/m/Y', strtotime($item['date'])) }}</span>
-                                                @endif
-                                                @if(isset($item['location']) && $item['location'])
+                                                    <span><?php echo e(is_object($item['date']) ? $item['date']->format('d/m/Y') : date('d/m/Y', strtotime($item['date']))); ?></span>
+                                                <?php endif; ?>
+                                                <?php if(isset($item['location']) && $item['location']): ?>
                                                     <span class="mx-2">•</span>
                                                     <i class="fas fa-map-marker-alt mr-2 text-cyan-400"></i>
-                                                    <span>{{ $item['location'] }}</span>
-                                                @endif
+                                                    <span><?php echo e($item['location']); ?></span>
+                                                <?php endif; ?>
                                             </div>
                                             
-                                            @if($item['type'] === 'contest' && isset($item['price_per_vote']))
+                                            <?php if($item['type'] === 'contest' && isset($item['price_per_vote'])): ?>
                                                 <div class="mt-auto pt-3 border-t border-white/10">
                                                     <div class="text-xs text-gray-400 mb-1">Prix par vote</div>
-                                                    <div class="text-lg font-bold text-white">{{ number_format($item['price_per_vote'], 0, ',', ' ') }} XOF</div>
+                                                    <div class="text-lg font-bold text-white"><?php echo e(number_format($item['price_per_vote'], 0, ',', ' ')); ?> XOF</div>
                                                 </div>
-                                            @elseif($item['type'] === 'fundraising' && isset($item['progress']))
+                                            <?php elseif($item['type'] === 'fundraising' && isset($item['progress'])): ?>
                                                 <div class="mt-auto pt-3 border-t border-white/10">
                                                     <div class="text-xs text-gray-400 mb-1">Progression</div>
-                                                    <div class="text-lg font-bold text-white">{{ number_format($item['progress'], 0) }}%</div>
+                                                    <div class="text-lg font-bold text-white"><?php echo e(number_format($item['progress'], 0)); ?>%</div>
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </a>
                             </div>
-                        @endforeach
-                    @else
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php else: ?>
                         <!-- Fallback si aucun élément -->
                         <div class="hero-slide-item absolute inset-0 opacity-100 translate-x-0 z-10" data-slide-index="0">
                             <div class="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-6 sm:p-8 h-full flex flex-col items-center justify-center">
@@ -274,17 +273,17 @@
                                 <p class="text-white text-center">Aucun contenu disponible</p>
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
                 
                 <!-- Slider Navigation Dots -->
-                @if($sliderItems->count() > 1)
+                <?php if($sliderItems->count() > 1): ?>
                     <div class="flex justify-center gap-2 mt-4" id="hero-slider-dots">
-                        @foreach($sliderItems as $index => $item)
-                            <button type="button" class="hero-slide-dot rounded-full transition-all duration-300 h-2 {{ $index === 0 ? 'bg-cyan-400 w-8' : 'bg-white/30 w-2' }}" data-slide-index="{{ $index }}" aria-label="Slide {{ $index + 1 }}"></button>
-                        @endforeach
+                        <?php $__currentLoopData = $sliderItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <button type="button" class="hero-slide-dot rounded-full transition-all duration-300 h-2 <?php echo e($index === 0 ? 'bg-cyan-400 w-8' : 'bg-white/30 w-2'); ?>" data-slide-index="<?php echo e($index); ?>" aria-label="Slide <?php echo e($index + 1); ?>"></button>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -301,7 +300,7 @@
         <div class="relative overflow-hidden">
             <div class="categories-wrapper">
                 <div id="categories-carousel" class="flex gap-3 sm:gap-4">
-                    @php
+                    <?php
                         $categories = [
                             ['name' => 'Concert', 'icon' => 'fa-music', 'color' => 'indigo'],
                             ['name' => 'Sport', 'icon' => 'fa-futbol', 'color' => 'green'],
@@ -310,23 +309,24 @@
                             ['name' => 'Éducation', 'icon' => 'fa-graduation-cap', 'color' => 'yellow'],
                             ['name' => 'Autre', 'icon' => 'fa-star', 'color' => 'gray'],
                         ];
-                    @endphp
+                    ?>
                     
                     <!-- Multiple sets for infinite seamless loop -->
-                    @for($set = 0; $set < 3; $set++)
-                        @foreach($categories as $index => $category)
-                            <a href="{{ route('events.index', ['category' => $category['name']]) }}" class="category-item group bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/20 hover:border-cyan-500/50 transition duration-300 text-center flex-shrink-0 min-w-[120px] sm:min-w-[140px] animate-float" style="animation-delay: {{ ($set * count($categories) + $index) * 0.1 }}s;">
+                    <?php for($set = 0; $set < 3; $set++): ?>
+                        <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <a href="<?php echo e(route('events.index', ['category' => $category['name']])); ?>" class="category-item group bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5 border border-white/20 hover:bg-white/20 hover:border-cyan-500/50 transition duration-300 text-center flex-shrink-0 min-w-[120px] sm:min-w-[140px] animate-float" style="animation-delay: <?php echo e(($set * count($categories) + $index) * 0.1); ?>s;">
                                 <div class="mb-3 flex justify-center">
-                                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-{{ $category['color'] }}-500/20 group-hover:bg-{{ $category['color'] }}-500/30 rounded-lg flex items-center justify-center transition group-hover:scale-110">
-                                        <i class="fas {{ $category['icon'] }} text-{{ $category['color'] }}-400 text-xl sm:text-2xl transition-transform"></i>
+                                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-<?php echo e($category['color']); ?>-500/20 group-hover:bg-<?php echo e($category['color']); ?>-500/30 rounded-lg flex items-center justify-center transition group-hover:scale-110">
+                                        <i class="fas <?php echo e($category['icon']); ?> text-<?php echo e($category['color']); ?>-400 text-xl sm:text-2xl transition-transform"></i>
                                     </div>
                                 </div>
                                 <div class="text-white font-semibold text-sm sm:text-base group-hover:text-cyan-400 transition">
-                                    {{ $category['name'] }}
+                                    <?php echo e($category['name']); ?>
+
                                 </div>
                             </a>
-                        @endforeach
-                    @endfor
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endfor; ?>
                 </div>
             </div>
         </div>
@@ -334,26 +334,26 @@
 </section>
 
 <!-- Événements à venir -->
-@if($upcomingEvents->count() > 0)
+<?php if($upcomingEvents->count() > 0): ?>
 <section class="py-16 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
             <h2 class="text-3xl font-bold text-gray-800 mb-2 sm:mb-0">Événements à venir</h2>
-            <a href="{{ route('events.index') }}" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center">
+            <a href="<?php echo e(route('events.index')); ?>" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center">
                 Voir tout <i class="fas fa-arrow-right ml-2"></i>
             </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($upcomingEvents as $event)
+            <?php $__currentLoopData = $upcomingEvents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-indigo-200">
-                    <a href="{{ route('events.show', $event) }}" class="block">
-                        @if($event->cover_image)
-                            <img src="{{ asset('storage/' . $event->cover_image) }}" alt="{{ $event->title ?? 'Événement' }}" class="w-full h-48 object-cover">
-                        @else
+                    <a href="<?php echo e(route('events.show', $event)); ?>" class="block">
+                        <?php if($event->cover_image): ?>
+                            <img src="<?php echo e(asset('storage/' . $event->cover_image)); ?>" alt="<?php echo e($event->title ?? 'Événement'); ?>" class="w-full h-48 object-cover">
+                        <?php else: ?>
                             <div class="w-full h-48 bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
                                 <i class="fas fa-calendar-alt text-6xl text-white opacity-50"></i>
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </a>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
@@ -361,72 +361,73 @@
                                 <i class="fas fa-calendar-check mr-1"></i> À venir
                             </span>
                             <div class="flex items-center gap-2">
-                                @if($event->is_virtual)
+                                <?php if($event->is_virtual): ?>
                                     <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
                                         <i class="fas fa-video mr-1"></i>Virtuel
                                     </span>
-                                @endif
-                                @if($event->is_free)
+                                <?php endif; ?>
+                                <?php if($event->is_free): ?>
                                     <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
                                         Gratuit
                                     </span>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
-                        <a href="{{ route('events.show', $event) }}" class="block">
-                            <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition">{{ $event->title ?? 'Sans titre' }}</h3>
+                        <a href="<?php echo e(route('events.show', $event)); ?>" class="block">
+                            <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition"><?php echo e($event->title ?? 'Sans titre'); ?></h3>
                         </a>
-                        @if($event->description)
-                            <p class="text-gray-600 text-sm mb-2 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
-                        @endif
-                        @if($event->start_date)
+                        <?php if($event->description): ?>
+                            <p class="text-gray-600 text-sm mb-2 line-clamp-2"><?php echo e(\Illuminate\Support\Str::limit($event->description, 100)); ?></p>
+                        <?php endif; ?>
+                        <?php if($event->start_date): ?>
                             <div class="flex items-center text-sm text-gray-500 mb-2">
                                 <i class="fas fa-calendar mr-2"></i>
-                                <span>{{ $event->start_date->translatedFormat('d/m/Y H:i') }}</span>
-                                @if($event->venue_city)
+                                <span><?php echo e($event->start_date->translatedFormat('d/m/Y H:i')); ?></span>
+                                <?php if($event->venue_city): ?>
                                     <span class="mx-2">•</span>
                                     <i class="fas fa-map-marker-alt mr-2"></i>
-                                    <span>{{ $event->venue_city }}</span>
-                                @endif
+                                    <span><?php echo e($event->venue_city); ?></span>
+                                <?php endif; ?>
                             </div>
-                        @endif
-                        @if($event->organizer)
+                        <?php endif; ?>
+                        <?php if($event->organizer): ?>
                             <div class="flex items-center text-sm text-gray-600 mb-2">
                                 <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
                                 <span>Par</span>
-                                <a href="{{ route('organizer.profile.show', $event->organizer) }}" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline" onclick="event.stopPropagation()">
-                                    {{ $event->organizer->name }}
+                                <a href="<?php echo e(route('organizer.profile.show', $event->organizer)); ?>" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline" onclick="event.stopPropagation()">
+                                    <?php echo e($event->organizer->name); ?>
+
                                 </a>
                             </div>
-                        @endif
-                        @php
+                        <?php endif; ?>
+                        <?php
                             $minPrice = $event->ticketTypes()->where('is_active', true)->min('price') ?? 0;
-                        @endphp
-                        @if($minPrice > 0)
+                        ?>
+                        <?php if($minPrice > 0): ?>
                             <div class="mb-4">
                                 <span class="text-lg font-bold text-indigo-600">
-                                    À partir de {{ number_format($minPrice, 0, ',', ' ') }} XOF
+                                    À partir de <?php echo e(number_format($minPrice, 0, ',', ' ')); ?> XOF
                                 </span>
                             </div>
-                        @elseif($event->is_free)
+                        <?php elseif($event->is_free): ?>
                             <div class="mb-4">
                                 <span class="text-lg font-bold text-green-600">
                                     Gratuit
                                 </span>
                             </div>
-                        @endif
-                        <a href="{{ route('events.show', $event) }}" class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
+                        <?php endif; ?>
+                        <a href="<?php echo e(route('events.show', $event)); ?>" class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
                             Voir l'événement
                         </a>
                     </div>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 </section>
-@endif
+<?php endif; ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     /* Hero Section - Override main margin */
     section:first-of-type {
@@ -648,9 +649,9 @@
         }
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Content Types Rotator
@@ -848,7 +849,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 200);
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
 <!-- Section Commission Transparente -->
 <section class="py-12 sm:py-16 bg-gradient-to-r from-green-50 to-emerald-50">
@@ -861,7 +862,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 Commission Transparente
             </h2>
             <p class="text-lg sm:text-xl text-gray-600 mb-6 max-w-2xl mx-auto">
-                Nous prélevons uniquement <span class="font-bold text-green-600 text-2xl sm:text-3xl">{{ $commissionRate }}%</span> de commission sur chaque vente.
+                Nous prélevons uniquement <span class="font-bold text-green-600 text-2xl sm:text-3xl"><?php echo e($commissionRate); ?>%</span> de commission sur chaque vente.
                 <br class="hidden sm:block">
                 <span class="text-sm sm:text-base text-gray-500">Aucun frais caché, tout est transparent.</span>
             </p>
@@ -871,7 +872,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="text-sm text-gray-600">Frais d'inscription</div>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-indigo-600 mb-2">{{ $commissionRate }}%</div>
+                    <div class="text-2xl font-bold text-indigo-600 mb-2"><?php echo e($commissionRate); ?>%</div>
                     <div class="text-sm text-gray-600">Commission par vente</div>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-4">
@@ -983,26 +984,26 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 
 <!-- Événements populaires -->
-@if($popularEvents->count() > 0)
+<?php if($popularEvents->count() > 0): ?>
 <section class="py-16 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
             <h2 class="text-3xl font-bold text-gray-800 mb-2 sm:mb-0">Événements populaires</h2>
-            <a href="{{ route('events.index') }}" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center">
+            <a href="<?php echo e(route('events.index')); ?>" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center">
                 Voir tout <i class="fas fa-arrow-right ml-2"></i>
             </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($popularEvents as $event)
+            <?php $__currentLoopData = $popularEvents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-yellow-200">
-                    <a href="{{ route('events.show', $event) }}" class="block">
-                        @if($event->cover_image)
-                            <img src="{{ asset('storage/' . $event->cover_image) }}" alt="{{ $event->title ?? 'Événement' }}" class="w-full h-48 object-cover">
-                        @else
+                    <a href="<?php echo e(route('events.show', $event)); ?>" class="block">
+                        <?php if($event->cover_image): ?>
+                            <img src="<?php echo e(asset('storage/' . $event->cover_image)); ?>" alt="<?php echo e($event->title ?? 'Événement'); ?>" class="w-full h-48 object-cover">
+                        <?php else: ?>
                             <div class="w-full h-48 bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
                                 <i class="fas fa-fire text-6xl text-white opacity-50"></i>
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </a>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
@@ -1010,68 +1011,69 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <i class="fas fa-fire mr-1"></i> Populaire
                             </span>
                             <div class="flex items-center gap-2">
-                                @if($event->is_virtual)
+                                <?php if($event->is_virtual): ?>
                                     <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
                                         <i class="fas fa-video mr-1"></i>Virtuel
                                     </span>
-                                @endif
+                                <?php endif; ?>
                                 <span class="text-sm text-gray-500">
-                                    {{ $event->tickets_count ?? 0 }} billet(s) vendu(s)
+                                    <?php echo e($event->tickets_count ?? 0); ?> billet(s) vendu(s)
                                 </span>
                             </div>
                         </div>
-                        <a href="{{ route('events.show', $event) }}" class="block">
-                            <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition">{{ $event->title ?? 'Sans titre' }}</h3>
+                        <a href="<?php echo e(route('events.show', $event)); ?>" class="block">
+                            <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-indigo-600 transition"><?php echo e($event->title ?? 'Sans titre'); ?></h3>
                         </a>
-                        @if($event->description)
-                            <p class="text-gray-600 text-sm mb-2 line-clamp-2">{{ \Illuminate\Support\Str::limit($event->description, 100) }}</p>
-                        @endif
-                        @if($event->start_date)
+                        <?php if($event->description): ?>
+                            <p class="text-gray-600 text-sm mb-2 line-clamp-2"><?php echo e(\Illuminate\Support\Str::limit($event->description, 100)); ?></p>
+                        <?php endif; ?>
+                        <?php if($event->start_date): ?>
                             <div class="flex items-center text-sm text-gray-500 mb-2">
                                 <i class="fas fa-calendar mr-2"></i>
-                                <span>{{ $event->start_date->translatedFormat('d/m/Y H:i') }}</span>
-                                @if($event->venue_city)
+                                <span><?php echo e($event->start_date->translatedFormat('d/m/Y H:i')); ?></span>
+                                <?php if($event->venue_city): ?>
                                     <span class="mx-2">•</span>
                                     <i class="fas fa-map-marker-alt mr-2"></i>
-                                    <span>{{ $event->venue_city }}</span>
-                                @endif
+                                    <span><?php echo e($event->venue_city); ?></span>
+                                <?php endif; ?>
                             </div>
-                        @endif
-                        @if($event->organizer)
+                        <?php endif; ?>
+                        <?php if($event->organizer): ?>
                             <div class="flex items-center text-sm text-gray-600 mb-2">
                                 <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
                                 <span>Par</span>
-                                <a href="{{ route('organizer.profile.show', $event->organizer) }}" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline" onclick="event.stopPropagation()">
-                                    {{ $event->organizer->name }}
+                                <a href="<?php echo e(route('organizer.profile.show', $event->organizer)); ?>" class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline" onclick="event.stopPropagation()">
+                                    <?php echo e($event->organizer->name); ?>
+
                                 </a>
                             </div>
-                        @endif
-                        @php
+                        <?php endif; ?>
+                        <?php
                             $minPrice = $event->ticketTypes()->where('is_active', true)->min('price') ?? 0;
-                        @endphp
-                        @if($minPrice > 0)
+                        ?>
+                        <?php if($minPrice > 0): ?>
                             <div class="mb-4">
                                 <span class="text-lg font-bold text-indigo-600">
-                                    À partir de {{ number_format($minPrice, 0, ',', ' ') }} XOF
+                                    À partir de <?php echo e(number_format($minPrice, 0, ',', ' ')); ?> XOF
                                 </span>
                             </div>
-                        @elseif($event->is_free)
+                        <?php elseif($event->is_free): ?>
                             <div class="mb-4">
                                 <span class="text-lg font-bold text-green-600">
                                     Gratuit
                                 </span>
                             </div>
-                        @endif
-                        <a href="{{ route('events.show', $event) }}" class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
+                        <?php endif; ?>
+                        <a href="<?php echo e(route('events.show', $event)); ?>" class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">
                             Voir l'événement
                         </a>
                     </div>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 </section>
-@endif
+<?php endif; ?>
 
 <!-- Fonctionnalités Avancées - Section 2 -->
 <section class="py-16 bg-white relative overflow-hidden">
@@ -1178,7 +1180,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 
 <!-- Concours & Votes -->
-@if($activeContests->count() > 0)
+<?php if($activeContests->count() > 0): ?>
 <section class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
@@ -1186,20 +1188,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="text-3xl font-bold text-gray-800">Concours & Votes payants</h2>
                 <p class="text-gray-600 mt-2">Participez aux concours et votez pour vos candidats favoris</p>
             </div>
-            <a href="{{ route('contests.index') }}" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center mt-4 sm:mt-0">
+            <a href="<?php echo e(route('contests.index')); ?>" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center mt-4 sm:mt-0">
                 Voir tout <i class="fas fa-arrow-right ml-2"></i>
             </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($activeContests as $contest)
-                <a href="{{ route('contests.show', $contest) }}" class="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-purple-200">
-                    @if($contest->cover_image)
-                        <img src="{{ asset('storage/' . $contest->cover_image) }}" alt="{{ $contest->name }}" class="w-full h-48 object-cover">
-                    @else
+            <?php $__currentLoopData = $activeContests; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $contest): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <a href="<?php echo e(route('contests.show', $contest)); ?>" class="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-purple-200">
+                    <?php if($contest->cover_image): ?>
+                        <img src="<?php echo e(asset('storage/' . $contest->cover_image)); ?>" alt="<?php echo e($contest->name); ?>" class="w-full h-48 object-cover">
+                    <?php else: ?>
                         <div class="w-full h-48 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
                             <i class="fas fa-trophy text-6xl text-white opacity-50"></i>
                         </div>
-                    @endif
+                    <?php endif; ?>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">
@@ -1208,43 +1210,43 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <div class="mb-2">
                             <span class="text-lg font-bold text-purple-600">
-                                À partir de {{ number_format($contest->price_per_vote, 0, ',', ' ') }} XOF/vote
+                                À partir de <?php echo e(number_format($contest->price_per_vote, 0, ',', ' ')); ?> XOF/vote
                             </span>
                         </div>
-                        <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-purple-600 transition">{{ $contest->name }}</h3>
-                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ \Illuminate\Support\Str::limit($contest->description, 100) }}</p>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-purple-600 transition"><?php echo e($contest->name); ?></h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2"><?php echo e(\Illuminate\Support\Str::limit($contest->description, 100)); ?></p>
                         <div class="flex items-center text-sm text-gray-500 mb-4">
                             <i class="fas fa-calendar mr-2"></i>
-                            <span>Jusqu'au {{ $contest->end_date->format('d/m/Y') }}</span>
+                            <span>Jusqu'au <?php echo e($contest->end_date->format('d/m/Y')); ?></span>
                             <span class="mx-2">•</span>
                             <i class="fas fa-users mr-2"></i>
-                            <span>{{ $contest->votes_count }} vote(s)</span>
+                            <span><?php echo e($contest->votes_count); ?> vote(s)</span>
                         </div>
                         <span class="block w-full bg-purple-600 text-white text-center px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-300">
                             Voir le concours
                         </span>
                     </div>
                 </a>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 </section>
-@endif
+<?php endif; ?>
 
 <!-- Statistiques -->
 <section class="py-12 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center">
             <div class="bg-white p-4 md:p-6 rounded-lg shadow-md hover:shadow-lg transition">
-                <div class="text-3xl md:text-4xl font-bold text-indigo-600 mb-2">{{ $stats['total_events'] }}</div>
+                <div class="text-3xl md:text-4xl font-bold text-indigo-600 mb-2"><?php echo e($stats['total_events']); ?></div>
                 <div class="text-sm md:text-base text-gray-600">Événements</div>
             </div>
             <div class="bg-white p-4 md:p-6 rounded-lg shadow-md hover:shadow-lg transition">
-                <div class="text-3xl md:text-4xl font-bold text-purple-600 mb-2">{{ $stats['active_contests'] }}</div>
+                <div class="text-3xl md:text-4xl font-bold text-purple-600 mb-2"><?php echo e($stats['active_contests']); ?></div>
                 <div class="text-sm md:text-base text-gray-600">Concours actifs</div>
             </div>
             <div class="bg-white p-4 md:p-6 rounded-lg shadow-md hover:shadow-lg transition">
-                <div class="text-3xl md:text-4xl font-bold text-green-600 mb-2">{{ $stats['active_fundraisings'] }}</div>
+                <div class="text-3xl md:text-4xl font-bold text-green-600 mb-2"><?php echo e($stats['active_fundraisings']); ?></div>
                 <div class="text-sm md:text-base text-gray-600">Collectes actives</div>
             </div>
             <div class="bg-white p-4 md:p-6 rounded-lg shadow-md hover:shadow-lg transition">
@@ -1256,7 +1258,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 
 <!-- Collectes de fonds -->
-@if($activeFundraisings->count() > 0)
+<?php if($activeFundraisings->count() > 0): ?>
 <section class="py-16 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
@@ -1264,57 +1266,57 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="text-3xl font-bold text-gray-800">Collectes de fonds</h2>
                 <p class="text-gray-600 mt-2">Soutenez des causes qui vous tiennent à cœur</p>
             </div>
-            <a href="{{ route('fundraisings.index') }}" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center mt-4 sm:mt-0">
+            <a href="<?php echo e(route('fundraisings.index')); ?>" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center mt-4 sm:mt-0">
                 Voir tout <i class="fas fa-arrow-right ml-2"></i>
             </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($activeFundraisings as $fundraising)
-                <a href="{{ route('fundraisings.show', $fundraising) }}" class="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-green-200">
-                    @if($fundraising->cover_image)
-                        <img src="{{ asset('storage/' . $fundraising->cover_image) }}" alt="{{ $fundraising->name }}" class="w-full h-48 object-cover">
-                    @else
+            <?php $__currentLoopData = $activeFundraisings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fundraising): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <a href="<?php echo e(route('fundraisings.show', $fundraising)); ?>" class="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 border-2 border-green-200">
+                    <?php if($fundraising->cover_image): ?>
+                        <img src="<?php echo e(asset('storage/' . $fundraising->cover_image)); ?>" alt="<?php echo e($fundraising->name); ?>" class="w-full h-48 object-cover">
+                    <?php else: ?>
                         <div class="w-full h-48 bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center">
                             <i class="fas fa-heart text-6xl text-white opacity-50"></i>
                         </div>
-                    @endif
+                    <?php endif; ?>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
                                 <i class="fas fa-hand-holding-heart mr-1"></i> Collecte
                             </span>
                             <span class="text-sm text-gray-500">
-                                {{ number_format($fundraising->progress_percentage, 0) }}%
+                                <?php echo e(number_format($fundraising->progress_percentage, 0)); ?>%
                             </span>
                         </div>
-                        <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-green-600 transition">{{ $fundraising->name }}</h3>
-                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ \Illuminate\Support\Str::limit($fundraising->description, 100) }}</p>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800 hover:text-green-600 transition"><?php echo e($fundraising->name); ?></h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2"><?php echo e(\Illuminate\Support\Str::limit($fundraising->description, 100)); ?></p>
                         
                         <!-- Barre de progression -->
                         <div class="mb-4">
                             <div class="flex justify-between text-xs text-gray-600 mb-1">
-                                <span>{{ number_format($fundraising->current_amount, 0, ',', ' ') }} XOF</span>
-                                <span>{{ number_format($fundraising->goal_amount, 0, ',', ' ') }} XOF</span>
+                                <span><?php echo e(number_format($fundraising->current_amount, 0, ',', ' ')); ?> XOF</span>
+                                <span><?php echo e(number_format($fundraising->goal_amount, 0, ',', ' ')); ?> XOF</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-600 h-2 rounded-full" style="width: {{ min(100, $fundraising->progress_percentage) }}%"></div>
+                                <div class="bg-green-600 h-2 rounded-full" style="width: <?php echo e(min(100, $fundraising->progress_percentage)); ?>%"></div>
                             </div>
                         </div>
 
                         <div class="flex items-center text-sm text-gray-500 mb-4">
                             <i class="fas fa-calendar mr-2"></i>
-                            <span>Jusqu'au {{ $fundraising->end_date->format('d/m/Y') }}</span>
+                            <span>Jusqu'au <?php echo e($fundraising->end_date->format('d/m/Y')); ?></span>
                         </div>
                         <span class="block w-full bg-green-600 text-white text-center px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
                             Contribuer
                         </span>
                     </div>
                 </a>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 </section>
-@endif
+<?php endif; ?>
 
 <!-- CTA Section -->
 <section class="py-16 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white relative overflow-hidden">
@@ -1331,10 +1333,10 @@ document.addEventListener('DOMContentLoaded', function() {
             </p>
         </div>
         
-        @auth
-            @if(auth()->user()->isOrganizer())
+        <?php if(auth()->guard()->check()): ?>
+            <?php if(auth()->user()->isOrganizer()): ?>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <a href="{{ route('events.create') }}" class="cta-card group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-105">
+                    <a href="<?php echo e(route('events.create')); ?>" class="cta-card group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-105">
                         <div class="text-center">
                             <div class="bg-indigo-500/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-indigo-500/50 transition">
                                 <i class="fas fa-calendar-plus text-3xl text-white"></i>
@@ -1347,7 +1349,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </a>
                     
-                    <a href="{{ route('contests.create') }}" class="cta-card group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-105">
+                    <a href="<?php echo e(route('contests.create')); ?>" class="cta-card group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-105">
                         <div class="text-center">
                             <div class="bg-purple-500/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-500/50 transition">
                                 <i class="fas fa-trophy text-3xl text-white"></i>
@@ -1360,7 +1362,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </a>
                     
-                    <a href="{{ route('fundraisings.create') }}" class="cta-card group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-105">
+                    <a href="<?php echo e(route('fundraisings.create')); ?>" class="cta-card group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-105">
                         <div class="text-center">
                             <div class="bg-pink-500/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-pink-500/50 transition">
                                 <i class="fas fa-heart text-3xl text-white"></i>
@@ -1373,20 +1375,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </a>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                    <a href="{{ route('events.index') }}" class="bg-white text-indigo-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-indigo-50 transition duration-300 shadow-lg min-h-[44px] flex items-center justify-center">
+                    <a href="<?php echo e(route('events.index')); ?>" class="bg-white text-indigo-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-indigo-50 transition duration-300 shadow-lg min-h-[44px] flex items-center justify-center">
                         <i class="fas fa-calendar-alt mr-2"></i>Découvrir les événements
                     </a>
-                    <a href="{{ route('contests.index') }}" class="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-purple-50 transition duration-300 shadow-lg min-h-[44px] flex items-center justify-center">
+                    <a href="<?php echo e(route('contests.index')); ?>" class="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-purple-50 transition duration-300 shadow-lg min-h-[44px] flex items-center justify-center">
                         <i class="fas fa-trophy mr-2"></i>Voir les concours
                     </a>
-                    <a href="{{ route('fundraisings.index') }}" class="bg-white text-pink-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-pink-50 transition duration-300 shadow-lg min-h-[44px] flex items-center justify-center">
+                    <a href="<?php echo e(route('fundraisings.index')); ?>" class="bg-white text-pink-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-pink-50 transition duration-300 shadow-lg min-h-[44px] flex items-center justify-center">
                         <i class="fas fa-heart mr-2"></i>Voir les collectes
                     </a>
                 </div>
-            @endif
-        @else
+            <?php endif; ?>
+        <?php else: ?>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="cta-card group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-105">
                     <div class="text-center">
@@ -1395,7 +1397,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <h3 class="text-xl font-bold mb-2">Événements</h3>
                         <p class="text-indigo-100 text-sm mb-4">Découvrez et participez à des événements passionnants</p>
-                        <a href="{{ route('events.index') }}" class="inline-block bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-indigo-50 transition">
+                        <a href="<?php echo e(route('events.index')); ?>" class="inline-block bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-indigo-50 transition">
                             Explorer <i class="fas fa-arrow-right ml-2"></i>
                         </a>
                     </div>
@@ -1408,7 +1410,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <h3 class="text-xl font-bold mb-2">Concours</h3>
                         <p class="text-indigo-100 text-sm mb-4">Participez aux concours et votez pour vos favoris</p>
-                        <a href="{{ route('contests.index') }}" class="inline-block bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-purple-50 transition">
+                        <a href="<?php echo e(route('contests.index')); ?>" class="inline-block bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-purple-50 transition">
                             Explorer <i class="fas fa-arrow-right ml-2"></i>
                         </a>
                     </div>
@@ -1421,7 +1423,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <h3 class="text-xl font-bold mb-2">Collectes</h3>
                         <p class="text-indigo-100 text-sm mb-4">Soutenez des causes qui vous tiennent à cœur</p>
-                        <a href="{{ route('fundraisings.index') }}" class="inline-block bg-white text-pink-600 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-pink-50 transition">
+                        <a href="<?php echo e(route('fundraisings.index')); ?>" class="inline-block bg-white text-pink-600 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-pink-50 transition">
                             Explorer <i class="fas fa-arrow-right ml-2"></i>
                         </a>
                     </div>
@@ -1430,12 +1432,14 @@ document.addEventListener('DOMContentLoaded', function() {
             
             <div class="text-center">
                 <p class="text-lg text-indigo-100 mb-6">Vous êtes organisateur ? Rejoignez-nous !</p>
-                <a href="{{ route('register') }}" class="bg-white text-indigo-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-indigo-50 transition duration-300 shadow-lg inline-block min-h-[44px] flex items-center justify-center mx-auto">
+                <a href="<?php echo e(route('register')); ?>" class="bg-white text-indigo-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-indigo-50 transition duration-300 shadow-lg inline-block min-h-[44px] flex items-center justify-center mx-auto">
                     <i class="fas fa-user-plus mr-2"></i>Créer un compte organisateur
                 </a>
             </div>
-        @endauth
+        <?php endif; ?>
     </div>
 </section>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\adoun\Videos\Mon Tikehub\resources\views/home.blade.php ENDPATH**/ ?>
