@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', config('app.name'))</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tikehub">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icons/icon-192x192.png') }}">
+    
     @stack('head')
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -141,12 +150,19 @@
                 <!-- Logo -->
                 <div class="flex items-center flex-shrink-0">
                     <a href="{{ route('home') }}" class="flex items-center space-x-1 sm:space-x-2 group">
-                        <div class="bg-gradient-to-br from-indigo-600 to-purple-600 p-1.5 sm:p-2 rounded-lg group-hover:shadow-lg transition">
-                            <i class="fas fa-ticket-alt text-white text-lg sm:text-xl"></i>
-                        </div>
-                        <span class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                            Tikehub
-                        </span>
+                        @php
+                            $headerLogo = \App\Models\Logo::getByType('header');
+                        @endphp
+                        @if($headerLogo)
+                            <img src="{{ $headerLogo->url }}" alt="Tikehub" class="h-10 sm:h-12 object-contain">
+                        @else
+                            <div class="bg-gradient-to-br from-indigo-600 to-purple-600 p-1.5 sm:p-2 rounded-lg group-hover:shadow-lg transition">
+                                <i class="fas fa-ticket-alt text-white text-lg sm:text-xl"></i>
+                            </div>
+                            <span class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                Tikehub
+                            </span>
+                        @endif
                     </a>
                 </div>
 
@@ -167,12 +183,15 @@
                     
                     <!-- Menu Ressources -->
                     <div class="relative group" id="resources-menu-container">
-                        <button id="resources-menu-button" type="button" class="px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-medium flex items-center {{ request()->routeIs('faq') || request()->routeIs('how-it-works') ? 'text-indigo-600 bg-indigo-50' : '' }}">
+                        <button id="resources-menu-button" type="button" class="px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-medium flex items-center {{ request()->routeIs('blog.*') || request()->routeIs('faq') || request()->routeIs('how-it-works') ? 'text-indigo-600 bg-indigo-50' : '' }}">
                             <i class="fas fa-book mr-2"></i>Ressources
                             <i class="fas fa-chevron-down text-xs ml-1 transform transition-transform duration-200" id="resources-chevron"></i>
                         </button>
                         <div id="resources-dropdown" class="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                             <div class="py-2">
+                                <a href="{{ route('blog.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition flex items-center {{ request()->routeIs('blog.*') ? 'bg-indigo-50 text-indigo-600' : '' }}">
+                                    <i class="fas fa-newspaper mr-2"></i>Blog
+                                </a>
                                 <a href="{{ route('faq') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition flex items-center {{ request()->routeIs('faq') ? 'bg-indigo-50 text-indigo-600' : '' }}">
                                     <i class="fas fa-question-circle mr-2"></i>FAQ
                                 </a>
@@ -183,6 +202,9 @@
                         </div>
                     </div>
                     
+                    <a href="{{ route('pricing') }}" class="px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-medium flex items-center {{ request()->routeIs('pricing') ? 'text-indigo-600 bg-indigo-50' : '' }}">
+                        <i class="fas fa-tags mr-2"></i>Tarifs
+                    </a>
                     <a href="{{ route('contact') }}" class="px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-medium flex items-center {{ request()->routeIs('contact') ? 'text-indigo-600 bg-indigo-50' : '' }}">
                         <i class="fas fa-envelope mr-2"></i>Contact
                     </a>
@@ -206,6 +228,13 @@
                                     <div class="px-4 py-2 border-b border-gray-100">
                                         <p class="text-sm font-semibold text-gray-800">{{ auth()->user()->name }}</p>
                                         <p class="text-xs text-gray-500">{{ auth()->user()->email }}</p>
+                                        @if(auth()->user()->isOrganizer())
+                                            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-semibold bg-purple-100 text-purple-700 rounded">Organisateur</span>
+                                        @elseif(auth()->user()->isAdmin())
+                                            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-semibold bg-red-100 text-red-700 rounded">Admin</span>
+                                        @else
+                                            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-semibold bg-gray-100 text-gray-700 rounded">Client</span>
+                                        @endif
                                     </div>
                                     <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
                                         <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
@@ -251,7 +280,14 @@
                         <i class="fas fa-ticket-alt text-white text-lg"></i>
                     </div>
                     <span class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                        Tikehub
+                        @php
+                            $mobileLogo = \App\Models\Logo::getByType('mobile') ?? \App\Models\Logo::getByType('header');
+                        @endphp
+                        @if($mobileLogo)
+                            <img src="{{ $mobileLogo->url }}" alt="Tikehub" class="h-8 object-contain">
+                        @else
+                            Tikehub
+                        @endif
                     </span>
                 </div>
                 <button onclick="closeMobileSidebar()" class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition min-w-[44px] min-h-[44px] flex items-center justify-center">
@@ -285,6 +321,10 @@
                         <span>Ressources</span>
                     </div>
                     <div class="ml-8 space-y-1">
+                        <a href="{{ route('blog.index') }}" onclick="closeMobileSidebar()" class="flex items-center px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition {{ request()->routeIs('blog.*') ? 'text-indigo-600 bg-indigo-50' : '' }}">
+                            <i class="fas fa-newspaper mr-3 w-5 text-center"></i>
+                            <span>Blog</span>
+                        </a>
                         <a href="{{ route('faq') }}" onclick="closeMobileSidebar()" class="flex items-center px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition {{ request()->routeIs('faq') ? 'text-indigo-600 bg-indigo-50' : '' }}">
                             <i class="fas fa-question-circle mr-3 w-5 text-center"></i>
                             <span>FAQ</span>
@@ -296,6 +336,10 @@
                     </div>
                 </div>
                 
+                <a href="{{ route('pricing') }}" onclick="closeMobileSidebar()" class="flex items-center px-4 py-3 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition {{ request()->routeIs('pricing') ? 'text-indigo-600 bg-indigo-50' : '' }}">
+                    <i class="fas fa-tags mr-3 w-5 text-center"></i>
+                    <span class="font-medium">Tarifs</span>
+                </a>
                 <a href="{{ route('contact') }}" onclick="closeMobileSidebar()" class="flex items-center px-4 py-3 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition {{ request()->routeIs('contact') ? 'text-indigo-600 bg-indigo-50' : '' }}">
                     <i class="fas fa-envelope mr-3 w-5 text-center"></i>
                     <span class="font-medium">Contact</span>
@@ -415,16 +459,54 @@
     <main class="py-4" style="order: 2 !important; flex: 1 !important; position: relative !important; min-height: auto !important; padding-bottom: 1rem !important;">
         @if(session('success'))
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-                    {{ session('success') }}
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-green-700 hover:text-green-900 ml-4">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span>{{ session('error') }}</span>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-red-700 hover:text-red-900 ml-4">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        @endif
+
+        @if(session('info'))
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+                <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <span>{{ session('info') }}</span>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-blue-700 hover:text-blue-900 ml-4">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
         @endif
 
         @if(isset($errors) && $errors->any())
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                    <ul>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <strong>Erreurs :</strong>
+                    </div>
+                    <ul class="list-disc list-inside">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -438,10 +520,56 @@
 
     <footer class="bg-gray-800 text-white mt-0" style="order: 3 !important; flex-shrink: 0 !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            @php
+                $footerLogo = \App\Models\Logo::getByType('footer');
+            @endphp
+            @if($footerLogo)
+                <div class="flex justify-center mb-4">
+                    <img src="{{ $footerLogo->url }}" alt="Tikehub" class="h-10 object-contain">
+                </div>
+            @endif
             <p class="text-center">&copy; {{ date('Y') }} Tikehub. Tous droits réservés.</p>
         </div>
     </footer>
+    
+    <!-- Bouton d'installation PWA -->
+    @include('components.pwa-install-button')
+    
     @stack('scripts')
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('{{ asset('sw.js') }}')
+                    .then(function(registration) {
+                        console.log('Service Worker enregistré avec succès:', registration.scope);
+                        
+                        // Vérifier les mises à jour
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Nouvelle version disponible
+                                    if (confirm('Une nouvelle version de l\'application est disponible. Voulez-vous recharger la page ?')) {
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(error) {
+                        console.log('Échec de l\'enregistrement du Service Worker:', error);
+                    });
+                
+                // Écouter les messages du service worker
+                navigator.serviceWorker.addEventListener('message', function(event) {
+                    console.log('Message du Service Worker:', event.data);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
 

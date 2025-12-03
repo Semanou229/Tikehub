@@ -1,0 +1,12 @@
+{
+  "name": "tikehub-platform",
+  "version": "1.0.0",
+  "description": "Plateforme marketplace d'événements Tikehub",
+  "scripts": {
+    "generate-icons": "node scripts/generate-pwa-icons.js"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.0"
+  }
+}
+

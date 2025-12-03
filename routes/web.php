@@ -35,8 +35,14 @@ Route::get('/email/verify/{id}/{hash}', [\App\Http\Controllers\Auth\EmailVerific
 Route::post('/email/verification-notification', [\App\Http\Controllers\Auth\EmailVerificationController::class, 'resend'])
     ->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+// Route publique pour valider les tickets via QR code (accessible sans authentification)
+Route::get('/tickets/validate/{token}', [\App\Http\Controllers\TicketController::class, 'validateToken'])->name('tickets.validate');
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    
+    // Changer de statut : devenir organisateur
+    Route::post('/become-organizer', [\App\Http\Controllers\UserRoleController::class, 'becomeOrganizer'])->name('become.organizer');
 
     // Routes Admin
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
@@ -95,7 +101,20 @@ Route::middleware('auth')->group(function () {
         Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings');
         Route::put('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
         Route::post('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'store'])->name('settings.store');
+        
+        // Gestion des demandes de sous-domaines
+        Route::get('/subdomain-requests', [\App\Http\Controllers\Admin\SubdomainRequestController::class, 'index'])->name('subdomain-requests.index');
+        Route::get('/subdomain-requests/{subdomainRequest}', [\App\Http\Controllers\Admin\SubdomainRequestController::class, 'show'])->name('subdomain-requests.show');
+        Route::post('/subdomain-requests/{subdomainRequest}/approve', [\App\Http\Controllers\Admin\SubdomainRequestController::class, 'approve'])->name('subdomain-requests.approve');
+        Route::post('/subdomain-requests/{subdomainRequest}/reject', [\App\Http\Controllers\Admin\SubdomainRequestController::class, 'reject'])->name('subdomain-requests.reject');
+        Route::post('/subdomain-requests/{subdomainRequest}/complete', [\App\Http\Controllers\Admin\SubdomainRequestController::class, 'complete'])->name('subdomain-requests.complete');
         Route::delete('/settings/{id}', [\App\Http\Controllers\Admin\SettingsController::class, 'destroy'])->name('settings.destroy');
+        
+        // Gestion des logos
+        Route::get('/logos', [\App\Http\Controllers\Admin\LogoController::class, 'index'])->name('logos.index');
+        Route::post('/logos', [\App\Http\Controllers\Admin\LogoController::class, 'store'])->name('logos.store');
+        Route::put('/logos/{logo}', [\App\Http\Controllers\Admin\LogoController::class, 'update'])->name('logos.update');
+        Route::delete('/logos/{logo}', [\App\Http\Controllers\Admin\LogoController::class, 'destroy'])->name('logos.destroy');
         
         // Demandes de retrait
         Route::get('/withdrawals', [\App\Http\Controllers\Admin\WithdrawalController::class, 'index'])->name('withdrawals.index');
@@ -153,6 +172,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/tickets/validate-promo', [TicketController::class, 'validatePromoCode'])->name('tickets.validate-promo');
         Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
         Route::get('/tickets/{ticket}/download', [TicketController::class, 'download'])->name('tickets.download');
+
+        // Route pour voir les billets achetés (accessible à tous les utilisateurs authentifiés)
+        Route::get('/my-tickets', [\App\Http\Controllers\Buyer\DashboardController::class, 'tickets'])->name('my.tickets');
 
         // Routes Buyer Dashboard (nécessitent vérification email)
         Route::prefix('buyer')->name('buyer.')->group(function () {
@@ -303,6 +325,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/notifications', [\App\Http\Controllers\Organizer\NotificationController::class, 'index'])->name('notifications.index');
         Route::post('/notifications/{id}/read', [\App\Http\Controllers\Organizer\NotificationController::class, 'markAsRead'])->name('notifications.markRead');
         Route::post('/notifications/read-all', [\App\Http\Controllers\Organizer\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+        
+        // Demandes de sous-domaines
+        Route::get('/subdomain-requests', [\App\Http\Controllers\Organizer\SubdomainRequestController::class, 'index'])->name('subdomain-requests.index');
+        Route::get('/subdomain-requests/create', [\App\Http\Controllers\Organizer\SubdomainRequestController::class, 'create'])->name('subdomain-requests.create');
+        Route::post('/subdomain-requests', [\App\Http\Controllers\Organizer\SubdomainRequestController::class, 'store'])->name('subdomain-requests.store');
+        Route::get('/subdomain-requests/{subdomainRequest}', [\App\Http\Controllers\Organizer\SubdomainRequestController::class, 'show'])->name('subdomain-requests.show');
     });
 });
 
@@ -357,4 +385,20 @@ Route::post('/contact', [\App\Http\Controllers\PageController::class, 'submitCon
 Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{blog:slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
 Route::get('/blog/category/{category:slug}', [\App\Http\Controllers\BlogController::class, 'category'])->name('blog.category');
+
+// Page Tarifs
+Route::get('/pricing', [\App\Http\Controllers\PricingController::class, 'index'])->name('pricing');
+
+// Page Offline pour PWA
+Route::get('/offline', function () {
+    return view('offline');
+})->name('offline');
+
+// Sitemap pour SEO
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.index');
+Route::get('/sitemap-pages.xml', [\App\Http\Controllers\SitemapController::class, 'pages'])->name('sitemap.pages');
+Route::get('/sitemap-blog.xml', [\App\Http\Controllers\SitemapController::class, 'blog'])->name('sitemap.blog');
+Route::get('/sitemap-events.xml', [\App\Http\Controllers\SitemapController::class, 'events'])->name('sitemap.events');
+Route::get('/sitemap-contests.xml', [\App\Http\Controllers\SitemapController::class, 'contests'])->name('sitemap.contests');
+Route::get('/sitemap-fundraisings.xml', [\App\Http\Controllers\SitemapController::class, 'fundraisings'])->name('sitemap.fundraisings');
 

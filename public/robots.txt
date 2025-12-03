@@ -1,0 +1,43 @@
+# robots.txt pour Tikehub
+# Optimisé pour le référencement SEO
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /storage/
+Disallow: /vendor/
+Disallow: /tickets/validate/
+Disallow: /*?*search=
+Disallow: /*?*page=
+
+# Autoriser les pages importantes pour le SEO
+Allow: /blog
+Allow: /events
+Allow: /contests
+Allow: /fundraisings
+Allow: /faq
+Allow: /contact
+Allow: /pricing
+Allow: /how-it-works
+
+# Sitemap
+Sitemap: https://tikehub.com/sitemap.xml
+
+# Crawl-delay pour éviter la surcharge
+Crawl-delay: 1
+
+# User-agent spécifiques
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+

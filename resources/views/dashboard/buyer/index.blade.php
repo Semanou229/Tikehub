@@ -24,6 +24,61 @@
     </div>
 </div>
 
+<!-- Carte Devenir Organisateur -->
+@if(!auth()->user()->isOrganizer() && !auth()->user()->isAdmin())
+<div class="p-3 sm:p-4 lg:p-6 mb-4 sm:mb-6">
+    <div class="bg-gradient-to-r from-purple-600 via-pink-600 to-red-500 rounded-xl shadow-lg p-6 sm:p-8 relative overflow-hidden">
+        <!-- Pattern de fond -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 1px, transparent 1px); background-size: 30px 30px;"></div>
+        </div>
+        
+        <div class="relative z-10">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center mb-3">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-user-plus text-white text-xl sm:text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl sm:text-2xl font-bold text-white mb-1">Devenez Organisateur</h2>
+                            <p class="text-sm sm:text-base text-purple-100">Créez et gérez vos propres événements</p>
+                        </div>
+                    </div>
+                    <ul class="text-sm sm:text-base text-purple-100 space-y-2 ml-0 md:ml-16">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle mr-2 text-white"></i>
+                            <span>Créez des événements et vendez des billets</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle mr-2 text-white"></i>
+                            <span>Organisez des concours avec votes payants</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle mr-2 text-white"></i>
+                            <span>Lancez des collectes de fonds</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle mr-2 text-white"></i>
+                            <span>Accédez au CRM intégré et aux rapports détaillés</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="flex-shrink-0">
+                    <form method="POST" action="{{ route('become.organizer') }}">
+                        @csrf
+                        <button type="submit" class="w-full md:w-auto bg-white text-purple-600 px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-purple-50 transition shadow-lg hover:shadow-xl font-bold text-sm sm:text-base flex items-center justify-center min-h-[44px] sm:min-h-[48px]">
+                            <i class="fas fa-rocket mr-2 text-lg"></i>
+                            <span>Devenir Organisateur</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
 <div class="p-3 sm:p-4 lg:p-6">
     <!-- Cartes de statistiques -->
     <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6 lg:mb-8">

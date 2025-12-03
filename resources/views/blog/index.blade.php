@@ -1,6 +1,46 @@
 @extends('layouts.app')
 
-@section('title', 'Blog - Tikehub')
+@section('title', 'Blog Tikehub - Conseils, Guides et Actualités sur les Événements en Afrique')
+
+@push('head')
+<!-- SEO Meta Tags -->
+<meta name="description" content="Découvrez nos articles de blog sur l'organisation d'événements, la billetterie en ligne, les paiements mobiles et bien plus. Guides pratiques et conseils pour organisateurs d'événements en Afrique.">
+<meta name="keywords" content="blog événements, conseils organisateurs, billetterie en ligne, événements Afrique, guides pratiques, gestion d'événements">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ url('/blog') }}">
+<meta property="og:title" content="Blog Tikehub - Conseils et Guides pour Organisateurs d'Événements">
+<meta property="og:description" content="Découvrez nos articles de blog sur l'organisation d'événements, la billetterie en ligne et les paiements mobiles en Afrique.">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Tikehub">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary">
+<meta property="twitter:url" content="{{ url('/blog') }}">
+<meta property="twitter:title" content="Blog Tikehub - Conseils et Guides pour Organisateurs">
+<meta property="twitter:description" content="Découvrez nos articles de blog sur l'organisation d'événements en Afrique.">
+
+<!-- Structured Data JSON-LD pour Blog -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Blog Tikehub",
+  "description": "Blog sur l'organisation d'événements, la billetterie en ligne et les paiements mobiles en Afrique",
+  "url": "{{ url('/blog') }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Tikehub",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ asset('images/logo.png') }}"
+    }
+  }
+}
+</script>
+@endpush
 
 @section('content')
 <!-- Hero Section -->

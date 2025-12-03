@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard Admin - ' . config('app.name'))</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#dc2626">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tikehub Admin">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icons/icon-192x192.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -153,6 +161,19 @@
                     @endif
                 </a>
                 
+                <a href="{{ route('admin.logos.index') }}" onclick="closeSidebarOnMobile()" class="flex items-center px-3 sm:px-4 py-2.5 sm:py-3 mb-2 rounded-lg {{ request()->routeIs('admin.logos.*') ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100' }} min-h-[44px]">
+                    <i class="fas fa-image w-5 mr-2 sm:mr-3 flex-shrink-0"></i>
+                    <span class="text-sm sm:text-base">Logos</span>
+                </a>
+                <a href="{{ route('admin.subdomain-requests.index') }}" onclick="closeSidebarOnMobile()" class="flex items-center px-3 sm:px-4 py-2.5 sm:py-3 mb-2 rounded-lg {{ request()->routeIs('admin.subdomain-requests.*') ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100' }} min-h-[44px]">
+                    <i class="fas fa-globe w-5 mr-2 sm:mr-3 flex-shrink-0"></i>
+                    <span class="text-sm sm:text-base flex-1">Sous-domaines</span>
+                    @if(\App\Models\SubdomainRequest::where('status', 'pending')->count() > 0)
+                        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full flex-shrink-0">
+                            {{ \App\Models\SubdomainRequest::where('status', 'pending')->count() }}
+                        </span>
+                    @endif
+                </a>
                 <a href="{{ route('admin.settings') }}" onclick="closeSidebarOnMobile()" class="flex items-center px-3 sm:px-4 py-2.5 sm:py-3 mb-2 rounded-lg {{ request()->routeIs('admin.settings') ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100' }} min-h-[44px]">
                     <i class="fas fa-cog w-5 mr-2 sm:mr-3 flex-shrink-0"></i>
                     <span class="text-sm sm:text-base">Paramètres</span>
@@ -222,6 +243,24 @@
                 overlay.classList.remove('open');
             }
         });
+    </script>
+    
+    <!-- Bouton d'installation PWA -->
+    @include('components.pwa-install-button')
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('{{ asset('sw.js') }}')
+                    .then(function(registration) {
+                        console.log('Service Worker enregistré avec succès:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Échec de l\'enregistrement du Service Worker:', error);
+                    });
+            });
+        }
     </script>
     @stack('scripts')
 </body>
